@@ -1,0 +1,199 @@
+{
+  "queueList": [],
+  "categories": [
+    {
+      "name": "language",
+      "values": [
+        "ru",
+        "other"
+      ]
+    },
+    {
+      "name": "popular",
+      "values": [
+        "yes",
+        "no"
+      ]
+    },
+    {
+      "name": "known",
+      "values": [
+        "yes",
+        "no"
+      ]
+    },
+    {
+      "name": "favorite",
+      "values": [
+        "yes",
+        "no"
+      ]
+    },
+    {
+      "name": "mood",
+      "values": [
+        "sad",
+        "melancholic",
+        "fun",
+        "fresh",
+        "quiet"
+      ]
+    }
+  ],
+  "classificator_51925473_283407850.mp3": [
+    {
+      "name": "language",
+      "values": [
+        "other"
+      ]
+    },
+    {
+      "name": "known",
+      "values": [
+        "yes",
+        "no"
+      ]
+    },
+    {
+      "name": "popular",
+      "values": [
+        "yes",
+        "no"
+      ]
+    },
+    {
+      "name": "favorite",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "mood",
+      "values": [
+        "sad",
+        "quiet"
+      ]
+    }
+  ],
+  "classificator_Sacra_Fern_-_Horn_Of_Gorgon.mp3": [
+    {
+      "name": "language",
+      "values": [
+        "other"
+      ]
+    },
+    {
+      "name": "popular",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "known",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "favorite",
+      "values": [
+        "no"
+      ]
+    }
+  ],
+  "classificator_1997✝ - ghost the party (ft. Yakui The Maid).mp3": [
+    {
+      "name": "language",
+      "values": []
+    },
+    {
+      "name": "popular",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "known",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "favorite",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "mood",
+      "values": [
+        "fun",
+        "fresh"
+      ]
+    }
+  ],
+  "classificator_1997✝ - leto ne vernetsya nazad.mp3": [
+    {
+      "name": "language",
+      "values": [
+        "ru"
+      ]
+    },
+    {
+      "name": "popular",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "known",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "favorite",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "mood",
+      "values": [
+        "fun"
+      ]
+    }
+  ],
+  "classificator_Arctic Monkeys - 505.mp3": [
+    {
+      "name": "mood",
+      "values": [
+        "melancholic"
+      ]
+    },
+    {
+      "name": "popular",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "known",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "favorite",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "language",
+      "values": [
+        "other"
+      ]
+    }
+  ]
+}

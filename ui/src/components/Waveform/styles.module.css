@@ -1,0 +1,11 @@
+.root {
+  width: 100%;
+  padding: 14px;
+
+  display: flex;
+}
+
+.canvas {
+  display: flex;
+  width: 100%;
+}

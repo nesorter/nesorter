@@ -1,0 +1,50 @@
+.root {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+
+  padding: 14px;
+  padding-left: 0;
+
+  background-color: #fff;
+  border-radius: 8px;
+
+  max-height: calc(100vh - 128px);
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  width: 100%;
+
+  cursor: pointer;
+  border-radius: 4px;
+  gap: 7px;
+  padding: 0 14px;
+}
+
+.itemActive {
+  background-color: #96CE4E;
+  color: white;
+  font-weight: 500;
+}
+
+.itemName {
+  width: 100%;
+  font-size: 14px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.subRoot:not(.subRootButRoot) {
+  padding-left: 14px;
+}
+
+.subRootButRoot {
+
+}
