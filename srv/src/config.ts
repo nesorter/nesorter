@@ -1,8 +1,9 @@
+require('dotenv').config();
+
 export default {
   API_LISTEN_PORT: Number(process.env.API_LISTEN_PORT) || 3001,
 
-  HOST_CONTENT_ROOT_DIR_PATH: process.env.HOST_CONTENT_ROOT_DIR_PATH || '',
-  DCKR_CONTENT_ROOT_DIR_PATH: process.env.DCKR_CONTENT_ROOT_DIR_PATH || '',
+  CONTENT_ROOT_DIR_PATH: process.env.CONTENT_ROOT_DIR_PATH || '',
 
   SHOUT_HOST: process.env.SHOUT_HOST || '',
   SHOUT_PROTOCOL: Number(process.env.SHOUT_PROTOCOL) || 0,

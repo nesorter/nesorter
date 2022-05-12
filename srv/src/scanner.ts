@@ -24,8 +24,8 @@ type Chain = Record<string, {
 }>;
 
 export default class Scanner {
-  SLEEP_AFTERSCAN = true;
-  SLEEP_AFTERSCAN_MS = 1;
+  SLEEP_AFTER_SCAN = true;
+  SLEEP_AFTER_SCAN_MS = 1;
 
   finded: ScannedItem[] = [];
   chain: Chain = {};
@@ -85,8 +85,8 @@ export default class Scanner {
       const next = await this.getFilesRecursively(item.path, filter);
       next.forEach((i) => content.push(i));
 
-      if (this.SLEEP_AFTERSCAN) {
-        await sleep(this.SLEEP_AFTERSCAN_MS);
+      if (this.SLEEP_AFTER_SCAN) {
+        await sleep(this.SLEEP_AFTER_SCAN_MS);
       }
     }
 

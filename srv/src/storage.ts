@@ -4,7 +4,7 @@ export default class DBStorage {
   storage: Record<string, unknown> = {};
 
   constructor(onInit: () => void) {
-    readFile('srv/db.json')
+    readFile('db.json')
       .then(r => {
         this.storage = JSON.parse(r.toString());
         onInit();
@@ -17,6 +17,6 @@ export default class DBStorage {
 
   async add(key: string, value: unknown) {
     this.storage[key] = value;
-    return writeFile('srv/db.json', JSON.stringify(this.storage, null, 2));
+    return writeFile('db.json', JSON.stringify(this.storage, null, 2));
   }
 }
