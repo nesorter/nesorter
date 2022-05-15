@@ -22,7 +22,7 @@ type AddToQueuePayload = {
   filename: string;
 }
 
-export function createApi(
+export default function createApi(
   scanner: Scanner,
   classificator: Classificator,
   storage: DBStorage
@@ -60,8 +60,14 @@ export function createApi(
   app.use(Express.json());
 
   app.post('/api/test', (req, res) => {
-    streamer.testRun(req.body.path);
-    res.json('ok');
+    const item = scanner.finded.find((i) => i.name === req.body.filename);
+
+    if (item) {
+      streamer.testRun(item.path);
+      res.json('ok');
+    } else {
+      res.status(404).json({ message: 'no files for this name 🫣' });
+    }
   });
 
   app.get('/api/queues', (_req, res) => {

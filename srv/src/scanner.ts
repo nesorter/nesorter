@@ -36,8 +36,7 @@ export default class Scanner {
   }
 
   async scan({ path, filterRegExp }: ScanParams) {
-    let content = await this.getFilesRecursively(path, ({ name }) => filterRegExp.test(name));
-    this.finded = content;
+    this.finded = await this.getFilesRecursively(path, ({ name }) => filterRegExp.test(name));
     this.finded.forEach(item => this.putInChain(item));
   }
 

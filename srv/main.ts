@@ -1,13 +1,13 @@
 import CONFIG from './src/config';
 import Scanner from './src/scanner';
-import { createApi } from './src/api';
+import CreateApi from './src/api';
 import Classificator from './src/classificator';
 import DBStorage from './src/storage';
 
 const storage = new DBStorage(() => {
   const scanner = new Scanner(storage);
   const classificator = new Classificator(storage);
-  const api = createApi(scanner, classificator, storage);
+  const api = CreateApi(scanner, classificator, storage);
 
   scanner
     .scan({ path: CONFIG.CONTENT_ROOT_DIR_PATH, filterRegExp: /.*\.mp3/ })

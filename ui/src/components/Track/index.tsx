@@ -30,7 +30,7 @@ const Track = ({ track, categories }: { track: ScannedItem, categories: Classifi
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ path: track.path }),
+      body: JSON.stringify({ filename: track.name }),
     }).then(console.log).catch(console.error);
   }
 
@@ -92,7 +92,7 @@ const Track = ({ track, categories }: { track: ScannedItem, categories: Classifi
         <audio controls autoPlay>
           <source src={`/api/file?name=${encodeURIComponent(track.name)}`} />
           Your browser does not support the audio element.
-        </audio> 
+        </audio>
       </div>
 
       <div className={styles.catsRoot}>
