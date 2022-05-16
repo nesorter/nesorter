@@ -4,7 +4,13 @@ import {writeFile} from "fs/promises";
 
 
 export class Streamer {
+  streaming: boolean = false;
+
   stream(playlistPath = 'list.txt', bitrate = 320) {
+    if (this.streaming) {
+      throw new Error('Stream already in progress!');
+    }
+
     const instance = ffmpeg()
       .input(playlistPath)
       .inputFormat('concat')
@@ -15,13 +21,25 @@ export class Streamer {
       .outputFormat('mp3')
       .output(`icecast://${Config.SHOUT_USER}:${Config.SHOUT_PASSWORD}@${Config.SHOUT_HOST}:${Config.SHOUT_PORT}/${Config.SHOUT_MOUNT}`);
 
-    instance.on('progress', (prog) => console.log(`INFO: ffmpeg: processed ${prog.timemark} - ${prog.targetSize}kb`));
-    instance.on('error', err => console.error(`ERR: ffmpeg: ${err.message}`));
-    instance.once('end', () => console.log('INFO: ffmpeg: Stream ended'));
+    instance.on('progress', (status) => {
+      console.log(`INFO: ffmpeg: processed ${status.timemark} - ${status.targetSize}kb`);
+    });
+
+    instance.on('error', (err) => {
+      console.log(`ERROR: ffmpeg: ${err.message}`);
+      this.streaming = false;
+    });
+
+    instance.once('end', () => {
+      console.log('INFO: ffmpeg: Stream ended');
+      this.streaming = false;
+    });
+
     instance.once('start', (commandLine) => {
       console.log(`INFO: ffmpeg: spawned with command: "${commandLine}"`);
     });
 
+    this.streaming = true;
     instance.run();
 
     // закомментил основную команду
@@ -42,9 +60,12 @@ export class Streamer {
     // ].join(' ');
   }
 
-  async testRun(path: string) {
-    const listPath = 'list.txt';
-    await writeFile(listPath, `file '${this.convertToSafe(path)}'\n`);
+  async runPlaylist(paths: string[], listPath = 'list.txt') {
+    await writeFile(
+      listPath,
+      paths.map((p) => `file ${this.convertToSafe(p)}`).join('\n'),
+    );
+
     this.stream(listPath);
   }
 

@@ -63,11 +63,16 @@ export default function createApi(
     const item = scanner.finded.find((i) => i.name === req.body.filename);
 
     if (item) {
-      streamer.testRun(item.path);
+      streamer.runPlaylist([item.path]);
       res.json('ok');
     } else {
       res.status(404).json({ message: 'no files for this name 🫣' });
     }
+  });
+
+  app.get('/api/queue', async (_req, res) => {
+    const queue = await getQueue((_req.query.id || '').toString(), storage);
+    res.json(await queue.getQueue());
   });
 
   app.get('/api/queues', (_req, res) => {

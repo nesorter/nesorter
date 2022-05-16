@@ -17,7 +17,7 @@ export class Queue {
 
   constructor(id: string, db: DBStorage) {
     this.db = db;
-    this.id = id;
+    this.id = id.includes('queue-') ? id.replaceAll('queue-', '') : id;
   }
 
   get key(): string {

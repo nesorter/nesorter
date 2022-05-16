@@ -1,5 +1,16 @@
 {
-  "queueList": [],
+  "queueList": [
+    {
+      "id": "queue-MyTestQueue",
+      "name": "MyTestQueue",
+      "type": "manual"
+    },
+    {
+      "id": "queue-MySecondQueue",
+      "name": "MySecondQueue",
+      "type": "manual"
+    }
+  ],
   "categories": [
     {
       "name": "language",
@@ -195,5 +206,7 @@
         "other"
       ]
     }
-  ]
+  ],
+  "queue-MyTestQueue": [],
+  "queue-MySecondQueue": []
 }
