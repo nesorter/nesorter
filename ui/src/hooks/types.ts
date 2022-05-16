@@ -18,3 +18,14 @@ export type Chain = Record<string, {
   link: string | null,
   meta?: ScannedItem
 }>;
+
+export type QueueItem = {
+  order: number;
+  filepath: string;
+};
+
+export type QueueType = {
+  id: string;
+  name: string;
+  type: 'manual' | 'smart';
+};

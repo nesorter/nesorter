@@ -1,0 +1,16 @@
+.root {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+
+    padding: 14px;
+    gap: 14px;
+
+    background-color: #fff;
+    border-radius: 8px;
+
+    max-height: calc(100vh - 128px);
+    overflow: hidden;
+    overflow-y: auto;
+}

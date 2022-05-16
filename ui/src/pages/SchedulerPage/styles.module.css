@@ -1,0 +1,44 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.navigationRoot {
+    display: flex;
+    gap: 8px;
+}
+
+.nextPrevRoot {
+    display: flex;
+    gap: 8px;
+}
+
+.trackList {
+    display: none;
+    visibility: hidden;
+
+    flex-direction: column;
+    gap: 4px;
+}
+
+@media (min-width: 768px) {
+    .root {
+        flex-direction: row;
+    }
+
+    .navigationRoot {
+        flex-direction: column;
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .trackRoot {
+        width: 100%;
+    }
+
+    .trackList {
+        display: flex;
+        visibility: visible;
+    }
+}

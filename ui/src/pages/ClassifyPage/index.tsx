@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { CatsEditor } from "../../components/CatsEditor";
-import { PageWrapper } from "../../components/PageWrapper";
-import Track from "../../components/Track";
-import { TrackList } from "../../components/TrackList";
-import { ScannedItem } from "../../hooks/types";
-import { useCategories } from "../../hooks/useCategories";
-import { useData } from "../../hooks/useData";
+import { useEffect, useState } from 'react';
+import { CatsEditor } from '../../components/CatsEditor';
+import { PageWrapper } from '../../components/PageWrapper';
+import Track from '../../components/Track';
+import { TrackList } from '../../components/TrackList';
+import { ScannedItem } from '../../hooks/types';
+import { useCategories } from '../../hooks/useCategories';
+import { useData } from '../../hooks/useData';
 import styles from './styles.module.css';
 
 const ClassifyPage = () => {
@@ -16,7 +16,7 @@ const ClassifyPage = () => {
   const editor = <CatsEditor categories={categories} onRefresh={onRefresh} />;
 
   return (
-    
+
       <div className={styles.root}>
         <div className={styles.navigationRoot}>
           {/* <div className={styles.nextPrevRoot}>
@@ -24,7 +24,7 @@ const ClassifyPage = () => {
             <button onClick={() => null}>next</button>
           </div> */}
 
-          <TrackList 
+          <TrackList
             chain={scannedItems}
             toggleTrack={(item) => {
               if (item) {
