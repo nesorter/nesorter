@@ -7,7 +7,7 @@ type ScanParams = {
   filterRegExp: RegExp;
 }
 
-type ScannedItem = {
+export type ScannedItem = {
   path: string,
   name: string,
   size: number,

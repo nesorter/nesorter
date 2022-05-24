@@ -1,6 +1,6 @@
 import Config from './config';
 import ffmpeg from 'fluent-ffmpeg';
-import {writeFile} from "fs/promises";
+import { writeFile } from "fs/promises";
 
 
 export class Streamer {
@@ -12,7 +12,7 @@ export class Streamer {
     }
 
     const instance = ffmpeg()
-      .input(playlistPath)
+      .input(`${playlistPath}`)
       .inputFormat('concat')
       .addInputOption(['-safe 0', '-re', '-ss 19'])
       .audioCodec('libmp3lame')
@@ -63,13 +63,13 @@ export class Streamer {
   async runPlaylist(paths: string[], listPath = 'list.txt') {
     await writeFile(
       listPath,
-      paths.map((p) => `file ${this.convertToSafe(p)}`).join('\n'),
+      paths.map((p) => `file '${this.convertToSafe(p)}'`).join('\n'),
     );
 
     this.stream(listPath);
   }
 
   convertToSafe(str: string): string {
-    return str.replaceAll(`'`,`\\'`);
+    return str.replaceAll(`'`,`'\\''`);
   }
 }

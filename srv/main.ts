@@ -6,7 +6,7 @@ import DBStorage from './src/storage';
 
 const storage = new DBStorage(() => {
   const scanner = new Scanner(storage);
-  const classificator = new Classificator(storage);
+  const classificator = new Classificator(storage, scanner);
   const api = CreateApi(scanner, classificator, storage);
 
   scanner

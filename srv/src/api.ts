@@ -59,11 +59,24 @@ export default function createApi(
 
   app.use(Express.json());
 
-  app.post('/api/test', (req, res) => {
+  app.post('/api/test', async (req, res) => {
     const item = scanner.finded.find((i) => i.name === req.body.filename);
 
     if (item) {
-      streamer.runPlaylist([item.path]);
+      await streamer.runPlaylist([item.path]);
+      res.json('ok');
+    } else {
+      res.status(404).json({ message: 'no files for this name 🫣' });
+    }
+  });
+
+  app.post('/api/queue/stream', async (req, res) => {
+    if (req.query.queueId) {
+      const queue = await getQueue((req.query.queueId || '').toString(), storage);
+      await streamer.runPlaylist(
+        (await queue.getQueue()).map(i => i.filePath),
+        `${process.cwd()}/${req.query.queueId}.txt`,
+      );
       res.json('ok');
     } else {
       res.status(404).json({ message: 'no files for this name 🫣' });
@@ -164,7 +177,14 @@ export default function createApi(
     } else {
       res.status(404).json({ message: 'no files for this name 🫣' });
     }
-  })
+  });
+
+  app.get('/api/files', async (req, res) => {
+    const filters = req.query as unknown as ClassificationCategory[] || []
+    const classificated = await classificator.getItems(filters);
+
+    res.json(classificated);
+  });
 
   app.get('/api/file', async (req, res) => {
     const filename = req.query.name;

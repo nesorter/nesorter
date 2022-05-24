@@ -2,7 +2,7 @@ import DBStorage from "./storage";
 
 type QueueItem = {
   order: number;
-  filepath: string;
+  filePath: string;
 };
 
 type QueueType = {

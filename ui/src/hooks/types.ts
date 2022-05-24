@@ -21,7 +21,7 @@ export type Chain = Record<string, {
 
 export type QueueItem = {
   order: number;
-  filepath: string;
+  filePath: string;
 };
 
 export type QueueType = {

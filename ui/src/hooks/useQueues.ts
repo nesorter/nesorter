@@ -39,7 +39,7 @@ export const useQueues = () => {
     }).then(console.log).catch(console.error);
 
     await init();
-  }
+  };
 
   const addInQueue = async (id: string, filename: string) => {
     await fetch('/api/addInQueue', {
@@ -52,11 +52,22 @@ export const useQueues = () => {
     }).then(console.log).catch(console.error);
 
     await init();
-  }
+  };
+
+  const stream = async (queueId: string) => {
+    await fetch(`/api/queue/stream?queueId=${queueId}`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: '',
+    }).then(console.log).catch(console.error);
+  };
 
   useEffect(() => {
     init();
   }, []);
 
-  return { queues, items, createQueue, addInQueue, init };
+  return { queues, items, createQueue, addInQueue, init, stream };
 };
