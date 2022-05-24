@@ -14,7 +14,7 @@ export class Streamer {
     const instance = ffmpeg()
       .input(`${playlistPath}`)
       .inputFormat('concat')
-      .addInputOption(['-safe 0', '-re', '-ss 19'])
+      .addInputOption(['-safe 0', '-re', '-stream_loop -1'])
       .audioCodec('libmp3lame')
       .audioBitrate(bitrate)
       .addOutputOption(['-content_type audio/mpeg', '-map 0', '-map_metadata 0:s:0'])
@@ -33,6 +33,9 @@ export class Streamer {
     instance.once('end', () => {
       console.log('INFO: ffmpeg: Stream ended');
       this.streaming = false;
+
+      instance.run();
+      this.streaming = true;
     });
 
     instance.once('start', (commandLine) => {
@@ -61,9 +64,16 @@ export class Streamer {
   }
 
   async runPlaylist(paths: string[], listPath = 'list.txt') {
+    // костыль, потому что кажется concat ффмпега не умеет в (за)лупинг
+    let copied: string[] = paths.map((p) => `file '${this.convertToSafe(p)}'`);
+    let arrayed = copied;
+    for (let i = 1; i <= 100; i++) {
+      arrayed = [...arrayed, ...copied];
+    }
+
     await writeFile(
       listPath,
-      paths.map((p) => `file '${this.convertToSafe(p)}'`).join('\n'),
+      arrayed.join('\n'),
     );
 
     this.stream(listPath);
