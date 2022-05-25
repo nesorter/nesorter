@@ -64,10 +64,13 @@ const Track = ({
     let newData = classifiedCategories;
 
     if (isClassified) {
-      newData = newData.map(item => {
+      newData = newData.map((item) => {
         if (item.name === categoryName) {
           if (flag) {
-            return { ...item, values: [...item.values, value] };
+            return {
+              ...item,
+              values: [...item.values, value]
+            };
           } else {
             return {
               ...item,
@@ -77,7 +80,7 @@ const Track = ({
         }
 
         return item;
-      })
+      });
     } else {
       newData = [...newData, { name: categoryName, values: [value] }];
     }
@@ -89,7 +92,7 @@ const Track = ({
   const handleSetAsPrevious = async () => {
     setFetching(true);
     getPrevTrackCategory()
-      .then(data => {
+      .then((data) => {
         setClassifiedCategories(data);
         return apply(data);
       })
