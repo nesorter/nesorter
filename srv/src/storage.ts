@@ -17,6 +17,6 @@ export default class DBStorage {
 
   async add(key: string, value: unknown) {
     this.storage[key] = value;
-    return writeFile('db.json', JSON.stringify(this.storage, null, 2));
+    return writeFile('db.json', JSON.stringify(this.storage, null, 1));
   }
 }

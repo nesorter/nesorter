@@ -40,10 +40,27 @@ export default class Classificator {
   }
 
   async getItems(filters: ClassificationCategory[]): Promise<ScannedItem[]> {
-    return this.classificated
-      .map(([key]) => {
-        return this.scanner.finded.find(i => i.name === key) as ScannedItem;
+    let items = this.classificated
+      .map(([key, cats]) => {
+        return [
+          this.scanner.finded.find(i => i.name === key) as ScannedItem,
+          cats
+        ] as [ScannedItem, ClassificationCategory[]];
       })
-      .filter(i => i !== undefined);
+      .filter(i => i[0] !== undefined);
+
+    filters.forEach(({ name, values }) => {
+      items = items.filter(([ item, cats ]) => {
+        const cat = cats.find(cat => cat.name === name);
+
+        if (!cat) {
+          return false;
+        }
+
+        return cat.values.some(v => values.includes(v));
+      });
+    });
+
+    return items.map(i => i[0]);
   }
 };

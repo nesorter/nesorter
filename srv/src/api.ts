@@ -200,8 +200,9 @@ export default function createApi(
   });
 
   app.get('/api/files', async (req, res) => {
-    const filters = req.query as unknown as ClassificationCategory[] || []
-    const classificated = await classificator.getItems(filters);
+    const filters = req.query.filters as unknown as Record<string, string[]> || {};
+    const asCategories: ClassificationCategory[] = Object.entries(filters).map(([name, values]) => ({ name, values }));
+    const classificated = await classificator.getItems(asCategories);
 
     res.json(classificated);
   });

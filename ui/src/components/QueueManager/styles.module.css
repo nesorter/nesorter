@@ -14,3 +14,9 @@
     overflow: hidden;
     overflow-y: auto;
 }
+
+.trackRoot {
+    display: flex;
+    padding: 7px;
+    gap: 7px;
+}

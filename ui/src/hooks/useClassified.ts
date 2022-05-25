@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { ScannedItem} from "./types";
+import { ScannedItem } from "./types";
 
 export const useClassified = (): [ScannedItem[], () => void] => {
   const [classified, setClassified] = useState<ScannedItem[]>([]);
