@@ -23,7 +23,7 @@
       ]
     },
     {
-      "name": "known",
+      "name": "listened",
       "values": [
         "yes",
         "no"
@@ -37,13 +37,363 @@
       ]
     },
     {
+      "name": "playlist",
+      "values": [
+        "maid-core",
+        "drone-doomed",
+        "post",
+        "midvest"
+      ]
+    },
+    {
       "name": "mood",
       "values": [
-        "sad",
-        "melancholic",
-        "fun",
-        "fresh",
-        "quiet"
+        "minor",
+        "major"
+      ]
+    },
+    {
+      "name": "genre",
+      "values": [
+        "electronic",
+        "math",
+        "rock",
+        "post-rock",
+        "metal",
+        "hiphop",
+        "trap",
+        "blackgaze"
+      ]
+    }
+  ],
+  "classificator_1997✝ - leto ne vernetsya nazad.mp3": [
+    {
+      "name": "language",
+      "values": [
+        "ru"
+      ]
+    },
+    {
+      "name": "popular",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "listened",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "favorite",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "playlist",
+      "values": [
+        "maid-core"
+      ]
+    },
+    {
+      "name": "mood",
+      "values": [
+        "minor"
+      ]
+    }
+  ],
+  "classificator_1997✝ x Yakui The Maid - 子守唄.mp3": [
+    {
+      "name": "language",
+      "values": [
+        "ru"
+      ]
+    },
+    {
+      "name": "popular",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "listened",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "favorite",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "playlist",
+      "values": [
+        "maid-core"
+      ]
+    },
+    {
+      "name": "mood",
+      "values": [
+        "minor"
+      ]
+    },
+    {
+      "name": "genre",
+      "values": [
+        "electronic",
+        "rock"
+      ]
+    }
+  ],
+  "classificator_65daysofstatic - Drove Through Ghosts to Get Here.mp3": [
+    {
+      "name": "language",
+      "values": [
+        "other"
+      ]
+    },
+    {
+      "name": "popular",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "listened",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "favorite",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "playlist",
+      "values": [
+        "post"
+      ]
+    },
+    {
+      "name": "mood",
+      "values": [
+        "minor"
+      ]
+    },
+    {
+      "name": "genre",
+      "values": [
+        "post-rock"
+      ]
+    }
+  ],
+  "classificator_Akaitsuki - Ryujin.mp3": [
+    {
+      "name": "language",
+      "values": [
+        "other"
+      ]
+    },
+    {
+      "name": "popular",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "listened",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "favorite",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "playlist",
+      "values": [
+        "post"
+      ]
+    },
+    {
+      "name": "mood",
+      "values": [
+        "minor"
+      ]
+    },
+    {
+      "name": "genre",
+      "values": [
+        "post-rock"
+      ]
+    }
+  ],
+  "classificator_Akute - Naskroź.mp3": [
+    {
+      "name": "language",
+      "values": [
+        "ru"
+      ]
+    },
+    {
+      "name": "popular",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "listened",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "favorite",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "mood",
+      "values": [
+        "minor"
+      ]
+    }
+  ],
+  "classificator_Alarmist - Bunda Internacionale.mp3": [
+    {
+      "name": "language",
+      "values": [
+        "other"
+      ]
+    },
+    {
+      "name": "popular",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "listened",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "favorite",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "playlist",
+      "values": [
+        "midvest"
+      ]
+    },
+    {
+      "name": "genre",
+      "values": [
+        "rock",
+        "math"
+      ]
+    }
+  ],
+  "classificator_Ambersmoke - Dead Friends.mp3": [
+    {
+      "name": "language",
+      "values": [
+        "other"
+      ]
+    },
+    {
+      "name": "popular",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "listened",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "favorite",
+      "values": [
+        "no"
+      ]
+    },
+    {
+      "name": "playlist",
+      "values": [
+        "drone-doomed"
+      ]
+    },
+    {
+      "name": "mood",
+      "values": [
+        "minor"
+      ]
+    },
+    {
+      "name": "genre",
+      "values": [
+        "post-rock"
+      ]
+    }
+  ],
+  "classificator_An Autumn For Crippled Children - Closer.mp3": [
+    {
+      "name": "language",
+      "values": [
+        "other"
+      ]
+    },
+    {
+      "name": "popular",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "listened",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "favorite",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "playlist",
+      "values": [
+        "drone-doomed"
+      ]
+    },
+    {
+      "name": "mood",
+      "values": [
+        "minor"
+      ]
+    },
+    {
+      "name": "genre",
+      "values": [
+        "blackgaze",
+        "metal"
       ]
     }
   ]

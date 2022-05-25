@@ -4,7 +4,20 @@ import { StatedButton } from "../StatedButton";
 import { Waveform } from "../Waveform";
 import styles from './styles.module.css';
 
-const Track = ({ track, categories }: { track: ScannedItem, categories: ClassificationCategory[] }): JSX.Element => {
+const Track = ({ 
+  track,
+  categories,
+  onNextTrack,
+  onPrevTrack,
+  getPrevTrackCategory
+}: { 
+  track: ScannedItem;
+  categories: ClassificationCategory[];
+  onNextTrack: () => void;
+  onPrevTrack: () => void;
+  getPrevTrackCategory: () => Promise<ClassificationCategory[]>;
+}): JSX.Element => {
+  const [fetching, setFetching] = useState(false);
   const [classifiedCategories, setClassifiedCategories] = useState<ClassificationCategory[]>([]);
   const [tags, setTags] = useState<{ artist?: string, title?: string }>({});
   const [waveform, setWaveform] = useState<number[]>([]);
@@ -72,9 +85,22 @@ const Track = ({ track, categories }: { track: ScannedItem, categories: Classifi
     }).catch(console.error);
   }
 
+  const handleSetAsPrevious = async () => {
+    setFetching(true);
+    getPrevTrackCategory()
+      .then(data => setClassifiedCategories(data))
+      .finally(() => setFetching(false));
+  }
+
   return (
     <div className={styles.root}>
-      <button onClick={handleSendToRadio}>send to radio</button>
+      <div style={{ display: 'flex', gap: '14px' }}>
+        <button onClick={handleSendToRadio}>Test stream to icecast</button>
+        <button onClick={onPrevTrack}>Prev track</button>
+        <button onClick={onNextTrack}>Next track</button>
+        <button onClick={handleSetAsPrevious}>Set as previous</button>
+        {fetching && <span>applying...</span>}
+      </div>
 
       <div className={styles.trackInfoRoot}>
         <div className={styles.trackPicture} />
