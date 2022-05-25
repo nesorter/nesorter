@@ -36,6 +36,18 @@ const Track = ({
       .catch(console.error);
   }, [track]);
 
+  const apply = (cats: ClassificationCategory[]) => fetch('/api/add', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: track.name,
+      categories: cats,
+    }),
+  }).catch(console.error);
+
   const handleSendToRadio = () => {
     fetch('/api/test', {
       method: 'POST',
@@ -71,24 +83,16 @@ const Track = ({
     }
 
     setClassifiedCategories(newData);
-
-    fetch('/api/add', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: track.name,
-        categories: classifiedCategories,
-      }),
-    }).catch(console.error);
+    apply(newData);
   }
 
   const handleSetAsPrevious = async () => {
     setFetching(true);
     getPrevTrackCategory()
-      .then(data => setClassifiedCategories(data))
+      .then(data => {
+        setClassifiedCategories(data);
+        return apply(data);
+      })
       .finally(() => setFetching(false));
   }
 

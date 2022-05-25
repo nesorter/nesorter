@@ -396,5 +396,50 @@
         "metal"
       ]
     }
+  ],
+  "classificator_An Autumn For Crippled Children - Converging Towards The Light.mp3": [
+    {
+      "name": "language",
+      "values": [
+        "other"
+      ]
+    },
+    {
+      "name": "popular",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "listened",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "favorite",
+      "values": [
+        "yes"
+      ]
+    },
+    {
+      "name": "playlist",
+      "values": [
+        "drone-doomed"
+      ]
+    },
+    {
+      "name": "mood",
+      "values": [
+        "minor"
+      ]
+    },
+    {
+      "name": "genre",
+      "values": [
+        "blackgaze",
+        "metal"
+      ]
+    }
   ]
 }
