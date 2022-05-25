@@ -13,15 +13,18 @@
     "@types/yup": "^0.29.13",
     "audio-decode": "^1.4.0",
     "audio-lena": "^2.1.1",
+    "cpy-cli": "^4.1.0",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "fluent-ffmpeg": "^2.1.2",
     "node-id3": "^0.2.3",
+    "rimraf": "^3.0.2",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3",
     "yup": "^0.32.11"
   },
   "scripts": {
-    "service:start": "ts-node main.ts"
+    "service:start": "ts-node main.ts",
+    "postinstall": "rimraf node_modules/mp3/src/demuxer.js && cpy postinstall/demuxer.js node_modules/mp3/src --flat"
   }
 }

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "ESNext",
     "module": "CommonJS",
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "react",

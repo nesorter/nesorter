@@ -24,6 +24,8 @@ const ClassifyPage = () => {
             <button onClick={() => null}>next</button>
           </div> */}
 
+          {editor}
+
           <TrackList
             chain={scannedItems}
             toggleTrack={(item) => {

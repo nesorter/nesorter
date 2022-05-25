@@ -168,12 +168,32 @@ export default function createApi(
     const filename = req.query.name;
     const item = scanner.finded.find(i => i.name === filename);
 
-    if (item) {
-      const tags = await NodeID3.Promise.read(item.path);
-      const classification = await classificator.getItem(item.name);
-      const waveform = await getWaveformInfo(item.path);
+    console.log(req.query);
 
-      res.json({ tags: { artist: tags.artist, title: tags.title }, classification, waveform });
+    if (item) {
+      let waveform;
+      let tags: NodeID3.Tags | undefined;
+      let classification;
+
+      try {
+        tags = await NodeID3.Promise.read(item.path);
+      } catch (e) {
+        console.log('ERROR: unable to get tags: ', e);
+      }
+
+      try {
+        waveform = await getWaveformInfo(item.path);
+      } catch (e) {
+        console.log('ERROR: unable to get waveform: ', e);
+      }
+
+      try {
+        classification = await classificator.getItem(item.name);
+      } catch (e) {
+        console.log('ERROR: unable to get classification: ', e);
+      }
+
+      res.json({ tags: { artist: tags?.artist, title: tags?.title }, classification, waveform });
     } else {
       res.status(404).json({ message: 'no files for this name 🫣' });
     }

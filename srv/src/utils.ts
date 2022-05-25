@@ -1,8 +1,8 @@
 import { Queue } from "./queue";
-import {readFile} from 'fs/promises';
+import { readFile } from 'fs/promises';
 import DBStorage from "./storage";
 
-const wavesCount = 1024 * 8;
+const wavesCount = 1024 * 2;
 const decode = require('audio-decode');
 
 export async function sleep(ms: number): Promise<void> {
@@ -25,21 +25,20 @@ type BufferWF = {
 export async function getWaveformInfo (filepath: string) {
   const fileBuffer = await readFile(filepath);
 
-  return new Promise((res, rej) => {
-    decode(fileBuffer, (err: any, buffer: BufferWF) => {
-      if (err) {
-        rej(err);
-      }
+  try {
+    const buffer: BufferWF = await decode(fileBuffer);
 
-      const results: number[] = [];
-      const step = Math.floor(buffer.length / wavesCount);
+    const results: number[] = [];
+    const step = Math.floor(buffer.length / wavesCount);
 
-      for (let i = 0; i < wavesCount; i++) {
-        const value = Math.abs(buffer._channelData[0][i * step]);
-        results.push(value);
-      }
+    for (let i = 0; i < wavesCount; i++) {
+      const value = Math.abs(buffer._channelData[0][i * step]);
+      results.push(Math.floor(value * 100000) / 100000);
+    }
 
-      res(results);
-    });
-  });
+    return results;
+  } catch (e) {
+    console.log('ERROR: unable to get waveform: ', e);
+    return [];
+  }
 }

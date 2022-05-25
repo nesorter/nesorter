@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 import { ClassificationCategory } from "../../hooks/types"
+import { StatedButton } from "../StatedButton";
+import styles from './styles.module.css';
 
 export const CatsEditor = ({ categories, onRefresh }: { categories: ClassificationCategory[], onRefresh: () => void }) => {
   const [isEdit, setIsEdit] = useState(false);
@@ -21,13 +23,13 @@ export const CatsEditor = ({ categories, onRefresh }: { categories: Classificati
   };
 
   return (
-    <div>
-      <button onClick={() => setIsEdit(p => !p)}>toggle edit mode</button>
+    <div className={styles.root}>
+      <StatedButton state={isEdit} onClick={setIsEdit}>Category editor</StatedButton>
 
       {isEdit && (
-        <div>
-          <textarea value={asString} onChange={(ev => setAsString(ev.target.value))} />
-          <button onClick={handleSave}>push to api</button>
+        <div className={styles.editor}>
+          <textarea style={{ height: 320 }} value={asString} onChange={(ev => setAsString(ev.target.value))} />
+          <button onClick={handleSave}>Save</button>
         </div>
       )}
     </div>
