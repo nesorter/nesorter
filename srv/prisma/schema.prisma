@@ -13,6 +13,11 @@ model Classification {
   values String
 }
 
+model ClassificatedItem {
+  filehash String @id
+  json     String
+}
+
 model Queues {
   id   Int @id @default(autoincrement())
   name String
