@@ -1,7 +1,7 @@
 import CONFIG from './src/config';
 // import CreateApi from './src/api';
 // import Classificator from './src/classificator';
-import { Storage } from './src/storage';
+import { Storage } from './src/Storage';
 import { Logger } from './src/Logger';
 import { Scanner } from './src/Scanner';
 import { Classificator } from './src/Classificator';

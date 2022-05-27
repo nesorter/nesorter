@@ -1,7 +1,7 @@
 import { readdir, stat, readFile } from 'fs/promises';
 import { createHash } from 'crypto';
 import NodeID3 from 'node-id3';
-import { StorageType } from '../storage';
+import { StorageType } from '../Storage';
 import { sleep } from '../utils';
 import { Logger } from '../Logger';
 import { LogLevel, LogTags } from '../Logger/types';

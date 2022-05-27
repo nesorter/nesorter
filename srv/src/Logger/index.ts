@@ -1,5 +1,5 @@
 import { Log, Prisma } from "@prisma/client";
-import { StorageType } from "../storage";
+import { StorageType } from "../Storage";
 import { LogLevel, LogTags } from "./types";
 
 type logParams = {

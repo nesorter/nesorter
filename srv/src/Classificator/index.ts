@@ -1,4 +1,4 @@
-import { StorageType } from './../storage';
+import { StorageType } from './../Storage';
 import type { ClassificationCategory } from './types';
 
 export class Classificator {
@@ -50,38 +50,4 @@ export class Classificator {
       categories: JSON.parse(rawItem?.json || '[]'),
     }));
   }
-
-  // get classificated(): [string, ClassificationCategory[]][] {
-  //   return Object
-  //     .entries(this.db.storage as Record<string, ClassificationCategory[]>)
-  //     .filter(([key]) => key.includes('classificator_'))
-  //     .map(([key, value]) => {
-  //       return [key.replace('classificator_', ''), value];
-  //     });
-  // }
-
-  // async getItems(filters: ClassificationCategory[]): Promise<ScannedItem[]> {
-  //   let items = this.classificated
-  //     .map(([key, cats]) => {
-  //       return [
-  //         this.scanner.finded.find(i => i.name === key) as ScannedItem,
-  //         cats
-  //       ] as [ScannedItem, ClassificationCategory[]];
-  //     })
-  //     .filter(i => i[0] !== undefined);
-
-  //   filters.forEach(({ name, values }) => {
-  //     items = items.filter(([ item, cats ]) => {
-  //       const cat = cats.find(cat => cat.name === name);
-
-  //       if (!cat) {
-  //         return false;
-  //       }
-
-  //       return cat.values.some(v => values.includes(v));
-  //     });
-  //   });
-
-  //   return items.map(i => i[0]);
-  // }
 };
