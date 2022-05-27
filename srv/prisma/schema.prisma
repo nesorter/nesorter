@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource storage {
+  provider = "sqlite"
+  url = "file:./storage.db"
+}
+
+model Classification {
+  id     Int @id @default(autoincrement())
+  name   String
+  values String
+}
+
+model Queues {
+  id   Int @id @default(autoincrement())
+  name String
+  type String
+}
+
+model ManualQueueItem {
+  id       Int @id @default(autoincrement())
+  queueId  Int
+  order    Int
+  filehash String
+}
+
+model FSItem {
+  filehash   String @id
+  path       String
+  name       String
+  type       String
+}
+
+model FSItemMeta {
+  filehash  String @id
+  id3Artist String
+  id3Title  String
+}
+
+model Log {
+  id         Int @id @default(autoincrement())
+
+  level      String
+  tags       String
+  message    String
+
+  createdAt  DateTime @default(now())
+}

@@ -3,7 +3,7 @@
     "experimentalDecorators": true,
     "target": "ESNext",
     "module": "CommonJS",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": ["esnext"],
     "jsx": "react",
     "declaration": true,
     "declarationMap": true,
