@@ -1,21 +1,24 @@
 import CONFIG from './src/config';
-import Scanner from './src/scanner';
-import CreateApi from './src/api';
-import Classificator from './src/classificator';
-import DBStorage from './src/storage';
+// import CreateApi from './src/api';
+// import Classificator from './src/classificator';
+import { Storage } from './src/storage';
+import { Logger } from './src/Logger';
+import { Scanner } from './src/Scanner';
 
-const storage = new DBStorage(() => {
-  const scanner = new Scanner(storage);
-  const classificator = new Classificator(storage, scanner);
-  const api = CreateApi(scanner, classificator, storage);
+const logger = new Logger(Storage);
+const scanner = new Scanner(Storage, logger);
+// const classificator = new Classificator(Storage, scanner);
+// const api = CreateApi(scanner, classificator);
 
-  scanner
-    .scan({ path: CONFIG.CONTENT_ROOT_DIR_PATH, filterRegExp: /.*\.mp3/ })
-    .then(() => console.log('INFO: FS scaned'));
+// scanner
+//   .syncStorage(CONFIG.CONTENT_ROOT_DIR_PATH, ({ name }) => /.*\.mp3/.test(name))
+//   .then(console.log);
 
-  api.listen(CONFIG.API_LISTEN_PORT, () => {
-    console.log('INFO: API server started');
-  });
-});
+// scanner.getChain().then(console.log)
 
-export default storage;
+// api.listen(CONFIG.API_LISTEN_PORT, () => {
+//   console.log('INFO: API server started');
+// });
+
+// export default { Storage, api, scanner, classificator };
+export default { Storage };

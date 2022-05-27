@@ -2,7 +2,6 @@ import Scanner from "./scanner";
 import Express from 'express';
 import Classificator, { ClassificationCategory } from "./classificator";
 import { object, string, array } from 'yup';
-import DBStorage from "./storage";
 import NodeID3 from 'node-id3';
 import { getQueue, getWaveformInfo } from "./utils";
 import { Streamer } from "./streamer";
@@ -24,8 +23,7 @@ type AddToQueuePayload = {
 
 export default function createApi(
   scanner: Scanner,
-  classificator: Classificator,
-  storage: DBStorage
+  classificator: Classificator
 ): Express.Application {
   const app = Express();
   const streamer = new Streamer();

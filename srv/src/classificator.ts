@@ -1,4 +1,4 @@
-import DBStorage from "./storage";
+import { StorageType } from "./storage";
 import Scanner, { ScannedItem } from "./scanner";
 
 export type ClassificationCategory = {
@@ -8,10 +8,10 @@ export type ClassificationCategory = {
 
 export default class Classificator {
   categories: ClassificationCategory[] = [];
-  db: DBStorage;
+  db: StorageType;
   scanner: Scanner;
 
-  constructor(db: DBStorage, scanner: Scanner) {
+  constructor(db: StorageType, scanner: Scanner) {
     this.db = db;
     this.scanner = scanner;
     this.categories = this.db.storage['categories'] as ClassificationCategory[] || [];

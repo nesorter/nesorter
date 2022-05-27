@@ -1,22 +1,3 @@
-import { readFile, writeFile } from 'fs/promises'
-
-export default class DBStorage {
-  storage: Record<string, unknown> = {};
-
-  constructor(onInit: () => void) {
-    readFile('db.json')
-      .then(r => {
-        this.storage = JSON.parse(r.toString());
-        onInit();
-      })
-      .catch((e) => {
-        console.log('FATAL: couldnt read db file', e);
-        process.exit(0);
-      });
-  }
-
-  async add(key: string, value: unknown) {
-    this.storage[key] = value;
-    return writeFile('db.json', JSON.stringify(this.storage, null, 1));
-  }
-}
+import { PrismaClient } from '@prisma/client';
+export const Storage = new PrismaClient();
+export type StorageType = typeof Storage;
