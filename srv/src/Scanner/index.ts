@@ -11,6 +11,8 @@ export class Scanner {
   SLEEP_AFTER_SCAN = true;
   SLEEP_AFTER_SCAN_MS = 1;
 
+  scanInProgress = false;
+
   constructor(private db: StorageType, private logger: Logger) {}
 
   /**
@@ -60,6 +62,11 @@ export class Scanner {
    * @param filter фильтр-функция (чтобы на выходе были только .mp3, например)
    */
   async syncStorage(dir: string, filter: (item: ScannedItem) => boolean): Promise<void> {
+    if (this.scanInProgress) {
+      throw new Error('Scan already in progress!');
+    }
+
+    this.scanInProgress = true;
     const scannedItems = (await this.scan(dir, filter)).filter(i => i.isFile);
 
     for (let scannedItem of scannedItems) {
@@ -117,6 +124,8 @@ export class Scanner {
         });
       }
     }
+
+    this.scanInProgress = false;
   }
 
   /**

@@ -1,6 +1,6 @@
 import { StorageType } from "../Storage";
 
-export class Queues {
+export class QueuesManager {
   constructor (private db: StorageType) {}
 
   async createQueue(name: string, type: 'manual' | 'smart') {

@@ -1,28 +1,18 @@
-import CONFIG from './src/config';
-// import CreateApi from './src/api';
-// import Classificator from './src/classificator';
 import { Storage } from './src/Storage';
 import { Logger } from './src/Logger';
 import { Scanner } from './src/Scanner';
 import { Classificator } from './src/Classificator';
+import { QueuesManager } from './src/QueuesManager';
+import { Streamer } from './src/Streamer';
+import { API } from './src/API';
 
 const logger = new Logger(Storage);
 const scanner = new Scanner(Storage, logger);
 const classificator = new Classificator(Storage);
-// const classificator = new Classificator(Storage, scanner);
-// const api = CreateApi(scanner, classificator);
+const queuesManager = new QueuesManager(Storage);
+const streamer = new Streamer();
 
-// scanner
-//   .syncStorage(CONFIG.CONTENT_ROOT_DIR_PATH, ({ name }) => /.*\.mp3/.test(name))
-//   .then(console.log);
+const api = new API(Storage, logger, scanner, classificator, queuesManager, streamer);
+api.bindRoutes().start();
 
-// scanner.getChain().then(console.log)
-
-// classificator.getItems().then(console.log)
-
-// api.listen(CONFIG.API_LISTEN_PORT, () => {
-//   console.log('INFO: API server started');
-// });
-
-// export default { Storage, api, scanner, classificator };
-export default { Storage };
+export default { api };
