@@ -7,12 +7,6 @@ export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// export async function getQueue(id: string, storage: DBStorage, name?: string) {
-//   const queue = new Queue(id, storage);
-//   await queue.init(name);
-//   return queue;
-// }
-
 type BufferWF = { 
   length: number;
   sampleRate: number;
