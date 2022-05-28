@@ -20,4 +20,8 @@ export class Logger {
 
     return await this.db.log.create({ data: { message, level, tags: tags.join(',') } });
   }
+
+  getLogs() {
+    return this.db.log.findMany();
+  }
 }

@@ -46,6 +46,10 @@ export class Streamer {
   }
 
   async runPlaylist(paths: string[], listPath = 'list.txt') {
+    if (this.streaming) {
+      throw new Error('Streaming already in progress!');
+    }
+
     // костыль, потому что кажется concat ффмпега не умеет в (за)лупинг
     let copied: string[] = paths.map((p) => `file '${this.convertToSafe(p)}'`);
     let arrayed = copied;

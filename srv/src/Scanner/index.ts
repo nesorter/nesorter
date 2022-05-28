@@ -15,6 +15,10 @@ export class Scanner {
 
   constructor(private db: StorageType, private logger: Logger) {}
 
+  getFsItem(filehash: string) {
+    return this.db.fSItem.findFirst({ where: { filehash } });
+  }
+
   /**
    * Создает связный список fsItem; Воссоздаёт структуру файловой системы
    */

@@ -1,15 +1,18 @@
 import Express from 'express';
 import CONFIG from '../config';
 
-import { Classificator } from "../Classificator";
-import { Logger } from "../Logger";
+import { Classificator } from '../Classificator';
+import { Logger } from '../Logger';
 import { LogLevel, LogTags } from '../Logger/types';
-import { QueuesManager } from "../QueuesManager";
-import { Scanner } from "../Scanner";
-import { StorageType } from "../Storage";
-import { Streamer } from "../Streamer";
+import { QueuesManager } from '../QueuesManager';
+import { Scanner } from '../Scanner';
+import { StorageType } from '../Storage';
+import { Streamer } from '../Streamer';
 
 import { gen as genScannerRoutes } from './routes/scanner';
+import { gen as genLoggerRoutes } from './routes/logger';
+import { gen as genClassificatorRoutes } from './routes/classificator';
+import { gen as genQueuesManagerRoutes } from './routes/queuesManager';
 
 /**
  * Класс гигачад
@@ -29,7 +32,11 @@ export class API {
   }
 
   bindRoutes(): API {
+    genLoggerRoutes(this.router, this.logger);
+    genClassificatorRoutes(this.router, this.classificator);
+    genQueuesManagerRoutes(this.router, this.queuesManager, this.streamer, this.db, this.scanner);
     genScannerRoutes(this.router, this.scanner);
+
     return this;
   }
 
