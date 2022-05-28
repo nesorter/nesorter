@@ -1,7 +1,6 @@
-import Config from './config';
+import Config from '../config';
 import ffmpeg from 'fluent-ffmpeg';
 import { writeFile } from "fs/promises";
-
 
 export class Streamer {
   streaming: boolean = false;
@@ -44,23 +43,6 @@ export class Streamer {
 
     this.streaming = true;
     instance.run();
-
-    // закомментил основную команду
-    // return [
-    //   binPath,
-    //
-    //   '-re -ss 19', // это форсирует ffmpeg отсылать данные секунда-в-секунду
-    //                 // иначе мы получаем эффект стриминга 5 минут трека за 2 секунды :^)
-    //
-    //   `-f concat -i ${playlistPath}`, // включаем режим конкатенации и скармливаем список файлов
-    //
-    //   `-acodec libmp3lame -ab ${bitrate}k`, // настройки кодека
-    //   `-map 0 -map_metadata 0:s:0`, // маппинг стримов
-    //
-    //   `-content_type audio/mpeg`,
-    //   `-metadata title="${Config.SHOUT_DESCRIPTION}"`,
-    //   `-f mp3 icecast://${Config.SHOUT_USER}:${Config.SHOUT_PASSWORD}@${Config.SHOUT_HOST}:${Config.SHOUT_PORT}/${Config.SHOUT_MOUNT}`,
-    // ].join(' ');
   }
 
   async runPlaylist(paths: string[], listPath = 'list.txt') {
