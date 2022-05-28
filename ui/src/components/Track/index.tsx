@@ -1,40 +1,45 @@
 import { useEffect, useState } from "react";
-import { ClassificationCategory, ScannedItem } from "../../hooks/types";
+import { ChainItem, ClassificationCategory } from "../../hooks/types";
 import { StatedButton } from "../StatedButton";
 import { Waveform } from "../Waveform";
 import styles from './styles.module.css';
 
-const Track = ({ 
+const Track = ({
   track,
   categories,
   onNextTrack,
   onPrevTrack,
   getPrevTrackCategory
-}: { 
-  track: ScannedItem;
+}: {
+  track?: ChainItem;
   categories: ClassificationCategory[];
   onNextTrack: () => void;
   onPrevTrack: () => void;
   getPrevTrackCategory: () => Promise<ClassificationCategory[]>;
-}): JSX.Element => {
+}): JSX.Element | null => {
   const [fetching, setFetching] = useState(false);
   const [classifiedCategories, setClassifiedCategories] = useState<ClassificationCategory[]>([]);
-  const [tags, setTags] = useState<{ artist?: string, title?: string }>({});
   const [waveform, setWaveform] = useState<number[]>([]);
 
   useEffect(() => {
-    fetch(`/api/fileinfo?name=${encodeURIComponent(track.name)}`)
-      .then(r => r.json())
+    if (!track) {
+      return;
+    }
+
+    fetch(`/api/classificator/item/${encodeURIComponent(track.fsItem?.filehash || '')}`)
+      .then(r => r.json() as unknown as ClassificationCategory[])
       .then(r => {
-        setClassifiedCategories(r.classification);
-        setTags({
-          artist: r.tags.artist,
-          title: r.tags.title,
-        });
-        setWaveform(r.waveform);
+        setClassifiedCategories(r);
+        return fetch(`/api/scanner/waveform/${encodeURIComponent(track.fsItem?.filehash || '')}`);
       })
+      .then(r => r.json() as unknown as number[])
+      .then(r => setWaveform(r))
       .catch(console.error);
   }, [track]);
+
+  if (!track) {
+    return null;
+  }
 
   const apply = (cats: ClassificationCategory[]) => fetch('/api/add', {
     method: 'POST',
@@ -59,7 +64,7 @@ const Track = ({
     }).then(console.log).catch(console.error);
   }
 
-  const handleSetCategory = (categoryName: string, value: string, flag: boolean) => {
+  const handleSetCategory = (categoryId: number, categoryName: string, value: string, flag: boolean) => {
     const isClassified = classifiedCategories.some(cat => cat.name === categoryName);
     let newData = classifiedCategories;
 
@@ -82,7 +87,7 @@ const Track = ({
         return item;
       });
     } else {
-      newData = [...newData, { name: categoryName, values: [value] }];
+      newData = [...newData, { id: categoryId, name: categoryName, values: [value] }];
     }
 
     setClassifiedCategories(newData);
@@ -113,9 +118,9 @@ const Track = ({
         <div className={styles.trackPicture} />
 
         <div className={styles.trackInfo}>
-          <span className={styles.trackInfoId3}>{tags.artist || 'unknown artist'} - {tags.title || 'untitled'}</span>
-          <span className={styles.trackInfoFName}>{track.name}</span>
-          <span className={styles.trackInfoFPath}>{track.path}</span>
+          <span className={styles.trackInfoId3}>{track.fsItemMeta?.id3Artist || 'unknown artist'} - {track.fsItemMeta?.id3Title || 'untitled'}</span>
+          <span className={styles.trackInfoFName}>{track.fsItem?.name}</span>
+          <span className={styles.trackInfoFPath}>{track.fsItem?.path}</span>
         </div>
       </div>
 
@@ -123,7 +128,7 @@ const Track = ({
 
       <div>
         <audio controls autoPlay>
-          <source src={`/api/file?name=${encodeURIComponent(track.name)}`} />
+          <source src={`/api/scanner/plainfile/${encodeURIComponent(track.fsItem?.filehash || '')}`} />
           Your browser does not support the audio element.
         </audio>
       </div>
@@ -136,7 +141,7 @@ const Track = ({
             <StatedButton
               key={value}
               state={classified?.values.includes(value) || false}
-              onClick={(nextState) => handleSetCategory(category.name, value, nextState)}
+              onClick={(nextState) => handleSetCategory(category.id, category.name, value, nextState)}
             >
               {value}
             </StatedButton>

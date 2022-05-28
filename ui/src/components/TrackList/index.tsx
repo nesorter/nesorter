@@ -1,17 +1,17 @@
 import { useMemo, useState } from "react";
 import styles from './styles.module.css';
-import { Chain, ScannedItem } from "../../hooks/types";
+import { Chain, ChainItem } from "../../hooks/types";
 import dirIconPath from './icons/dir.svg';
 import fileIconPath from './icons/file.svg';
 
 type Props = {
   chain: Chain;
-  toggleTrack: (item?: ScannedItem) => void;
+  toggleTrack: (item?: ChainItem) => void;
 }
 
 export const TrackList = ({ chain, toggleTrack }: Props): JSX.Element => {
   const [opened, setOpened] = useState<string[]>([]);
-  const initial = useMemo(() => Object.entries(chain).find(([key, item]) => item.link === null), [chain]);
+  const initial = useMemo(() => Object.entries(chain).find(([key, item]) => item.parent === null), [chain]);
 
   if (!initial) {
     return <span />;
@@ -26,7 +26,7 @@ export const TrackList = ({ chain, toggleTrack }: Props): JSX.Element => {
         opened={opened}
         onToggle={(isOpen, target) => {
           if (target.includes('.mp3')) {
-            toggleTrack(chain[target].meta);
+            toggleTrack(chain[target]);
           }
 
           setOpened((prev) => {
@@ -65,7 +65,7 @@ const RecursiveList = ({ chain, target, opened, onToggle, root = false }: {
   const item = chain[target];
   const children = item.type === 'file' || !isOpened
     ? []
-    : Object.values(chain).filter((subitem) => subitem.link === target);
+    : Object.values(chain).filter((subitem) => subitem.parent === target);
 
   const icon = <img src={item.type === 'dir' ? dirIconPath : fileIconPath} alt="icon" />;
 

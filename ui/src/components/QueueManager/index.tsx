@@ -1,5 +1,5 @@
 import styles from './styles.module.css';
-import { ClassificationCategory, QueueItem, QueueType, ScannedItem } from "../../hooks/types";
+import { ClassificationCategory, QueueItem, QueueType, FSItem } from "../../hooks/types";
 import { useCategories } from '../../hooks/useCategories';
 import { useEffect, useState } from 'react';
 
@@ -12,39 +12,26 @@ type Props = {
 
 const QueueManager = ({ queue, items, addInQueue, onStream }: Props): JSX.Element => {
   const [categories] = useCategories();
-  const [filters, setFilters] = useState<Record<string, string[]>>({});
-  const [files, setFiles] = useState<ScannedItem[]>([]);
+  const [filters, setFilters] = useState<ClassificationCategory[]>([]);
+  const [files, setFiles] = useState<FSItem[]>([]);
 
   useEffect(() => {
-    const asCategories: ClassificationCategory[] = Object.entries(filters)
-      .map(([name, values]) => ({ name, values }));
-
     /* eslint no-restricted-globals: 0 */
     const url = new URL('/api/files', location.origin);
-    asCategories.map(({ name, values }) => {
-      values.map(value => {
-        url.searchParams.append(`filters[${name}]`, value);
+    filters.forEach(({ id, values }) => {
+      values.forEach(value => {
+        url.searchParams.append(`filters[${id}]`, value);
       });
     });
 
     fetch(url.toString())
-      .then(r => r.json() as unknown as ScannedItem[])
+      .then(r => r.json() as unknown as FSItem[])
       .then(r => setFiles(r))
       .catch(console.error);
   }, [filters]);
 
-  const handleToggle = (catName: string, catValue: string) => {
-    setFilters((prev) => {
-      if (!prev[catName]) {
-        return { ...prev, ...{ [catName]: [catValue] } };
-      }
-
-      if (prev[catName].includes(catValue)) {
-        return { ...prev, ...{ [catName]: prev[catName].filter(i => i !== catValue) } };
-      }
-
-      return { ...prev, ...{ [catName]: [...prev[catName], catValue] } };
-    });
+  const handleToggle = (catId: Number, catName: string, catValue: string) => {
+    setFilters([]);
   }
 
   return (
@@ -69,11 +56,11 @@ const QueueManager = ({ queue, items, addInQueue, onStream }: Props): JSX.Elemen
                   <span
                     key={value}
                     style={
-                      filters[category.name]?.includes(value) 
+                      false
                         ? { fontWeight: 'bold', fontSize: '14px', cursor: 'pointer' } 
                         : { cursor: 'pointer', color: '#999' }
                     }
-                    onClick={() => handleToggle(category.name, value)}
+                    onClick={() => handleToggle(category.id, category.name, value)}
                   >{value}</span>
                 ))}
               </div>
