@@ -1,42 +1,25 @@
-import React from 'react';
 import styles from './styles.module.css';
 
-export class Waveform extends React.Component<{ data: number[]; }> {
-  componentDidMount() {
-    this.updateCanvas();
-  }
+export const Waveform = ({ data }: { data: number[]; }): JSX.Element => {
+  const height = 240;
+  const width = 640;
 
-  componentDidUpdate() {
-    this.updateCanvas();
-  }
+  const dUpper = data.reduce((acc, value, index) => {
+    const perc = 100 / (data.length / index);
+    return acc + ` L${(width / 100) * perc}, ${(height) - value * 150}`;
+  }, `M0 ${height + 1}`);
 
-  updateCanvas() {
-    const canvas = (this.refs.canvas as HTMLCanvasElement);
-    const ctx = canvas.getContext('2d');
+  const dLower = data.reduce((acc, value, index) => {
+    const perc = 100 / (data.length / index);
+    return acc + ` L${(width / 100) * perc}, ${(height) + value * 150}`;
+  }, `M0 ${height - 1}`);
 
-    if (!ctx) {
-      return;
-    }
-
-    const yMid = canvas.height / 2;
-    const lineWidth = canvas.width / this.props.data.length;
-
-    ctx.strokeStyle = `#333`;
-
-    this.props.data.forEach((value, i) => {
-      const calculated = value * 50;
-      ctx.beginPath();
-      ctx.moveTo(lineWidth * i, yMid - calculated);
-      ctx.lineTo(lineWidth * i, yMid + calculated);
-      ctx.stroke();
-    });
-  }
-
-  render() {
-    return (
-      <div className={styles.root}>
-        <canvas ref="canvas" width={768} height={100} className={styles.canvas} />
-      </div>
-    );
-  }
+  return (
+    <div className={styles.root} style={{ maxHeight: '240px' }}>
+      <svg viewBox={`0 0 ${width} ${width}`} width="100%" preserveAspectRatio="none">
+        <path d={`${dUpper} L${width} ${height + 1}`} stroke="green" strokeWidth={0.5} fill="#96CE4E"/>
+        <path d={`${dLower} L${width} ${height - 1}`} stroke="green" strokeWidth={0.5} fill="#96CE4E"/>
+      </svg>
+    </div>
+  );
 }
