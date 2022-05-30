@@ -29,13 +29,14 @@ export class API {
     private streamer: Streamer,
   ) {
     this.router = Express();
+    this.router.use(Express.json());
   }
 
   bindRoutes(): API {
     genLoggerRoutes(this.router, this.logger);
-    genClassificatorRoutes(this.router, this.classificator);
-    genQueuesManagerRoutes(this.router, this.queuesManager, this.streamer, this.db, this.scanner);
-    genScannerRoutes(this.router, this.scanner);
+    genClassificatorRoutes(this.logger, this.router, this.classificator);
+    genQueuesManagerRoutes(this.logger, this.router, this.queuesManager, this.streamer, this.db, this.scanner);
+    genScannerRoutes(this.logger, this.router, this.scanner);
 
     return this;
   }

@@ -8,8 +8,8 @@ import { API } from './src/API';
 
 const logger = new Logger(Storage);
 const scanner = new Scanner(Storage, logger);
-const classificator = new Classificator(Storage);
-const queuesManager = new QueuesManager(Storage);
+const classificator = new Classificator(Storage, logger);
+const queuesManager = new QueuesManager(Storage, logger);
 const streamer = new Streamer();
 
 const api = new API(Storage, logger, scanner, classificator, queuesManager, streamer);

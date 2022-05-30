@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CatsEditor } from '../../components/CatsEditor';
-import Track from '../../components/Track';
+import { Track } from '../../components/Track';
 import { TrackList } from '../../components/TrackList';
 import { ClassificationCategory } from '../../hooks/types';
 import { useCategories } from '../../hooks/useCategories';
@@ -38,7 +38,6 @@ const ClassifyPage = () => {
 
       const classification = await fetch(`/api/classificator/item/${encodeURIComponent(hash)}`)
         .then(r => r.json())
-        .then(r => r.classification)
         .catch(console.error);
 
       return classification as ClassificationCategory[];

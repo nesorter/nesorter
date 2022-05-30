@@ -11,15 +11,21 @@ export const CatsEditor = ({ categories, onRefresh }: { categories: Classificati
     setAsString(JSON.stringify(categories, null, 1));
   }, [categories]);
 
-  const handleSave = () => {
-    fetch('/api/update_cats', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: asString,
-    }).then(onRefresh).catch(console.error);
+  const handleSave = async () => {
+    const newCats = JSON.parse(asString) as ClassificationCategory[];
+    for (let cat of newCats) {
+      console.log(JSON.stringify(cat));
+      await fetch('/api/classificator/categories', {
+        method: cat.id !== undefined ? 'PUT' : 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(cat),
+      }).catch(console.error);
+    }
+
+    onRefresh();
   };
 
   return (

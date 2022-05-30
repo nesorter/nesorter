@@ -4,7 +4,7 @@ import { StatedButton } from "../StatedButton";
 import { Waveform } from "../Waveform";
 import styles from './styles.module.css';
 
-const Track = ({
+export const Track = ({
   track,
   categories,
   onNextTrack,
@@ -41,28 +41,16 @@ const Track = ({
     return null;
   }
 
-  const apply = (cats: ClassificationCategory[]) => fetch('/api/add', {
+  const apply = (categories: ClassificationCategory[]) => fetch(`/api/classificator/item/${track.fsItem?.filehash || 'nulled'}`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      name: track.name,
-      categories: cats,
+      categories,
     }),
   }).catch(console.error);
-
-  const handleSendToRadio = () => {
-    fetch('/api/test', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ filename: track.name }),
-    }).then(console.log).catch(console.error);
-  }
 
   const handleSetCategory = (categoryId: number, categoryName: string, value: string, flag: boolean) => {
     const isClassified = classifiedCategories.some(cat => cat.name === categoryName);
@@ -107,7 +95,6 @@ const Track = ({
   return (
     <div className={styles.root}>
       <div style={{ display: 'flex', gap: '14px' }}>
-        <button onClick={handleSendToRadio}>Test stream to icecast</button>
         <button onClick={onPrevTrack}>Prev track</button>
         <button onClick={onNextTrack}>Next track</button>
         <button onClick={handleSetAsPrevious}>Set as previous</button>
@@ -119,7 +106,6 @@ const Track = ({
 
         <div className={styles.trackInfo}>
           <span className={styles.trackInfoId3}>{track.fsItemMeta?.id3Artist || 'unknown artist'} - {track.fsItemMeta?.id3Title || 'untitled'}</span>
-          <span className={styles.trackInfoFName}>{track.fsItem?.name}</span>
           <span className={styles.trackInfoFPath}>{track.fsItem?.path}</span>
         </div>
       </div>
@@ -127,7 +113,7 @@ const Track = ({
       <Waveform data={waveform} />
 
       <div>
-        <audio controls autoPlay>
+        <audio controls>
           <source src={`/api/scanner/plainfile/${encodeURIComponent(track.fsItem?.filehash || '')}`} />
           Your browser does not support the audio element.
         </audio>
@@ -161,5 +147,3 @@ const Track = ({
     </div>
   );
 }
-
-export default Track;
