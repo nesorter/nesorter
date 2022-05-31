@@ -30,9 +30,14 @@ export const gen = (logger: Logger, api: Express.Application, classificator: Cla
 
   api.get('/api/classificator/items', (req, res) => {
     logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
-    classificator.getItems()
+    const filters = req.query?.filters as Record<string, string | string[]>;
+
+    classificator.getItems(filters)
       .then((result) => res.json(result))
-      .catch((e) => res.status(500).json(e));
+      .catch((e) => {
+        logger.log({ message: `Failed to get items: ${e}`, level: LogLevel.ERROR, tags: [LogTags.API] });
+        res.status(500).json(e)
+      });
   });
 
   api.route('/api/classificator/item/:filehash')

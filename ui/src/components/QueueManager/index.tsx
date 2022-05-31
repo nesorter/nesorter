@@ -25,9 +25,9 @@ export const QueueManager = ({ queue, items, addInQueue, onStream }: Props): JSX
 
     /* eslint no-restricted-globals: 0 */
     const url = new URL('/api/classificator/items', location.origin);
-    filters.forEach(({ id, values }) => {
-      values.forEach(value => {
-        url.searchParams.append(`filters[${id}]`, value);
+    filters.forEach(({ name, values }) => {
+      values.forEach((value) => {
+        url.searchParams.append(`filters[${name}]`, value);
       });
     });
 
@@ -41,8 +41,27 @@ export const QueueManager = ({ queue, items, addInQueue, onStream }: Props): JSX
       .catch(console.error);
   }, [filters, chainValues.length]);
 
-  const handleToggle = (catId: Number, catName: string, catValue: string) => {
-    setFilters([]);
+  const handleToggle = (catId: number, catName: string, catValue: string) => {
+    setFilters((prev) => {
+      let copy = [...prev];
+      const index = copy.findIndex((cat) => cat.id === catId);
+
+      if (index !== -1) {
+        if (copy[index].values.includes(catValue)) {
+          copy[index].values = copy[index].values.filter((value) => value !== catValue);
+
+          if (copy[index].values.length === 0) {
+            copy = copy.filter((_i, _index) => _index !== index);
+          }
+        } else {
+          copy[index].values = [...copy[index].values, catValue];
+        }
+      } else {
+        copy.push({ id: catId, name: catName, values: [catValue] });
+      }
+
+      return copy;
+    });
   }
 
   return (
@@ -67,7 +86,7 @@ export const QueueManager = ({ queue, items, addInQueue, onStream }: Props): JSX
                   <span
                     key={value}
                     style={
-                      false
+                      filters.findIndex((cat) => cat.id === category.id && cat.values.includes(value)) !== -1
                         ? { fontWeight: 'bold', fontSize: '14px', cursor: 'pointer' } 
                         : { cursor: 'pointer', color: '#999' }
                     }

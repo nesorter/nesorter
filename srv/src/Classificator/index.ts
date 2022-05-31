@@ -49,10 +49,32 @@ export class Classificator {
     return JSON.parse(rawItem?.json || '[]');
   }
 
-  async getItems(): Promise<{ filehash: string; categories: ClassificationCategory[]; }[]> {
-    return (await this.db.classificatedItem.findMany()).map(rawItem => ({
-      filehash: rawItem.filehash,
-      categories: JSON.parse(rawItem?.json || '[]'),
-    }));
+  async getItems(filters?: Record<string, string | string[]>): Promise<{ filehash: string; categories: ClassificationCategory[]; }[]> {
+    const asEntries = Object.entries(filters || {});
+
+    return (await this.db.classificatedItem.findMany())
+      // фильтр хуеват, работает как ИЛИ 
+      // (хотелось бы как И, но мейби сделаю как-нибудь иначе)
+      .filter((rawItem) => {
+        if (!asEntries.length) {
+          return true;
+        }
+
+        const categories = JSON.parse(rawItem?.json || '[]') as ClassificationCategory[];
+        return asEntries.reduce((acc, cur) => {
+          const finded = categories.find((c) => c.name === cur[0]);
+          const arrayed = cur[1] instanceof Array ? cur[1] : [cur[1] as unknown as string];
+
+          if (!finded) {
+            return false;
+          }
+
+          return acc && (arrayed as string[]).reduce((acc0, cur0) => acc0 && finded.values.some(c => c === cur0), true as boolean);
+        }, true as boolean);
+      })
+      .map((rawItem) => ({
+        filehash: rawItem.filehash,
+        categories: JSON.parse(rawItem?.json || '[]'),
+      }));
   }
 };
