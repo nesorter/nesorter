@@ -9,7 +9,7 @@ export class Streamer {
 
   constructor(private logger: Logger) {}
 
-  stream(playlistPath = 'list.txt', bitrate = 320) {
+  stream(playlistPath = 'list.txt', bitrate = 196) {
     if (this.streaming) {
       throw new Error('Stream already in progress!');
     }
