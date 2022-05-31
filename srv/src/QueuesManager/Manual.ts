@@ -24,7 +24,7 @@ export class Manual {
           order: item.order
         },
         where: {
-          id: dbitem?.id
+          id: dbitem?.id || 0
         }
       });
     }

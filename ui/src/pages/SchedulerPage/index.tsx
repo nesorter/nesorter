@@ -1,12 +1,13 @@
-import { useQueues } from './../../hooks/useQueues';
+import { useState } from 'react';
+import { useQueues } from '../../hooks/useQueues';
+import { QueueType } from '../../hooks/types';
+import { QueuesList } from '../../components/QueuesList';
+import { QueueManager } from '../../components/QueueManager';
+
 import styles from './styles.module.css';
-import QueuesList from "../../components/QueuesList";
-import { useState} from "react";
-import QueueManager from "../../components/QueueManager";
-import {QueueType} from "../../hooks/types";
 
 const SchedulerPage = (): JSX.Element => {
-  const [selectedQueue, setSelectedQueue] = useState('');
+  const [selectedQueue, setSelectedQueue] = useState(0);
   const { queues, items, createQueue, addInQueue, stream } = useQueues();
 
   return (

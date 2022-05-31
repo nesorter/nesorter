@@ -7,7 +7,7 @@ export const useQueues = () => {
 
   const init = async () => {
     const queuesList = (
-      await fetch('/api/queues')
+      await fetch('/api/queuesManager/queues')
         .then(r => r.json() as unknown as QueueType[])
         .then(r => {
           setQueues(r);
@@ -21,7 +21,7 @@ export const useQueues = () => {
     for (const queue of queuesList) {
       result.push([
         queue.id,
-        await fetch(`/api/queue?id=${queue.id}`).then(r => r.json() as unknown as QueueItem[])
+        await fetch(`/api/queuesManager/queue/${queue.id}`).then(r => r.json() as unknown as QueueItem[])
       ]);
     }
 
@@ -29,33 +29,33 @@ export const useQueues = () => {
   };
 
   const createQueue = async (name: string, type: 'manual' | 'smart') => {
-    await fetch('/api/createQueue', {
+    await fetch('/api/queuesManager/queues', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ id: name, name }),
+      body: JSON.stringify({ name, type }),
     }).then(console.log).catch(console.error);
 
     await init();
   };
 
-  const addInQueue = async (id: string, filename: string) => {
-    await fetch('/api/addInQueue', {
+  const addInQueue = async (id: number, filehash: string) => {
+    await fetch(`/api/queuesManager/queue/${id}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ id, filename }),
+      body: JSON.stringify([...(items[id] || []), { queueId: id, filehash, order: items[id].at(-1)?.order || 0 }]),
     }).then(console.log).catch(console.error);
 
     await init();
   };
 
-  const stream = async (queueId: string) => {
-    await fetch(`/api/queue/stream?queueId=${queueId}`, {
+  const stream = async (queueId: number) => {
+    await fetch(`/api/queuesManager/queue/${queueId}/stream`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

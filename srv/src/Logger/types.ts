@@ -7,6 +7,7 @@ export enum LogLevel {
 
 export enum LogTags {
   SCANNER = 'SCANNER',
+  STREAMER = 'STREAMER',
   APP = 'APP',
   API = 'API',
   CATS = 'CATS',

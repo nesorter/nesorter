@@ -29,12 +29,14 @@ export type ChainItem = {
 export type Chain = Record<string, ChainItem>;
 
 export type QueueItem = {
-  order: number;
-  filePath: string;
+  id: number
+  queueId: number
+  order: number
+  filehash: string
 };
 
 export type QueueType = {
-  id: string;
+  id: number;
   name: string;
   type: 'manual' | 'smart';
 };

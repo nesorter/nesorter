@@ -1,15 +1,20 @@
 import Config from '../config';
 import ffmpeg from 'fluent-ffmpeg';
 import { writeFile } from "fs/promises";
+import { Logger } from '../Logger';
+import { LogLevel, LogTags } from '../Logger/types';
 
 export class Streamer {
   streaming: boolean = false;
+
+  constructor(private logger: Logger) {}
 
   stream(playlistPath = 'list.txt', bitrate = 320) {
     if (this.streaming) {
       throw new Error('Stream already in progress!');
     }
 
+    let counter = 0;
     const instance = ffmpeg()
       .input(`${playlistPath}`)
       .inputFormat('concat')
@@ -21,24 +26,26 @@ export class Streamer {
       .output(`icecast://${Config.SHOUT_USER}:${Config.SHOUT_PASSWORD}@${Config.SHOUT_HOST}:${Config.SHOUT_PORT}/${Config.SHOUT_MOUNT}`);
 
     instance.on('progress', (status) => {
-      console.log(`INFO: ffmpeg: processed ${status.timemark} - ${status.targetSize}kb`);
+      counter += 1;
+
+      if (counter > 5) {
+        this.logger.log({ message: `Stream process: ${status.timemark} - ${status.targetSize}kb`, level: LogLevel.ERROR, tags: [LogTags.STREAMER] });
+        counter = 0;
+      }
     });
 
     instance.on('error', (err) => {
-      console.log(`ERROR: ffmpeg: ${err.message}`);
+      this.logger.log({ message: `Stream errored: ${err.message}`, level: LogLevel.ERROR, tags: [LogTags.STREAMER] });
       this.streaming = false;
     });
 
     instance.once('end', () => {
-      console.log('INFO: ffmpeg: Stream ended');
+      this.logger.log({ message: `Stream ended`, level: LogLevel.INFO, tags: [LogTags.STREAMER] });
       this.streaming = false;
-
-      instance.run();
-      this.streaming = true;
     });
 
     instance.once('start', (commandLine) => {
-      console.log(`INFO: ffmpeg: spawned with command: "${commandLine}"`);
+      this.logger.log({ message: `Spawned with command: "${commandLine}"`, level: LogLevel.DEBUG, tags: [LogTags.STREAMER] });
     });
 
     this.streaming = true;
@@ -57,11 +64,7 @@ export class Streamer {
       arrayed = [...arrayed, ...copied];
     }
 
-    await writeFile(
-      listPath,
-      arrayed.join('\n'),
-    );
-
+    await writeFile(listPath, arrayed.join('\n'));
     this.stream(listPath);
   }
 

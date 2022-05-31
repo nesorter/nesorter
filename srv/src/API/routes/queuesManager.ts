@@ -40,10 +40,14 @@ export const gen = (
     })
     .post((req, res) => {
       logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
+
       const queue = new Manual(storage, Number(req.params.queueId));
       queue.update(req.body)
         .then((result) => res.json({ result }))
-        .catch((e) => res.status(500).json(e));
+        .catch((e) => {
+          logger.log({ message: `Failed update queue ${req.params.queueId}, ${e}`, level: LogLevel.ERROR, tags: [LogTags.API] });
+          res.status(500).json(e)
+        });
     });
 
   api.post('/api/queuesManager/queue/:queueId/stream', async (req, res) => {
@@ -60,6 +64,7 @@ export const gen = (
 
       await streamer.runPlaylist(pathlist, 'list.txt');
     } catch (e) {
+      logger.log({ message: `Failed stream queue ${req.params.queueId}, ${e}`, level: LogLevel.ERROR, tags: [LogTags.API] });
       res.status(500).json(e);
     }
   });
