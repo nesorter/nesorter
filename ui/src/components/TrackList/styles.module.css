@@ -17,14 +17,19 @@
 
 .item {
   display: flex;
-  align-items: center;
-  height: 28px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  height: 48px;
   width: 100%;
 
   cursor: pointer;
   border-radius: 4px;
-  gap: 7px;
   padding: 0 14px;
+}
+
+.itemDir {
+  height: 28px;
 }
 
 .itemActive {

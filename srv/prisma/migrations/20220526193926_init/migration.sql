@@ -34,12 +34,3 @@ CREATE TABLE "FSItemMeta" (
     "id3Artist" TEXT NOT NULL,
     "id3Title" TEXT NOT NULL
 );
-
--- CreateTable
-CREATE TABLE "Log" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "level" TEXT NOT NULL,
-    "tags" TEXT NOT NULL,
-    "message" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);

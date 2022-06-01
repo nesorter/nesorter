@@ -29,6 +29,7 @@
     "db:init": "npx prisma migrate dev --name init && yarn db:gen",
     "db:gen": "prisma migrate dev",
     "service:start": "ts-node main.ts",
+    "service:migrate": "ts-node migrate_10_to_11.ts",
     "postinstall": "rimraf node_modules/mp3/src/demuxer.js && cpy postinstall/demuxer.js node_modules/mp3/src --flat && yarn db:gen"
   }
 }

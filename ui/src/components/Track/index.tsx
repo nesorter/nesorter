@@ -113,7 +113,7 @@ export const Track = ({
       <Waveform data={waveform} />
 
       <div>
-        <audio controls>
+        <audio controls autoPlay>
           <source src={`/api/scanner/plainfile/${encodeURIComponent(track.fsItem?.filehash || '')}`} />
           Your browser does not support the audio element.
         </audio>

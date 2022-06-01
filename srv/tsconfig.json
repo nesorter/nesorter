@@ -21,6 +21,6 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": [
-    "main.ts", "src"
+    "main.ts", "migrate_10_to_11.ts", "src"
   ]
 }

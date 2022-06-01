@@ -73,11 +73,14 @@ const RecursiveList = ({ chain, target, opened, onToggle, root = false }: {
     <div className={[styles.subRoot, root ? styles.subRootButRoot : ''].join(' ')}>
 
       <div
-        className={[styles.item, isOpened && item.type !== 'dir' ? styles.itemActive : ''].join(' ')}
+        className={[styles.item, item.type === 'dir' ? styles.itemDir : '', isOpened && item.type !== 'dir' ? styles.itemActive : ''].join(' ')}
         onClick={() => onToggle(!isOpened, target)}
       >
-        {icon}
-        <span className={styles.itemName}>{item.name}</span>
+        <div style={{ display: 'flex', gap: '7px', width: '100%' }}>
+          {icon} <span className={styles.itemName}>{item.name}</span>
+        </div>
+
+        {item.type === 'file' && <div style={{ fontSize: '10px' }}>{item.fsItemMeta?.id3Artist} - {item.fsItemMeta?.id3Title}</div>}
       </div>
 
       {isOpened && Boolean(children.length) && children.map(child => (
