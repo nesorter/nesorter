@@ -97,25 +97,40 @@ export const QueueManager = ({ queue, items, addInQueue, onStream }: Props): JSX
             ))}
           </div>
 
-          {files.map((file) => (
-            <div
-              key={file.filehash}
-              className={styles.trackRoot}
-            >
-              <button onClick={() => addInQueue(queue.id, file.filehash)}>Add</button>
-              {file.name}
-            </div>
-          ))}
+          {files.map((item) => {
+            const file = chainValues.find(i => i.fsItem?.filehash === item.filehash);
+
+            return (
+              <div
+                key={item.filehash}
+                className={styles.trackRoot}
+                style={{ display: 'flex', flexDirection: 'column' }}
+              >
+                <span>
+                  <button onClick={() => addInQueue(queue.id, file?.fsItem?.filehash || '')}>+</button>{' '}
+                  {file?.fsItemMeta?.id3Artist} - {file?.fsItemMeta?.id3Title}
+                </span>
+                <span style={{ fontSize: '12px' }}>{file?.fsItem?.path}</span>
+              </div>
+            );
+          })}
         </div>
 
-        <div style={{ width: '50%', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ width: '50%', display: 'flex', flexDirection: 'column', gap: '7px' }}>
           <span style={{ fontWeight: 'bold', paddingBottom: '8px' }}>In queue</span>
 
           {items.map((item) => {
             const file = chainValues.find(i => i.fsItem?.filehash === item.filehash);
 
             return (
-              <div key={item.filehash}>{file?.fsItem?.name}</div>
+              <div
+                key={item.filehash}
+                className={styles.trackRoot}
+                style={{ display: 'flex', flexDirection: 'column' }}
+              >
+                <span>{file?.fsItemMeta?.id3Artist} - {file?.fsItemMeta?.id3Title}</span>
+                <span style={{ fontSize: '12px' }}>{file?.fsItem?.path}</span>
+              </div>
             );
           })}
         </div>
