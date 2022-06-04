@@ -29,7 +29,7 @@ export class Streamer {
       counter += 1;
 
       if (counter > 5) {
-        this.logger.log({ message: `Stream process: ${status.timemark} - ${status.targetSize}kb`, level: LogLevel.ERROR, tags: [LogTags.STREAMER] });
+        this.logger.log({ message: `Stream process: ${status.timemark} - ${status.targetSize}kb`, level: LogLevel.INFO, tags: [LogTags.STREAMER] });
         counter = 0;
       }
     });

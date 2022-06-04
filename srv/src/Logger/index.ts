@@ -13,11 +13,8 @@ export class Logger {
   constructor(private db: StorageType) {}
 
   async log({ message, tags = [LogTags.APP], level = LogLevel.INFO }: logParams): Promise<void> {
-    console.log('logger: ', {
-      message,
-      tags,
-      level
-    });
+    const loggerFunc = level === LogLevel.ERROR ? console.error : console.log;
+    loggerFunc(`${level}: ${tags.join(',')}: ${message}`);
 
     // Пока просто отключаю запись логов в БД
     // return await this.db.log.create({ data: { message, level, tags: tags.join(',') } });
