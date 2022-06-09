@@ -4,7 +4,7 @@ import CONFIG from '../config';
 import { Classificator } from '../Classificator';
 import { Logger } from '../Logger';
 import { LogLevel, LogTags } from '../Logger/types';
-import { QueuesManager } from '../QueuesManager';
+import { PlaylistsManager } from '../PlaylistsManager';
 import { Scanner } from '../Scanner';
 import { StorageType } from '../Storage';
 import { Streamer } from '../Streamer';
@@ -12,7 +12,7 @@ import { Streamer } from '../Streamer';
 import { gen as genScannerRoutes } from './routes/scanner';
 import { gen as genLoggerRoutes } from './routes/logger';
 import { gen as genClassificatorRoutes } from './routes/classificator';
-import { gen as genQueuesManagerRoutes } from './routes/queuesManager';
+import { gen as genPLaylistsManagerRoutes } from './routes/playlistsManager';
 
 /**
  * Класс гигачад
@@ -25,7 +25,7 @@ export class API {
     private logger: Logger,
     private scanner: Scanner,
     private classificator: Classificator,
-    private queuesManager: QueuesManager,
+    private playlistsManager: PlaylistsManager,
     private streamer: Streamer,
   ) {
     this.router = Express();
@@ -35,7 +35,7 @@ export class API {
   bindRoutes(): API {
     genLoggerRoutes(this.router, this.logger);
     genClassificatorRoutes(this.logger, this.router, this.classificator);
-    genQueuesManagerRoutes(this.logger, this.router, this.queuesManager, this.streamer, this.db, this.scanner);
+    genPLaylistsManagerRoutes(this.logger, this.router, this.playlistsManager, this.streamer, this.db, this.scanner);
     genScannerRoutes(this.logger, this.router, this.scanner);
 
     return this;
@@ -49,19 +49,3 @@ export class API {
     }));
   }
 }
-
-// post /api/test
-// post /api/queue/stream
-// get /api/queue
-// get /api/queues
-// post /api/createQueue
-// post /api/addInQueue
-// get /api/items
-// get /api/items/chain
-// get /api/categories
-// get /api/completed
-// post /api/add
-// post /api/update_cats
-// get /api/fileinfo
-// get /api/files
-// get /api/file

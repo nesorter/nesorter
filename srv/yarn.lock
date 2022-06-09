@@ -174,6 +174,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.32.tgz#51d59d7a90ef2d0ae961791e0900cad2393a0149"
   integrity sha512-eAIcfAvhf/BkHcf4pkLJ7ECpBAhh9kcxRBpip9cTiO+hf+aJrsxYxBeS6OXvOd9WqNAJmavXVpZvY1rBjNsXmw==
 
+"@types/node@>=10.0.0":
+  version "17.0.39"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.39.tgz#3652d82e2a16b4ea679d5ea3143b816c91b7e113"
+  integrity sha512-JDU3YLlnPK3WDao6/DlXLOgSNpG13ct+CwIO17V8q0/9fWJyeMJJ/VyZ1lv8kDprihvZMydzVwf0tQOqGiY2Nw==
+
 "@types/node@^17.0.35":
   version "17.0.35"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.35.tgz#635b7586086d51fb40de0a2ec9d1014a5283ba4a"
@@ -1157,6 +1162,13 @@ ms@2.1.3:
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
+
+music-duration@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/music-duration/-/music-duration-1.0.2.tgz#c2427b19c8105c592e6866e0f8c312eb9f911caa"
+  integrity sha512-kHRsUNJB9WHdnJLEDscsvtMSFZB63uYGQeLGvJF66od3DE8m7wgOQGdHeCPModEI8EkpqO3PEs9wWsZaHfsopA==
+  dependencies:
+    "@types/node" ">=10.0.0"
 
 nan@^2.2.0:
   version "2.15.0"

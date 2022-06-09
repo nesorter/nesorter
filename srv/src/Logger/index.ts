@@ -10,11 +10,12 @@ type logParams = {
 };
 
 export class Logger {
+  startTime = Date.now();
   constructor(private db: StorageType) {}
 
   async log({ message, tags = [LogTags.APP], level = LogLevel.INFO }: logParams): Promise<void> {
     const loggerFunc = level === LogLevel.ERROR ? console.error : console.log;
-    loggerFunc(`${level}: ${tags.join(',')}: ${message}`);
+    loggerFunc(`[${(Date.now() - this.startTime) / 1000}s] [${level}] [${tags.join(',')}] ${message}`);
 
     // Пока просто отключаю запись логов в БД
     // return await this.db.log.create({ data: { message, level, tags: tags.join(',') } });

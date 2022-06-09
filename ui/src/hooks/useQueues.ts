@@ -7,7 +7,7 @@ export const useQueues = () => {
 
   const init = async () => {
     const queuesList = (
-      await fetch('/api/queuesManager/queues')
+      await fetch('/api/playlistsManager/queues')
         .then(r => r.json() as unknown as QueueType[])
         .then(r => {
           setQueues(r);
@@ -21,7 +21,7 @@ export const useQueues = () => {
     for (const queue of queuesList) {
       result.push([
         queue.id,
-        await fetch(`/api/queuesManager/queue/${queue.id}`).then(r => r.json() as unknown as QueueItem[])
+        await fetch(`/api/playlistsManager/queue/${queue.id}`).then(r => r.json() as unknown as QueueItem[])
       ]);
     }
 
@@ -29,7 +29,7 @@ export const useQueues = () => {
   };
 
   const createQueue = async (name: string, type: 'manual' | 'smart') => {
-    await fetch('/api/queuesManager/queues', {
+    await fetch('/api/playlistsManager/queues', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -42,7 +42,7 @@ export const useQueues = () => {
   };
 
   const addInQueue = async (id: number, filehash: string) => {
-    await fetch(`/api/queuesManager/queue/${id}`, {
+    await fetch(`/api/playlistsManager/queue/${id}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -55,7 +55,7 @@ export const useQueues = () => {
   };
 
   const stream = async (queueId: number) => {
-    await fetch(`/api/queuesManager/queue/${queueId}/stream`, {
+    await fetch(`/api/playlistsManager/queue/${queueId}/stream`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

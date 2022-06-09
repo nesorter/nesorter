@@ -18,6 +18,7 @@
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "fluent-ffmpeg": "^2.1.2",
+    "music-duration": "^1.0.2",
     "node-id3": "^0.2.3",
     "prisma": "^3.14.0",
     "rimraf": "^3.0.2",

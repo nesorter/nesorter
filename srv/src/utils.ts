@@ -5,6 +5,18 @@ import { StorageType } from './Storage';
 const wavesCount = 1024 * 2;
 const decode = require('audio-decode');
 
+export function makeSafePath(path: string): string {
+  return path
+    .replaceAll(' ', '\\ ')
+    .replaceAll(`'`, `\\'`)
+    .replaceAll(`&`, `\\&`)
+    .replaceAll(`;`, `\\;`)
+    .replaceAll('[', '\\[')
+    .replaceAll(']', '\\]')
+    .replaceAll('(', '\\(')
+    .replaceAll(')', '\\)');
+}
+
 export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -63,14 +75,14 @@ export async function convertJsonDbToNewDb(jsondbFilepath: string, db: StorageTy
 
   for (let queue of queuesData) {
     const name = queue.name;
-    const createdQueue = await db.queues.create({ data: { name, type: 'manual' } })
-    const queueId = createdQueue.id;
+    const createdPlaylist = await db.playlists.create({ data: { name, type: 'manual' } })
+    const playlistId = createdPlaylist.id;
 
     for (let item of queue.items) {
       const scannedItem = scanned.find(si => si.name === item.filePath);
 
       if (scannedItem) {
-        await db.manualQueueItem.create({ data: { order: item.order, queueId, filehash: scannedItem.filehash } });
+        await db.manualPlaylistItem.create({ data: { order: item.order, playlistId, filehash: scannedItem.filehash } });
       }
     }
   }

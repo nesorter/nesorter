@@ -18,17 +18,17 @@ model ClassificatedItem {
   json     String
 }
 
-model Queues {
+model Playlists {
   id   Int @id @default(autoincrement())
   name String
   type String
 }
 
-model ManualQueueItem {
-  id       Int @id @default(autoincrement())
-  queueId  Int
-  order    Int
-  filehash String
+model ManualPlaylistItem {
+  id         Int @id @default(autoincrement())
+  playlistId Int
+  order      Int
+  filehash   String
 }
 
 model FSItem {

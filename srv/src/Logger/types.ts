@@ -8,6 +8,8 @@ export enum LogLevel {
 export enum LogTags {
   SCANNER = 'SCANNER',
   STREAMER = 'STREAMER',
+  MPV = 'MPV',
+  FFMPEG = 'FFMPEG',
   APP = 'APP',
   API = 'API',
   CATS = 'CATS',

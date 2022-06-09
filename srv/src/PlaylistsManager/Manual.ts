@@ -1,24 +1,24 @@
-import { ManualQueueItem } from "@prisma/client";
+import { ManualPlaylistItem } from "@prisma/client";
 import { StorageType } from "../Storage";
 
-export class Manual {
-  constructor (private db: StorageType, private queueId: number) {}
+export class ManualPlaylist {
+  constructor (private db: StorageType, private playlistId: number) {}
 
   async update(items: { order: number; filehash: string }[]): Promise<void> {
     for (let item of items) {
       // Беру тут айтем из БД потому что... какой-то странный ORM, даёт в блоке WHERE указать только Id
-      const dbitem = await this.db.manualQueueItem.findFirst({
+      const dbitem = await this.db.manualPlaylistItem.findFirst({
         where: {
           filehash: item.filehash,
-          queueId: this.queueId,
+          playlistId: this.playlistId,
         },
       });
 
-      await this.db.manualQueueItem.upsert({
+      await this.db.manualPlaylistItem.upsert({
         create: {
           filehash: item.filehash,
           order: item.order,
-          queueId: this.queueId,
+          playlistId: this.playlistId,
         },
         update: {
           order: item.order
@@ -30,7 +30,7 @@ export class Manual {
     }
   }
 
-  getContent(): Promise<ManualQueueItem[]> {
-    return this.db.manualQueueItem.findMany({ where: { queueId: this.queueId } });
+  getContent(): Promise<ManualPlaylistItem[]> {
+    return this.db.manualPlaylistItem.findMany({ where: { playlistId: this.playlistId } });
   }
 }

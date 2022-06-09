@@ -13,4 +13,6 @@ export default {
   SHOUT_MOUNT: process.env.SHOUT_MOUNT || '',
   SHOUT_DESCRIPTION: process.env.SHOUT_DESCRIPTION || '',
   SHOUT_USER: process.env.SHOUT_USER || '',
+
+  MPV_PATH: process.env.MPV_PATH || '/opt/homebrew/bin/mpv',
 }
