@@ -80,7 +80,7 @@ const RecursiveList = ({ chain, target, opened, onToggle, root = false }: {
           {icon} <span className={styles.itemName}>{item.name}</span>
         </div>
 
-        {item.type === 'file' && <div style={{ fontSize: '10px' }}>{item.fsItemMeta?.id3Artist} - {item.fsItemMeta?.id3Title}</div>}
+        {item.type === 'file' && <div style={{ fontSize: '10px' }}>{item.fsItem?.id3Artist} - {item.fsItem?.id3Title}</div>}
       </div>
 
       {isOpened && Boolean(children.length) && children.map(child => (

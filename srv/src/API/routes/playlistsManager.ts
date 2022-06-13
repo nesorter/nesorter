@@ -3,7 +3,6 @@ import { Logger } from '../../Logger';
 import { LogLevel, LogTags } from '../../Logger/types';
 import { PlaylistsManager } from '../../PlaylistsManager';
 import { ManualPlaylist } from '../../PlaylistsManager/Manual';
-import { Scanner } from '../../Scanner';
 import { StorageType } from '../../Storage';
 import { Streamer } from '../../Streamer';
 
@@ -13,7 +12,6 @@ export const gen = (
   playlistsManager: PlaylistsManager,
   streamer: Streamer,
   storage: StorageType,
-  scanner: Scanner,
 ) => {
   api.route('/api/playlistsManager/queues')
     .get((req, res) => {
@@ -49,7 +47,7 @@ export const gen = (
           res.status(500).json(e)
         });
     });
-  
+
   api.post('/api/playlistsManager/stop', async (req, res) => {
     streamer.stopPlay();
     res.json('scheduled');
@@ -70,8 +68,7 @@ export const gen = (
       const pathlist: string[] = [];
 
       for (let item of items) {
-        const fsitem = await scanner.getFsItem(item.filehash);
-        pathlist.push(fsitem?.path || '');
+        pathlist.push(item.filehash);
       }
 
       await streamer.runPlaylist(pathlist);

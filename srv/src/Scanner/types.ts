@@ -1,10 +1,11 @@
-import { FSItem, FSItemMeta } from '@prisma/client';
+import { FSItem } from '@prisma/client';
 
 export type ScannedItem = {
   path: string,
   name: string,
   size: number,
   hash?: string,
+  duration?: number;
   id3?: {
     artist: string;
     title: string;
@@ -19,5 +20,4 @@ export type Chain = Record<string, {
   parent: string | null;
   name: string;
   fsItem?: FSItem;
-  fsItemMeta?: FSItemMeta;
 }>;

@@ -6,7 +6,7 @@ import { Scanner } from '../../Scanner';
 import { getWaveformInfo } from '../../utils';
 
 export const gen = (logger: Logger, api: Express.Application, scanner: Scanner) => {
-  api.post('/api/scanner/sync', (req, res) => {
+  api.get('/api/scanner/sync', (req, res) => {
     logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
     scanner.syncStorage(CONFIG.CONTENT_ROOT_DIR_PATH, ({ name }) => /.*\.mp3/.test(name))
       .then(() => res.json('ok'))

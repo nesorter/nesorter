@@ -5,12 +5,12 @@ import { LogLevel, LogTags } from '../Logger/types';
 import { spawn } from 'child_process';
 import { makeSafePath } from '../utils';
 import config from '../config';
-import musicDuration from 'music-duration';
+import { Scanner } from "../Scanner";
 
 export class Streamer {
   needStop = false;
   ffmpeg?: FfmpegCommand;
-  constructor(private logger: Logger) {}
+  constructor(private logger: Logger, private scanner: Scanner) {}
 
   get streaming(): boolean {
     return this.ffmpeg !== undefined;
@@ -133,13 +133,21 @@ export class Streamer {
     instance.run();
   }
 
-  async runPlaylist(paths: string[]) {
+  async runPlaylist(hashes: string[]) {
     // Да, вот такой вот infinite loop :^)
     for (let i = 1; i <= Number.MAX_SAFE_INTEGER; i++) {
-      for (let filePath of paths) {
+      for (let fileHash of hashes) {
         try {
-          const duration = await musicDuration(filePath);
-          await this.playFile(filePath, 0, duration, config.MPV_FADE_TIME);
+          const fileData = await this.scanner.getFsItem(fileHash);
+
+          if (fileData) {
+            await this.playFile(
+              fileData.path,
+              fileData.trimStart,
+              fileData.trimEnd,
+              config.MPV_FADE_TIME
+            );
+          }
         } catch (e) {
           if (e === 'USER_STOP') {
             return;

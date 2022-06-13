@@ -92,7 +92,7 @@ export const QueueManager = ({ queue, items, addInQueue, onStream, onStop }: Pro
                     key={value}
                     style={
                       filters.findIndex((cat) => cat.id === category.id && cat.values.includes(value)) !== -1
-                        ? { fontWeight: 'bold', fontSize: '14px', cursor: 'pointer' } 
+                        ? { fontWeight: 'bold', fontSize: '14px', cursor: 'pointer' }
                         : { cursor: 'pointer', color: '#999' }
                     }
                     onClick={() => handleToggle(category.id, category.name, value)}
@@ -113,7 +113,7 @@ export const QueueManager = ({ queue, items, addInQueue, onStream, onStop }: Pro
               >
                 <span>
                   <button onClick={() => addInQueue(queue.id, file?.fsItem?.filehash || '')}>+</button>{' '}
-                  {file?.fsItemMeta?.id3Artist} - {file?.fsItemMeta?.id3Title}
+                  {file?.fsItem?.id3Artist} - {file?.fsItem?.id3Title}
                 </span>
                 <span style={{ fontSize: '12px' }}>{file?.fsItem?.path}</span>
               </div>
@@ -133,7 +133,7 @@ export const QueueManager = ({ queue, items, addInQueue, onStream, onStop }: Pro
                 className={styles.trackRoot}
                 style={{ display: 'flex', flexDirection: 'column' }}
               >
-                <span>{file?.fsItemMeta?.id3Artist} - {file?.fsItemMeta?.id3Title}</span>
+                <span>{file?.fsItem?.id3Artist} - {file?.fsItem?.id3Title}</span>
                 <span style={{ fontSize: '12px' }}>{file?.fsItem?.path}</span>
               </div>
             );

@@ -35,7 +35,7 @@ export class API {
   bindRoutes(): API {
     genLoggerRoutes(this.router, this.logger);
     genClassificatorRoutes(this.logger, this.router, this.classificator);
-    genPLaylistsManagerRoutes(this.logger, this.router, this.playlistsManager, this.streamer, this.db, this.scanner);
+    genPLaylistsManagerRoutes(this.logger, this.router, this.playlistsManager, this.streamer, this.db);
     genScannerRoutes(this.logger, this.router, this.scanner);
 
     return this;

@@ -1,6 +1,7 @@
 import { readdir, stat, readFile } from 'fs/promises';
 import { createHash } from 'crypto';
 import NodeID3 from 'node-id3';
+import musicDuration from 'music-duration';
 import { StorageType } from '../Storage';
 import { sleep } from '../utils';
 import { Logger } from '../Logger';
@@ -25,7 +26,6 @@ export class Scanner {
   async getChain(): Promise<Chain> {
     const chain: Chain = {};
     const items = await this.db.fSItem.findMany();
-    const itemsMetas = await this.db.fSItemMeta.findMany();
 
     items.forEach((item) => {
       const chunks = item.path.split('/').filter(i => i !== '');
@@ -40,7 +40,6 @@ export class Scanner {
         parent: pathIndexed.at(-1) || null,
         name: filename,
         fsItem: item,
-        fsItemMeta: itemsMetas.find(i => i.filehash === item.filehash),
       };
 
       pathIndexed.forEach((chunk, index) => {
@@ -85,16 +84,16 @@ export class Scanner {
           });
 
           await this.db.fSItem.update({
-            data: { name: scannedItem.name, path: scannedItem.path },
-            where: { filehash: scannedItem.hash },
-          });
-
-          await this.db.fSItemMeta.update({
             data: {
+              name: scannedItem.name,
+              path: scannedItem.path,
               id3Artist: scannedItem.id3?.artist || 'nulled',
               id3Title: scannedItem.id3?.title || 'nulled',
+              duration: scannedItem.duration || 0,
             },
-            where: { filehash: scannedItem.hash },
+            where: {
+              filehash: scannedItem.hash
+            },
           });
         } else {
           await this.logger.log({
@@ -108,15 +107,10 @@ export class Scanner {
               filehash: scannedItem.hash || 'nulled',
               name: scannedItem.name,
               path: scannedItem.path,
-              type: 'file'
-            }
-          });
-
-          await this.db.fSItemMeta.create({
-            data: {
-              filehash: scannedItem.hash || 'nulled',
+              type: 'file',
               id3Artist: scannedItem.id3?.artist || 'nulled',
               id3Title: scannedItem.id3?.title || 'nulled',
+              duration: scannedItem.duration || 0,
             }
           });
         }
@@ -180,6 +174,8 @@ export class Scanner {
     const items = await readdir(dir);
 
     for (const name of items) {
+      const index = items.findIndex((i) => i === name);
+      const startTime = Date.now();
       const path = `${dir}/${name}`;
       const info = await stat(path);
 
@@ -206,7 +202,11 @@ export class Scanner {
         id3,
         isDir: info.isDirectory(),
         isFile: info.isFile(),
+        duration: info.isFile() && name.includes('.mp3') ? await musicDuration(path, '.mp3', true) : 0,
       });
+
+      const time = Date.now() - startTime;
+      await this.logger.log({ message: `Scanned meta (took ${time}ms, ${Math.round(info.size / 1024)}kB) for ${index}/${items.length} for file "${name}"`, tags: [LogTags.SCANNER], level: LogLevel.DEBUG });
     }
 
     return data;

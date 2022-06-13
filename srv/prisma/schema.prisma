@@ -36,10 +36,9 @@ model FSItem {
   path       String
   name       String
   type       String
-}
-
-model FSItemMeta {
-  filehash  String @id
-  id3Artist String
-  id3Title  String
+  id3Artist  String @default("unknown")
+  id3Title   String @default("unknown")
+  duration   Float  @default(0)
+  trimStart  Float  @default(0)
+  trimEnd    Float  @default(0)
 }

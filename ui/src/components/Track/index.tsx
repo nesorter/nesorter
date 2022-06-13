@@ -105,7 +105,7 @@ export const Track = ({
         <div className={styles.trackPicture} />
 
         <div className={styles.trackInfo}>
-          <span className={styles.trackInfoId3}>{track.fsItemMeta?.id3Artist || 'unknown artist'} - {track.fsItemMeta?.id3Title || 'untitled'}</span>
+          <span className={styles.trackInfoId3}>{track.fsItem?.id3Artist || 'unknown artist'} - {track.fsItem?.id3Title || 'untitled'}</span>
           <span className={styles.trackInfoFPath}>{track.fsItem?.path}</span>
         </div>
       </div>

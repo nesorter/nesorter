@@ -9,13 +9,12 @@ export type FSItem = {
   path: string;
   name: string;
   type: 'file' | 'dir';
-};
-
-export type FSItemMeta = {
-  filehash: string;
   id3Artist: string;
   id3Title: string;
-}
+  duration: number;
+  trimStart: number;
+  trimEnd: number;
+};
 
 export type ChainItem = {
   type: 'file' | 'dir';
@@ -23,7 +22,6 @@ export type ChainItem = {
   parent: string | null;
   name: string;
   fsItem?: FSItem;
-  fsItemMeta?: FSItemMeta;
 };
 
 export type Chain = Record<string, ChainItem>;
