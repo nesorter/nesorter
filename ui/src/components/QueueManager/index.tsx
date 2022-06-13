@@ -9,9 +9,10 @@ type Props = {
   items: QueueItem[];
   addInQueue: (queueId: number, filename: string) => Promise<void>;
   onStream: (queueId: number) => void;
+  onStop: () => void;
 }
 
-export const QueueManager = ({ queue, items, addInQueue, onStream }: Props): JSX.Element => {
+export const QueueManager = ({ queue, items, addInQueue, onStream, onStop }: Props): JSX.Element => {
   const [categories] = useCategories();
   const [chain] = useChain();
   const chainValues = Object.values(chain);
@@ -71,6 +72,10 @@ export const QueueManager = ({ queue, items, addInQueue, onStream }: Props): JSX
         <button
           onClick={() => onStream(queue.id)}
         >Stream this queue to icecast</button>
+
+        <button
+          onClick={onStop}
+        >Stop</button>
       </div>
 
       <div style={{ display: 'flex' }}>

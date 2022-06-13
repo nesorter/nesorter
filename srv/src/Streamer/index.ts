@@ -8,6 +8,7 @@ import config from '../config';
 import musicDuration from 'music-duration';
 
 export class Streamer {
+  needStop = false;
   ffmpeg?: FfmpegCommand;
   constructor(private logger: Logger) {}
 
@@ -29,7 +30,7 @@ export class Streamer {
     );
 
     childProc.addListener('spawn', () => this.logger.log({
-      message: `Spawned with command: ${childProc.spawnargs.join(' ')}`,
+      message: `Spawned with command: "${childProc.spawnargs.join(' ')}"`,
       level: LogLevel.DEBUG,
       tags: [LogTags.STREAMER, LogTags.MPV],
     }));
@@ -41,15 +42,36 @@ export class Streamer {
     }));
 
     return new Promise((res, rej) => {
-      // делаем резолв раньше времени, чтобы можно было организовать миксинг треков без лишних костыликов
-      setTimeout(() => res(), (endPosition - fadeDuration) * 1000);
+      // делаем поллинг для остановки проиграывания
+      const polling = setInterval(() => {
+        if (this.needStop) {
+          this.logger.log({
+            message: `Catch up user stop request. For: ${filePath}`,
+            level: LogLevel.DEBUG,
+            tags: [LogTags.STREAMER, LogTags.MPV],
+          });
 
-      childProc.addListener('exit', () => {
+          this.needStop = false;
+          childProc.kill('SIGINT');
+          rej('USER_STOP');
+        }
+      }, 500);
+
+      // делаем резолв раньше времени, чтобы можно было организовать миксинг треков без лишних костыликов
+      // дропаем поллинг, это важно
+      setTimeout(() => {
+        clearInterval(polling);
+        res();
+      }, (endPosition - fadeDuration) * 1000);
+
+      childProc.addListener('exit', (e) => {
         this.logger.log({
-          message: `Playing file ended: ${filePath}`,
+          message: `Exitcode: ${e} for: ${filePath}`,
           level: LogLevel.DEBUG,
           tags: [LogTags.STREAMER, LogTags.MPV],
         });
+
+        clearInterval(polling);
       });
 
       childProc.addListener('error', (e) => {
@@ -59,6 +81,7 @@ export class Streamer {
           tags: [LogTags.STREAMER, LogTags.MPV],
         });
 
+        clearInterval(polling);
         rej(e);
       });
     });
@@ -73,27 +96,23 @@ export class Streamer {
     this.ffmpeg = undefined;
   }
 
-  startStream() {
-    // TODO: config
-    const bitrate = 196;
-    const codec = 'libmp3lame';
-    const outputFormat = 'mp3';
-    const contentType = 'audio/mpeg';
-    const device = 'hw:0';
-    const driver = 'alsa';
+  stopPlay() {
+    this.needStop = true;
+  }
 
+  startStream() {
     if (this.streaming) {
       throw new Error('Stream already in progress!');
     }
 
     const instance = ffmpeg()
-      .input(device)
-      .inputFormat(driver)
+      .input(config.FFMPEG_DEVICE)
+      .inputFormat(config.FFMPEG_DRIVER)
       .addInputOption(['-re', '-stream_loop -1'])
-      .audioCodec(codec)
-      .audioBitrate(bitrate)
-      .addOutputOption([`-content_type ${contentType}`, '-map 0', '-map_metadata 0:s:0'])
-      .outputFormat(outputFormat)
+      .audioCodec(config.FFMPEG_CODEC)
+      .audioBitrate(config.FFMPEG_BITRATE)
+      .addOutputOption([`-content_type ${config.FFMPEG_CONTENT_TYPE}`, '-map 0', '-map_metadata 0:s:0'])
+      .outputFormat(config.FFMPEG_OUTPUT_FORMAT)
       .output(`icecast://${Config.SHOUT_USER}:${Config.SHOUT_PASSWORD}@${Config.SHOUT_HOST}:${Config.SHOUT_PORT}/${Config.SHOUT_MOUNT}`);
 
     instance.on('error', (err) => {
@@ -115,11 +134,18 @@ export class Streamer {
   }
 
   async runPlaylist(paths: string[]) {
-    for (let filePath of paths) {
-      try {
-        const duration = await musicDuration(filePath);
-        await this.playFile(filePath, 0, duration, 5);
-      } catch {}
+    // Да, вот такой вот infinite loop :^)
+    for (let i = 1; i <= Number.MAX_SAFE_INTEGER; i++) {
+      for (let filePath of paths) {
+        try {
+          const duration = await musicDuration(filePath);
+          await this.playFile(filePath, 0, duration, config.MPV_FADE_TIME);
+        } catch (e) {
+          if (e === 'USER_STOP') {
+            return;
+          }
+        }
+      }
     }
   }
 }

@@ -49,6 +49,11 @@ export const gen = (
           res.status(500).json(e)
         });
     });
+  
+  api.post('/api/playlistsManager/stop', async (req, res) => {
+    streamer.stopPlay();
+    res.json('scheduled');
+  });
 
   api.post('/api/playlistsManager/queue/:queueId/stream', async (req, res) => {
     logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });

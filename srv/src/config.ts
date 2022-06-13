@@ -15,4 +15,12 @@ export default {
   SHOUT_USER: process.env.SHOUT_USER || '',
 
   MPV_PATH: process.env.MPV_PATH || '/opt/homebrew/bin/mpv',
+  MPV_FADE_TIME: Number(process.env.MPV_FADE_TIME) || 1,
+
+  FFMPEG_BITRATE: Number(process.env.FFMPEG_BITRATE) || 196,
+  FFMPEG_DRIVER: process.env.FFMPEG_DRIVER || 'pulse',
+  FFMPEG_DEVICE: process.env.FFMPEG_DEVICE || '0',
+  FFMPEG_CODEC: process.env.FFMPEG_FORMAT === 'ogg' ? 'libvorbis' : 'libmp3lame',
+  FFMPEG_OUTPUT_FORMAT: process.env.FFMPEG_FORMAT === 'ogg' ? 'ogg' : 'mp3',
+  FFMPEG_CONTENT_TYPE: process.env.FFMPEG_FORMAT === 'ogg' ? 'audio/ogg' : 'audio/mpeg',
 }

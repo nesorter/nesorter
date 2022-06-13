@@ -21,9 +21,9 @@ cd ../ui && yarn
 cp srv/.env.example srv/.env
 ```
 
-3. После чего нужно отредактировать `srv/.env` прописав нужные параметры.
+3. После чего нужно отредактировать `srv/.env` прописав нужные параметры. За что отвечает каждый параметр смотреть в конец README.
 
-4. Важно! Инициализация БД.
+4. Важно! Инициализация БД. Шаг необязательный, так как в postinstall скрипте оно уже должно было бы полностью заинититься.
 ```sh
 cd srv && yarn db:gen
 ```
@@ -37,20 +37,24 @@ cd ui && yarn start
 
 ## Описание .env
 ```
-API_LISTEN_PORT - порт бекенда, его изменение не аффектит UI-часть, так что в изменении смысла нет
+API_LISTEN_PORT       - порт бекенда, его изменение не аффектит UI-часть, так что в изменении смысла нет
 
-CONTENT_ROOT_DIR_PATH - абослютный путь до директории с музыкой
+MPV_PATH              - путь ИЛИ имя бинарника mpv
+MPV_FADE_TIME         - время (секунды) fade-in/out между треками
 
-SHOUT_HOST - хост icecast
+CONTENT_ROOT_DIR_PATH - абсолютный путь до директории с музыкой
+LOG_PATH              - абсолютный путь до файла с логами
 
-SHOUT_PORT - порт icecast
+SHOUT_HOST            - хост icecast
+SHOUT_PORT            - порт icecast
+SHOUT_USER            - имя юзера (например source)
+SHOUT_PASSWORD        - пароль от юзера
+SHOUT_MOUNT           - имя маунта
+SHOUT_URL             - урл стрима, эта инфа передается в icecast
+SHOUT_DESCRIPTION     - описание стрима, эта инфа передается в icecast
 
-SHOUT_USER - имя юзера (например source)
-SHOUT_PASSWORD - пароль от юзера
-
-SHOUT_MOUNT - имя маунта
-
-SHOUT_URL - урл стрима, эта инфа передается в icecast
-
-SHOUT_DESCRIPTION - описание стрима, эта инфа передается в icecast
+FFMPEG_BITRATE        - битрейт потока
+FFMPEG_DRIVER         - чем обращаться к девайсу (alsa/pulse/dshow) https://ffmpeg.org/ffmpeg-devices.html
+FFMPEG_DEVICE         - сам девайс (например hw:0,1) https://ffmpeg.org/ffmpeg-devices.html
+FFMPEG_FORMAT         - формат (mp3/ogg)
 ```

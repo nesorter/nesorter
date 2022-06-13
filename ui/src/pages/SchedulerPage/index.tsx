@@ -8,7 +8,7 @@ import styles from './styles.module.css';
 
 const SchedulerPage = (): JSX.Element => {
   const [selectedQueue, setSelectedQueue] = useState(0);
-  const { queues, items, createQueue, addInQueue, stream } = useQueues();
+  const { queues, items, createQueue, addInQueue, stream, stop } = useQueues();
 
   return (
     <div className={styles.root}>
@@ -27,6 +27,7 @@ const SchedulerPage = (): JSX.Element => {
             queue={queues.find(q => q.id === selectedQueue) as QueueType}
             items={items[selectedQueue]}
             addInQueue={addInQueue}
+            onStop={stop}
             onStream={(queueId) => stream(queueId)}
           />
         )}

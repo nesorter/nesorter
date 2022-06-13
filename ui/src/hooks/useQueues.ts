@@ -65,9 +65,20 @@ export const useQueues = () => {
     }).then(console.log).catch(console.error);
   };
 
+  const stop = async () => {
+    await fetch(`/api/playlistsManager/stop`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: '',
+    }).then(console.log).catch(console.error);
+  }
+
   useEffect(() => {
     init();
   }, []);
 
-  return { queues, items, createQueue, addInQueue, init, stream };
+  return { queues, items, createQueue, addInQueue, init, stream, stop };
 };
