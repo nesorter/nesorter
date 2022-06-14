@@ -144,7 +144,7 @@ export class Streamer {
             await this.playFile(
               fileData.path,
               fileData.trimStart,
-              fileData.trimEnd,
+              fileData.duration - fileData.trimEnd,
               config.MPV_FADE_TIME
             );
           }
