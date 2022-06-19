@@ -21,6 +21,7 @@ export type ChainItem = {
   key: string;
   parent: string | null;
   name: string;
+  isClassified?: boolean;
   fsItem?: FSItem;
 };
 

@@ -8,8 +8,8 @@ import { API } from './src/API';
 import CONFIG from "./src/config";
 
 const logger = new Logger(Storage);
-const scanner = new Scanner(Storage, logger);
 const classificator = new Classificator(Storage, logger);
+const scanner = new Scanner(Storage, logger, classificator);
 const playlistsManager = new PlaylistsManager(Storage, logger);
 const streamer = new Streamer(logger, scanner);
 

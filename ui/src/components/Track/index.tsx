@@ -30,10 +30,10 @@ export const Track = ({
       .then(r => r.json() as unknown as ClassificationCategory[])
       .then(r => {
         setClassifiedCategories(r);
-        return fetch(`/api/scanner/waveform/${encodeURIComponent(track.fsItem?.filehash || '')}`);
+        // return fetch(`/api/scanner/waveform/${encodeURIComponent(track.fsItem?.filehash || '')}`);
       })
-      .then(r => r.json() as unknown as number[])
-      .then(r => setWaveform(r))
+      // .then(r => r.json() as unknown as number[])
+      // .then(r => setWaveform(r))
       .catch(console.error);
   }, [track]);
 
