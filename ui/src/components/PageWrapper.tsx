@@ -24,7 +24,7 @@ export const PageWrapper = ({ children }: { children: React.ReactNode }) => {
         ))}
       </Box>
 
-      <Box>
+      <Box height="100%" maxHeight="calc(100% - 42px)">
         {children}
       </Box>
     </Box>

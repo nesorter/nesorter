@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { space, variant } from "styled-system";
 
 interface StyledButtonProps {
-  children: React.ReactNode;
+  children: React.ReactNode | string;
   variant: 'primary' | 'secondary';
   size: 'normal' | 'small';
 }
@@ -46,7 +46,7 @@ export const Button = styled.button<StyledButtonProps>`
 export const StatedButton = (props: { 
   flag: boolean, 
   onNextState: (nextFlag: boolean) => unknown, 
-  children: React.ReactNode,
+  children: React.ReactNode | string,
   size?: StyledButtonProps['size'];
 }) => {
   return (

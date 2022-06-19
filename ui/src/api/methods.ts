@@ -1,5 +1,6 @@
 function createUrl(path: string, urlParams?: Record<string, string | number | string[] | number[]>): URL {
-  const url = new URL(path);
+  // eslint-disable-next-line no-restricted-globals
+  const url = new URL(`${location.origin}${path}`);
 
   if (urlParams) {
     Object.entries(urlParams)

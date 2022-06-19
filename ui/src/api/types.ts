@@ -32,28 +32,16 @@ export type FSItem = {
   trimEnd: number
 }
 
-export type ScannedItem = {
-  path: string,
-  name: string,
-  size: number,
-  hash?: string,
-  duration?: number;
-  id3?: {
-    artist: string;
-    title: string;
-  },
-  isDir: boolean,
-  isFile: boolean
-};
-
-export type Chain = Record<string, {
+export type ChainItem = {
   type: 'file' | 'dir';
   key: string;
   parent: string | null;
   name: string;
   isClassified?: boolean;
   fsItem?: FSItem;
-}>;
+};
+
+export type Chain = Record<string, ChainItem>;
 
 export type Playlist = {
   id: number
