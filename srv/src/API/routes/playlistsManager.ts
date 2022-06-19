@@ -48,8 +48,18 @@ export const gen = (
         });
     });
 
-  api.post('/api/playlistsManager/stop', async (req, res) => {
-    streamer.stopPlay();
+  api.post('/api/playlistsManager/streamStop', async (req, res) => {
+    streamer.stopStream();
+    res.json('scheduled');
+  });
+
+  api.post('/api/playlistsManager/streamStart', async (req, res) => {
+    streamer.startStream();
+    res.json('scheduled');
+  });
+
+  api.post('/api/playlistsManager/stopPLaylist', async (req, res) => {
+    streamer.stopStream();
     res.json('scheduled');
   });
 
