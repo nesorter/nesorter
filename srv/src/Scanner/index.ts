@@ -7,6 +7,7 @@ import { sleep } from '../utils';
 import { Logger } from '../Logger';
 import { LogLevel, LogTags } from '../Logger/types';
 import { Chain, ScannedItem } from './types';
+import { Classificator } from '../Classificator';
 
 export class Scanner {
   SLEEP_AFTER_SCAN = true;
@@ -14,7 +15,7 @@ export class Scanner {
 
   scanInProgress = false;
 
-  constructor(private db: StorageType, private logger: Logger) {}
+  constructor(private db: StorageType, private logger: Logger, private classificator: Classificator) {}
 
   getFsItem(filehash: string) {
     return this.db.fSItem.findFirst({ where: { filehash } });
@@ -27,7 +28,7 @@ export class Scanner {
     const chain: Chain = {};
     const items = await this.db.fSItem.findMany();
 
-    items.forEach((item) => {
+    for (let item of items) {
       const chunks = item.path.split('/').filter(i => i !== '');
       const path: string[] = chunks.slice(0, chunks.length - 1);
       const filename: string = chunks.at(-1) || 'nulled';
@@ -39,6 +40,7 @@ export class Scanner {
         key: fileIndexed,
         parent: pathIndexed.at(-1) || null,
         name: filename,
+        isClassified: (await this.classificator.getItem(item.filehash)).length !== 0,
         fsItem: item,
       };
 
@@ -54,8 +56,7 @@ export class Scanner {
           parent: index > 0 ? pathIndexed[index - 1] : null,
         }
       });
-    });
-
+    }
     return chain;
   }
 
@@ -202,7 +203,7 @@ export class Scanner {
         id3,
         isDir: info.isDirectory(),
         isFile: info.isFile(),
-        duration: info.isFile() && name.includes('.mp3') ? await musicDuration(path, '.mp3', true) : 0,
+        duration: info.isFile() && name.includes('.mp3') ? await musicDuration(path) : 0,
       });
 
       const time = Date.now() - startTime;

@@ -51,6 +51,7 @@ export type Chain = Record<string, {
   key: string;
   parent: string | null;
   name: string;
+  isClassified?: boolean;
   fsItem?: FSItem;
 }>;
 
