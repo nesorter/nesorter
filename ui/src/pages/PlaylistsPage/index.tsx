@@ -1,7 +1,7 @@
 import { Box, Text } from "../../components";
 
-const ClassifyPage = () => {
-  const message = 'Classify';
+const PlaylistsPage = () => {
+  const message = 'Playlists';
 
   return (
     <Text color="textLight" fontSize="heading">
@@ -10,4 +10,4 @@ const ClassifyPage = () => {
   );
 }
 
-export default ClassifyPage;
+export default PlaylistsPage;

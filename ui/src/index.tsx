@@ -1,4 +1,5 @@
 import React from 'react';
+import { ThemeProvider } from 'styled-components'
 import ReactDOM from 'react-dom/client';
 import {
   BrowserRouter as Router,
@@ -6,23 +7,30 @@ import {
   Routes
 } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
+
 import ClassifyPage from './pages/ClassifyPage';
+import PlaylistsPage from './pages/PlaylistsPage';
+import StatusPage from './pages/StatusPage';
+
+import theme from './theme';
 import { PageWrapper } from './components/PageWrapper';
-import SchedulerPage from './pages/SchedulerPage';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
 const App = (): JSX.Element => (
-  <Router>
-    <PageWrapper>
-      <Routes>
-        <Route path="/" element={<ClassifyPage />} />
-        <Route path="/scheduler" element={<SchedulerPage />} />
-      </Routes>
-    </PageWrapper>
-  </Router>
+  <ThemeProvider theme={theme}>
+    <Router>
+      <PageWrapper>
+        <Routes>
+          <Route path="/" element={<StatusPage />} />
+          <Route path="/playlists" element={<PlaylistsPage />} />
+          <Route path="/classify" element={<ClassifyPage />} />
+        </Routes>
+      </PageWrapper>
+    </Router>
+  </ThemeProvider>
 );
 
 root.render(<App />);
