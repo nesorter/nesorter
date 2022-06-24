@@ -82,7 +82,7 @@ const Recursive = ({ rootKey, chain, step, selectedTrack, setSelectedTrack }: Re
                 <Icon name={step === 0 ? 'root' : _.type} color="#999" size={14} />
 
                 {_.type === 'file'
-                  ? <Text minWidth="12px" fontSize="sm" color="textLight" variant="oneline">{_.isClassified ? '✅' : '🚫'}</Text>
+                  ? <Text minWidth="12px" fontSize="sm" color="textLight">{_.isClassified ? '🟢' : '🟠'}</Text>
                   : null
                 }
 

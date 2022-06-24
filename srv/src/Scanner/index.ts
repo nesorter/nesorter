@@ -1,7 +1,7 @@
 import { readdir, stat, readFile } from 'fs/promises';
 import { createHash } from 'crypto';
 import NodeID3 from 'node-id3';
-import musicDuration from 'music-duration';
+import musicDuration from 'get-audio-duration';
 import { StorageType } from '../Storage';
 import { sleep } from '../utils';
 import { Logger } from '../Logger';
@@ -73,7 +73,34 @@ export class Scanner {
     this.scanInProgress = true;
     const scannedItems = (await this.scan(dir, filter)).filter(i => i.isFile);
 
-    for (let scannedItem of scannedItems) {
+    for (let index in scannedItems) {
+      const scannedItem = scannedItems[index];
+      const startTime = Date.now();
+
+      try {
+        const hashSum = createHash('sha256');
+        hashSum.update(await readFile(scannedItem.path));
+        scannedItem.hash = hashSum.digest('hex');
+
+        const tags = await NodeID3.Promise.read(scannedItem.path);
+        scannedItem.id3 = {
+          artist: tags.artist || '_unknown',
+          title: tags.title || '_unnamed',
+        };
+
+        try {
+          scannedItem.duration = await musicDuration(scannedItem.path);
+        } catch {
+          scannedItem.duration = 0;
+        }
+
+        const time = Date.now() - startTime;
+        this.logger.log({ message: `Scan meta (took ${time}ms) for ${index}/${scannedItems.length} for file "${scannedItem.name}"`, tags: [LogTags.SCANNER], level: LogLevel.DEBUG });
+      } catch (e) {
+        this.logger.log({ message: `Scan meta failed for file "${scannedItem.name}" cause "${(e as Error).message}"`, tags: [LogTags.SCANNER], level: LogLevel.ERROR });
+        continue;
+      }
+
       try {
         const item = await this.db.fSItem.findFirst({ where: { filehash: scannedItem.hash } });
 
@@ -182,18 +209,7 @@ export class Scanner {
 
       let hash;
       let id3;
-
-      if (info.isFile()) {
-        const hashSum = createHash('sha256');
-        hashSum.update(await readFile(path));
-        hash = hashSum.digest('hex');
-
-        const tags = await NodeID3.Promise.read(path);
-        id3 = {
-          artist: tags.artist || '_unknown',
-          title: tags.title || '_unnamed',
-        };
-      }
+      let duration;
 
       data.push({
         path,
@@ -201,13 +217,13 @@ export class Scanner {
         size: info.size,
         hash,
         id3,
+        duration,
         isDir: info.isDirectory(),
         isFile: info.isFile(),
-        duration: info.isFile() && name.includes('.mp3') ? await musicDuration(path) : 0,
       });
 
       const time = Date.now() - startTime;
-      await this.logger.log({ message: `Scanned meta (took ${time}ms, ${Math.round(info.size / 1024)}kB) for ${index}/${items.length} for file "${name}"`, tags: [LogTags.SCANNER], level: LogLevel.DEBUG });
+      this.logger.log({ message: `Scanned (took ${time}ms, ${Math.round(info.size / 1024)}kB) for ${index}/${items.length} for file "${name}"`, tags: [LogTags.SCANNER], level: LogLevel.DEBUG });
     }
 
     return data;

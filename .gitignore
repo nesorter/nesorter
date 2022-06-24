@@ -24,3 +24,5 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea
+
+srv/src/API/routes/assets/covers/*.jpg

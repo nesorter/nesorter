@@ -1,9 +1,10 @@
+import React from 'react';
 import styled from 'styled-components'
 import { borders, flexbox, layout, space, color, BordersProps, FlexboxProps, LayoutProps, SpaceProps, ColorProps } from 'styled-system'
 import theme from '../theme';
 
 interface BoxProps extends BordersProps, FlexboxProps, LayoutProps, SpaceProps, ColorProps {
-  children?: React.ReactNode;
+  children?: React.ReactNode | React.ReactNode[];
   gap?: string | number;
 }
 

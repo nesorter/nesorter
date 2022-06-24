@@ -95,7 +95,14 @@ export const api = {
      */
     getFileAsPath(filehash: string) {
       return `/api/scanner/plainfile/${filehash}`;
-    }
+    },
+
+    /**
+     * Возвращает путь до файла-картинки
+     */
+    getFileImageAsPath(filehash: string) {
+      return `/api/scanner/image/${filehash}`;
+    },
   },
 
   playlistsManager: {
