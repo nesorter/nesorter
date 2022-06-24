@@ -202,8 +202,6 @@ export class Scanner {
     const items = await readdir(dir);
 
     for (const name of items) {
-      const index = items.findIndex((i) => i === name);
-      const startTime = Date.now();
       const path = `${dir}/${name}`;
       const info = await stat(path);
 
@@ -221,9 +219,6 @@ export class Scanner {
         isDir: info.isDirectory(),
         isFile: info.isFile(),
       });
-
-      const time = Date.now() - startTime;
-      this.logger.log({ message: `Scanned (took ${time}ms, ${Math.round(info.size / 1024)}kB) for ${index}/${items.length} for file "${name}"`, tags: [LogTags.SCANNER], level: LogLevel.DEBUG });
     }
 
     return data;
