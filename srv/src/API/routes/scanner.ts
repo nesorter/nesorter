@@ -30,6 +30,20 @@ export const gen = (logger: Logger, api: Express.Application, scanner: Scanner) 
       .catch((e) => res.status(500).json(e));
   });
 
+  api.get('/api/scanner/fsitem/:filehash', (req, res) => {
+    logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
+    scanner.getFsItem(req.params.filehash)
+      .then((item) => res.json(item))
+      .catch((e) => res.status(500).json(e));
+  });
+
+  api.post('/api/scanner/fsitem/trim/:filehash', async (req, res) => {
+    const { start, end } = req.body as { start: number; end: number };
+    scanner.setTrim(req.params.filehash, start, end)
+      .then(() => res.json('ok!'))
+      .catch((e) => res.status(500).json(e));
+  });
+
   api.get('/api/scanner/plainfile/:filehash', (req, res) => {
     logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
     scanner.getFsItem(req.params.filehash)

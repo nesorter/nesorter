@@ -4,6 +4,7 @@ import {
   ClassificatedItem,
   ClassificationCategory,
   CreateCategoryDTO,
+  FSItem,
   GetClassifiedFiltersDTO,
   ManualPlaylistItem,
   Playlist,
@@ -81,6 +82,20 @@ export const api = {
      */
     getChain() {
       return get<Chain>('/api/scanner/chain');
+    },
+
+    /**
+     * Возвращает данные трека
+     */
+    getFsItem(filehash: string) {
+      return get<FSItem>(`/api/scanner/fsitem/${filehash}`);
+    },
+
+    /**
+     * Задает тримминг трека (срезка начальных и конечных моментов трека)
+     */
+    setTrim(filehash: string, start: number, end: number) {
+      return post(`/api/scanner/fsitem/trim/${filehash}`, { start, end });
     },
 
     /**

@@ -21,6 +21,10 @@ export class Scanner {
     return this.db.fSItem.findFirst({ where: { filehash } });
   }
 
+  setTrim(filehash: string, trimStart: number, trimEnd: number) {
+    return this.db.fSItem.update({ where: { filehash }, data: { trimStart, trimEnd } });
+  }
+
   /**
    * Создает связный список fsItem; Воссоздаёт структуру файловой системы
    */

@@ -5,6 +5,7 @@ import { Box, Button } from "../../components";
 import { useModal } from "../../hooks/useModal";
 import { CatsEditModal } from "./components/CatsEditModal";
 import { Track } from "./components/Track";
+import { TrackEditModal } from "./components/TrackEditModal";
 import { TrackTree } from "./components/TrackTree";
 
 const ClassifyPage = () => {
@@ -15,6 +16,7 @@ const ClassifyPage = () => {
   const selectedIndex = useMemo(() => Object.values(chain).findIndex(_ => _.key === selectedTrack), [chain, selectedTrack]);
 
   const editCatsModalState = useModal(false);
+  const editTrackModal = useModal(false);
 
   useEffect(() => {
     api.scanner.getChain()
@@ -38,9 +40,10 @@ const ClassifyPage = () => {
         <TrackTree chain={chain} selectedTrack={selectedTrack} setSelectedTrack={setSelectedTrack} />
       </Box>
 
-      <Box width="100%">{selectedAsChainItem ? <Track track={selectedAsChainItem} onNavigate={handleNavigate} /> : null}</Box>
+      <Box width="100%">{selectedAsChainItem ? <Track track={selectedAsChainItem} onNavigate={handleNavigate} onTrackEdit={() => editTrackModal.setOpen(true)} /> : null}</Box>
 
-      <CatsEditModal editCatsModalState={editCatsModalState} />
+      <CatsEditModal modalState={editCatsModalState} />
+      <TrackEditModal modalState={editTrackModal} trackHash={selectedAsChainItem?.fsItem?.filehash || ''} />
     </Box>
   );
 }

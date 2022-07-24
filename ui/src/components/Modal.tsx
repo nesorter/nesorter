@@ -38,7 +38,7 @@ export const Modal = ({ state, children }: Props): JSX.Element | null => {
         }}
       />
 
-      <Box borderRadius="4px" padding="14px" backgroundColor="dark200" width="calc(80% - 48px)" height="100%" maxHeight="calc(100% - 96px)" style={{ zIndex: 999 }}>
+      <Box borderRadius="4px" padding="14px" backgroundColor="dark200" width="calc(80% - 48px)" height="100%" maxHeight="calc(100% - 96px)" style={{ zIndex: 999 }} overflowY="auto">
         {children}
       </Box>
     </Box>

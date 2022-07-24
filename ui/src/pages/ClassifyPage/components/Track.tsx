@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
-import { api } from "../../../../api";
-import { ChainItem, ClassificationCategory } from "../../../../api/types";
-import { Box, Button, StatedButton, Text } from "../../../../components";
+import { api } from "../../../api";
+import { ChainItem, ClassificationCategory } from "../../../api/types";
+import { Box, Button, StatedButton, Text } from "../../../components";
 
 type Props = {
   track: ChainItem;
   onNavigate: (direction: 'prev' | 'next') => void;
+  onTrackEdit: () => void;
 }
 
-export const Track = ({ track, onNavigate }: Props): JSX.Element => {
+export const Track = ({ track, onNavigate, onTrackEdit }: Props): JSX.Element => {
   const [defaultCategories, setDefaultCategories] = useState<ClassificationCategory[]>([]);
   const [categories, setCategories] = useState<ClassificationCategory[]>([]);
+  const audioProps = {
+    autoPlay: false,
+    controls: true,
+  };
 
   useEffect(() => {
     api.categories.get()
@@ -64,7 +69,7 @@ export const Track = ({ track, onNavigate }: Props): JSX.Element => {
         </Box>
 
         <Box flexDirection="column" gap={7}>
-          <audio autoPlay controls>
+          <audio {...audioProps}>
             <source src={api.scanner.getFileAsPath(track?.fsItem?.filehash || '')} />
             Your browser does not support the audio element.
           </audio>
@@ -76,7 +81,7 @@ export const Track = ({ track, onNavigate }: Props): JSX.Element => {
               <Button variant="secondary" size="normal">Apply Prev</Button>
             </Box>
 
-            <Button variant="secondary" size="normal">Open track editor</Button>
+            <Button variant="secondary" size="normal" onClick={onTrackEdit}>Open track editor</Button>
           </Box>
         </Box>
       </Box>

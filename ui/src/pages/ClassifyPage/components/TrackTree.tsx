@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
-import { Chain, ChainItem } from "../../../../api/types";
-import { Box, Text } from "../../../../components";
-import { Icon } from "../../../../components/Icon";
+import { Chain, ChainItem } from "../../../api/types";
+import { Box, Text } from "../../../components";
+import { Icon } from "../../../components/Icon";
 
 type Props = {
   chain: Chain;
