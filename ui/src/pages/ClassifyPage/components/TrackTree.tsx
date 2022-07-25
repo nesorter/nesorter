@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Chain, ChainItem } from "../../../api/types";
-import { Box, Text } from "../../../components";
+import { Box, Pane, PaneItem, Text } from "../../../components";
 import { Icon } from "../../../components/Icon";
 
 type Props = {
@@ -23,17 +23,7 @@ export const TrackTree = ({ chain, selectedTrack, setSelectedTrack }: Props): JS
     : <Text>Chain empty?</Text>
 
   return (
-    <Box backgroundColor="dark200"
-         borderRadius="4px"
-         width="100%"
-         height="100%"
-         maxHeight="100%"
-         flexDirection="column"
-         overflowY="auto"
-         overflowX="hidden"
-    >
-      {content}
-    </Box>
+    <Pane>{content}</Pane>
   );
 }
 
@@ -66,43 +56,35 @@ const Recursive = ({ rootKey, chain, step, selectedTrack, setSelectedTrack }: Re
     <>
       {children.map(_ => (
         <React.Fragment key={_.key}>
-          <Box padding="7px"
-               borderBottom="1px solid #777"
-               backgroundColor={_.key === selectedTrack ? '#60834B' : 'transparent'}
-               width="100%"
-               style={{ cursor: 'pointer' }}
-               onClick={() => handleOpen(_)}
+          <PaneItem
+            isSelected={_.key === selectedTrack}
+            onSelect={() => handleOpen(_)}
+            step={step}
           >
-            <Box width="100%"
-                 paddingLeft={`${step * 7}px`}
-                 gap={7}
-                 flexDirection="column"
-            >
-              <Box gap={7} alignItems="center" width="100%">
-                <Icon name={step === 0 ? 'root' : _.type} color="#999" size={14} />
+            <Box gap={7} alignItems="center" width="100%">
+              <Icon name={step === 0 ? 'root' : _.type} color="#999" size={14} />
 
+              {_.type === 'file'
+                ? <Text minWidth="12px" fontSize="sm" color="textLight">{_.isClassified ? '🟢' : '🟠'}</Text>
+                : null
+              }
+
+              <Text fontSize="sm" color="textLight" variant="oneline">
                 {_.type === 'file'
-                  ? <Text minWidth="12px" fontSize="sm" color="textLight">{_.isClassified ? '🟢' : '🟠'}</Text>
-                  : null
+                  ? <>{_.fsItem?.id3Artist} - {_.fsItem?.id3Title}</>
+                  : <>{_.name}</>
                 }
+              </Text>
+            </Box>
 
-                <Text fontSize="sm" color="textLight" variant="oneline">
-                  {_.type === 'file'
-                    ? <>{_.fsItem?.id3Artist} - {_.fsItem?.id3Title}</>
-                    : <>{_.name}</>
-                  }
+            {_.type !== 'file' ? null : (
+              <Box gap={7} alignItems="center" width="100%">
+                <Text fontSize="10px" color="textLight" variant="oneline">
+                  {_.name}
                 </Text>
               </Box>
-
-              {_.type !== 'file' ? null : (
-                <Box gap={7} alignItems="center" width="100%">
-                  <Text fontSize="10px" color="textLight" variant="oneline">
-                    {_.name}
-                  </Text>
-                </Box>
-              )}
-            </Box>
-          </Box>
+            )}
+          </PaneItem>
 
           {_.type !== 'dir'
             ? null

@@ -145,7 +145,7 @@ export const api = {
     /**
      * Перезаписывает содержимое плейлиста
      */
-    updatePLaylist(id: string | number, items: UpdatePlaylistItemDto) {
+    updatePlaylist(id: string | number, items: UpdatePlaylistItemDto) {
       return post(`/api/playlistsManager/queue/${id}`, items);
     },
   },

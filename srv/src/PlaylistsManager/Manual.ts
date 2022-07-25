@@ -5,6 +5,13 @@ export class ManualPlaylist {
   constructor (private db: StorageType, private playlistId: number) {}
 
   async update(items: { order: number; filehash: string }[]): Promise<void> {
+    const content = await this.getContent();
+    const selectedForDelete = content.filter(_ => items.find(__ => __.filehash === _.filehash) === undefined);
+
+    for (let item of selectedForDelete) {
+      await this.db.manualPlaylistItem.delete({ where: { id: item.id } });
+    }
+
     for (let item of items) {
       // Беру тут айтем из БД потому что... какой-то странный ORM, даёт в блоке WHERE указать только Id
       const dbitem = await this.db.manualPlaylistItem.findFirst({
