@@ -60,3 +60,11 @@ export type UpdatePlaylistItemDto = {
   order: number;
   filehash: string;
 }[];
+
+export type Status = {
+  playing: boolean;
+  syncing: boolean;
+  streaming: boolean;
+  currentFile?: string;
+  currentPlaylistId?: string;
+};

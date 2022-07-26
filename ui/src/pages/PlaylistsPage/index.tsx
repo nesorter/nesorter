@@ -33,7 +33,7 @@ const PlaylistsPage = () => {
   }
 
   return (
-    <Box gap={14} width="100%">
+    <Box gap={14} width="100%" maxWidth="100%">
       <Box width="100%" minWidth="292px" maxWidth="292px" flexDirection="column" gap={14}>
         <Button size="normal" variant="secondary" onClick={() => createPlModalState.setOpen(true)}>Create playlist</Button>
 

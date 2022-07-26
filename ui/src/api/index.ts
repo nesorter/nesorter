@@ -8,6 +8,7 @@ import {
   GetClassifiedFiltersDTO,
   ManualPlaylistItem,
   Playlist,
+  Status,
   UpdateCategoryDTO,
   UpdatePlaylistItemDto
 } from "./types";
@@ -19,7 +20,11 @@ export const api = {
      */
     getLogs() {
       return get<never[]>('/api/logger');
-    }
+    },
+
+    getStatus() {
+      return get<Status>('/api/status');
+    },
   },
 
   categories: {
@@ -155,7 +160,7 @@ export const api = {
      * Останавливает плейлист (не пауза, полный сброс прогресса проигрывания)
      */
     stopPlaylist() {
-      return post('/api/playlistsManager/stopPLaylist', {});
+      return post('/api/playlistsManager/stopPlaylist', {});
     },
 
     /**

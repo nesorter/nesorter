@@ -59,6 +59,10 @@ export const PlaylistEditor = ({ id }: Props) => {
     });
   }
 
+  const handlePlay = () => {
+    api.streamer.startPlaylist(id);
+  }
+
   const library = (
     <Library onAdd={handleAdd} />
   );
@@ -90,12 +94,14 @@ export const PlaylistEditor = ({ id }: Props) => {
 
   const heading = (
     <Box borderBottom="1px solid #5C5C5C">
-      <Box width="50%" padding="10px" borderRight="1px solid #5C5C5C">
+      <Box width="100%" maxWidth="50%" padding="10px" borderRight="1px solid #5C5C5C" alignItems="center">
         <Text fontSize="desc" color="textLight">Library</Text>
       </Box>
 
-      <Box width="50%" padding="10px">
+      <Box width="100%" maxWidth="50%" padding="10px" justifyContent="space-between" alignItems="center">
         <Text fontSize="desc" color="textLight">Added</Text>
+
+        <Button variant="primary" size="small" onClick={handlePlay}>Play this</Button>
       </Box>
     </Box>
   );

@@ -58,8 +58,8 @@ export const gen = (
     res.json('scheduled');
   });
 
-  api.post('/api/playlistsManager/stopPLaylist', async (req, res) => {
-    streamer.stopStream();
+  api.post('/api/playlistsManager/stopPlaylist', async (req, res) => {
+    streamer.stopPlay();
     res.json('scheduled');
   });
 
@@ -81,7 +81,7 @@ export const gen = (
         pathlist.push(item.filehash);
       }
 
-      await streamer.runPlaylist(pathlist);
+      await streamer.runPlaylist(pathlist, req.params.queueId);
     } catch (e) {
       logger.log({ message: `Failed stream queue ${req.params.queueId}, ${e}`, level: LogLevel.ERROR, tags: [LogTags.API] });
       res.status(500).json(e);

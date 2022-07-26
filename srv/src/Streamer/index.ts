@@ -8,6 +8,10 @@ import config from '../config';
 import { Scanner } from "../Scanner";
 
 export class Streamer {
+  currentPlaylistId?: string;
+  currentFile?: string;
+  playing = false;
+
   needStop = false;
   ffmpeg?: FfmpegCommand;
   constructor(private logger: Logger, private scanner: Scanner) {}
@@ -72,6 +76,7 @@ export class Streamer {
         });
 
         clearInterval(polling);
+        res();
       });
 
       childProc.addListener('error', (e) => {
@@ -133,7 +138,10 @@ export class Streamer {
     instance.run();
   }
 
-  async runPlaylist(hashes: string[]) {
+  async runPlaylist(hashes: string[], playlistId?: string) {
+    this.playing = true;
+    this.currentPlaylistId = playlistId;
+
     // Да, вот такой вот infinite loop :^)
     for (let i = 1; i <= Number.MAX_SAFE_INTEGER; i++) {
       for (let fileHash of hashes) {
@@ -141,6 +149,8 @@ export class Streamer {
           const fileData = await this.scanner.getFsItem(fileHash);
 
           if (fileData) {
+            this.currentFile = fileData.filehash;
+
             await this.playFile(
               fileData.path,
               fileData.trimStart,
@@ -150,10 +160,17 @@ export class Streamer {
           }
         } catch (e) {
           if (e === 'USER_STOP') {
+            this.playing = false;
+            this.currentPlaylistId = undefined;
+            this.currentFile = undefined;
             return;
           }
         }
       }
     }
+
+    this.playing = false;
+    this.currentPlaylistId = undefined;
+    this.currentFile = undefined;
   }
 }
