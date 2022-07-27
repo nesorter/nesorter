@@ -7,6 +7,13 @@ datasource storage {
   url = "file:./storage.db"
 }
 
+model ScheduleItem {
+  id      Int @id @default(autoincrement())
+  startAt Int
+  endAt   Int
+  playlistId Int
+}
+
 model Classification {
   id     Int @id @default(autoincrement())
   name   String

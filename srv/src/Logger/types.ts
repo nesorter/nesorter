@@ -6,6 +6,7 @@ export enum LogLevel {
 }
 
 export enum LogTags {
+  SCHEDULER = 'SCHEDULER',
   SCANNER = 'SCANNER',
   STREAMER = 'STREAMER',
   MPV = 'MPV',
