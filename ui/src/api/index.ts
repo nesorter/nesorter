@@ -1,4 +1,4 @@
-import { get, post, put } from "./methods";
+import { delete_, get, post, put } from "./methods";
 import { 
   Chain,
   ClassificatedItem,
@@ -8,6 +8,7 @@ import {
   GetClassifiedFiltersDTO,
   ManualPlaylistItem,
   Playlist,
+  SchedulerItem,
   Status,
   UpdateCategoryDTO,
   UpdatePlaylistItemDto
@@ -24,6 +25,43 @@ export const api = {
 
     getStatus() {
       return get<Status>('/api/status');
+    },
+  },
+
+  scheduler: {
+    /**
+     * Запускает шедулер
+     */
+    start() {
+      return get('/api/scheduler/start');
+    },
+
+    /**
+     * Останавливает шедулер
+     */
+    stop() {
+      return get('/api/scheduler/stop');
+    },
+
+    /**
+     * Отдает расписание
+     */
+    getItems() {
+      return get<SchedulerItem[]>('/api/scheduler/items');
+    },
+
+    /**
+     * Создает айтем в расписании
+     */
+    createItem(start: number, end: number, playlistId: number | string) {
+      return post('/api/scheduler', { start, end, playlistId });
+    },
+
+    /**
+     * Удаляет айтем в расписании
+     */
+    deleteItem(playlistId: number | string) {
+      return delete_(`/api/scheduler/${playlistId}`);
     },
   },
 

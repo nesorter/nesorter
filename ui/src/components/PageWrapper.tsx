@@ -16,7 +16,8 @@ export const PageWrapper = ({ children }: { children: React.ReactNode }) => {
         {[
           { to: '/', title: 'Status' },
           { to: '/classify', title: 'Classify' },
-          { to: '/playlists', title: 'Playlists' }
+          { to: '/playlists', title: 'Playlists' },
+          { to: '/scheduler', title: 'Scheduler' }
         ].map((item) => (
           <Link key={item.to} to={item.to}>
             <Text color="textLight">{item.title}</Text>

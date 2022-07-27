@@ -12,6 +12,7 @@ export const PlaylistBox = () => {
     playing: false,
     syncing: false,
     streaming: false,
+    scheduling: false,
     currentFile: undefined,
     currentPlaylistId: undefined,
   });
@@ -25,7 +26,7 @@ export const PlaylistBox = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       api.logger.getStatus().then(setStatus).catch(alert);
-    }, 250);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, []);

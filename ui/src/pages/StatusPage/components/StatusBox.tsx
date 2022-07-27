@@ -5,6 +5,7 @@ import { Box, Text } from "../../../components";
 
 export const StatusBox = () => {
   const [status, setStatus] = useState<Status>({
+    scheduling: false,
     playing: false,
     syncing: false,
     streaming: false,
@@ -13,7 +14,7 @@ export const StatusBox = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       api.logger.getStatus().then(setStatus).catch(alert);
-    }, 250);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -23,6 +24,7 @@ export const StatusBox = () => {
       <Text color="textLight">Playing: {status.playing ? '✓' : '✕'}</Text>
       <Text color="textLight">Sync: {status.syncing ? '✓' : '✕'}</Text>
       <Text color="textLight">Streaming: {status.streaming ? '✓' : '✕'}</Text>
+      <Text color="textLight">Scheduling: {status.scheduling ? '✓' : '✕'}</Text>
     </Box>
   );
 }

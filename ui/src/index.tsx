@@ -11,6 +11,7 @@ import reportWebVitals from './reportWebVitals';
 import ClassifyPage from './pages/ClassifyPage';
 import PlaylistsPage from './pages/PlaylistsPage';
 import StatusPage from './pages/StatusPage';
+import SchedulerPage from './pages/SchedulerPage';
 
 import theme from './theme';
 import { PageWrapper } from './components/PageWrapper';
@@ -27,6 +28,7 @@ const App = (): JSX.Element => (
           <Route path="/" element={<StatusPage />} />
           <Route path="/playlists" element={<PlaylistsPage />} />
           <Route path="/classify" element={<ClassifyPage />} />
+          <Route path="/scheduler" element={<SchedulerPage />} />
         </Routes>
       </PageWrapper>
     </Router>

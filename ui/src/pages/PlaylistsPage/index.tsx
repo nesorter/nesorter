@@ -42,7 +42,7 @@ const PlaylistsPage = () => {
             <PaneItem key={_.id} isSelected={selected === _.id} step={1} onSelect={() => setSelected(_.id)}>
               <Box gap={7} alignItems="center" width="100%">
                 <Icon name="dir" color="#999" size={14} />
-                <Text color="textLight" fontSize="sm" variant="oneline">{_.name}</Text>
+                <Text color="textLight" fontSize="sm" variant="oneline">{_.name} #{_.id}</Text>
               </Box>
             </PaneItem>
           ))}

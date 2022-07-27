@@ -62,9 +62,17 @@ export type UpdatePlaylistItemDto = {
 }[];
 
 export type Status = {
+  scheduling: boolean;
   playing: boolean;
   syncing: boolean;
   streaming: boolean;
   currentFile?: string;
   currentPlaylistId?: string;
+};
+
+export type SchedulerItem = {
+  id: number;
+  startAt: number;
+  endAt: number;
+  playlistId: number;
 };
