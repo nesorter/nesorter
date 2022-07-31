@@ -13,4 +13,9 @@ if (!isbin('ffmpeg')) {
   code = 1;
 }
 
+if (!isbin('mkfifo')) {
+  console.log('!!! mkfifo is not installed! You dumd asshole??? Installation process will be aborted');
+  code = 1;
+}
+
 process.exitCode = code;

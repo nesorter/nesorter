@@ -219,7 +219,7 @@ export const api = {
      * Запускает ffmpeg-стрим на icecast
      */
     startStream() {
-      return post('api/playlistsManager/streamStart', {});
+      return post('/api/playlistsManager/streamStart', {});
     }
   }
 };

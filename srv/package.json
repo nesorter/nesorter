@@ -33,6 +33,6 @@
     "db:gen": "prisma migrate dev",
     "service:start": "ts-node main.ts",
     "service:migrate": "ts-node migrate_10_to_11.ts",
-    "postinstall": "ts-node checkSystemDeps.ts && rimraf node_modules/mp3/src/demuxer.js && cpy postinstall/demuxer.js node_modules/mp3/src --flat && yarn db:gen"
+    "postinstall": "ts-node checkSystemDeps.ts && yarn db:gen"
   }
 }

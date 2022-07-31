@@ -14,7 +14,17 @@ export class Streamer {
 
   needStop = false;
   ffmpeg?: FfmpegCommand;
-  constructor(private logger: Logger, private scanner: Scanner) {}
+  constructor(private logger: Logger, private scanner: Scanner) {
+    spawn(
+      'mkfifo',
+      [
+        Config.FIFO_PATH
+      ],
+      {
+        shell: true,
+      }
+    );
+  }
 
   get streaming(): boolean {
     return this.ffmpeg !== undefined;
@@ -26,6 +36,7 @@ export class Streamer {
       [
         `--no-video --start=${startPosition} --end=${endPosition}`,
         `--af=afade=type=0:duration=${fadeDuration}:start_time=${startPosition},afade=type=1:duration=${fadeDuration}:start_time=${endPosition - fadeDuration}`,
+        `--stream-record=${Config.FIFO_PATH} -ao=null`,
         makeSafePath(filePath)
       ],
       {
@@ -111,8 +122,7 @@ export class Streamer {
     }
 
     const instance = ffmpeg()
-      .input(config.FFMPEG_DEVICE)
-      .inputFormat(config.FFMPEG_DRIVER)
+      .input(Config.FIFO_PATH)
       .addInputOption(['-re', '-stream_loop -1'])
       .audioCodec(config.FFMPEG_CODEC)
       .audioBitrate(config.FFMPEG_BITRATE)

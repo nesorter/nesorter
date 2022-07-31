@@ -66,8 +66,8 @@ SHOUT_MOUNT           - имя маунта
 SHOUT_URL             - урл стрима, эта инфа передается в icecast
 SHOUT_DESCRIPTION     - описание стрима, эта инфа передается в icecast
 
+FIFO_PATH             - путь до файла-fifo (создается командой mkfifo автоматически), дефолтно /tmp/stream.mp3
+
 FFMPEG_BITRATE        - битрейт потока
-FFMPEG_DRIVER         - чем обращаться к девайсу (alsa/pulse/dshow) https://ffmpeg.org/ffmpeg-devices.html
-FFMPEG_DEVICE         - сам девайс (например hw:0,1) https://ffmpeg.org/ffmpeg-devices.html
 FFMPEG_FORMAT         - формат (mp3/ogg)
 ```
