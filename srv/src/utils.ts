@@ -1,9 +1,8 @@
 import { readFileSync } from 'fs';
-import { readFile } from 'fs/promises';
 import { StorageType } from './Storage';
+import { AudioAnalyzer } from '@lesjoursfr/audio-waveform';
 
 const wavesCount = 1024 * 2;
-const decode = require('audio-decode');
 
 export function makeSafePath(path: string): string {
   return path
@@ -21,24 +20,17 @@ export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-type BufferWF = { 
-  length: number;
-  sampleRate: number;
-  duration: number;
-  _channelData: number[][];
-};
-
 export async function getWaveformInfo (filepath: string) {
-  const fileBuffer = await readFile(filepath);
-
   try {
-    const buffer: BufferWF = await decode(fileBuffer);
+    const audioAnalyzer = new AudioAnalyzer(filepath);
+    const data = await audioAnalyzer.waveform();
+    const buffer = data.waveform;
 
     const results: number[] = [];
     const step = Math.floor(buffer.length / wavesCount);
 
     for (let i = 0; i < wavesCount; i++) {
-      const value = Math.abs(buffer._channelData[0][i * step]);
+      const value = Math.abs(buffer[i * step]);
       results.push(Math.floor(value * 100000) / 100000);
     }
 
