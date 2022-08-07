@@ -29,8 +29,11 @@ export class Scanner {
    * Создает связный список fsItem; Воссоздаёт структуру файловой системы
    */
   async getChain(): Promise<Chain> {
+    let time = Date.now();
     const chain: Chain = {};
     const items = await this.db.fSItem.findMany();
+    this.logger.log({ message: `Read track from DB took ${Date.now() - time}ms`, tags: [LogTags.SCANNER], level: LogLevel.DEBUG });
+    time = Date.now();
 
     for (let item of items) {
       const chunks = item.path.split('/').filter(i => i !== '');
@@ -61,6 +64,8 @@ export class Scanner {
         }
       });
     }
+
+    this.logger.log({ message: `Construct chain took ${Date.now() - time}ms`, tags: [LogTags.SCANNER], level: LogLevel.DEBUG });
     return chain;
   }
 

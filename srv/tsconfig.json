@@ -20,7 +20,5 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": [
-    "main.ts", "migrate_10_to_11.ts", "src"
-  ]
+  "include": ["src"]
 }

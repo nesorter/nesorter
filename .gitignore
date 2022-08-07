@@ -28,3 +28,4 @@ yarn-error.log*
 srv/src/API/routes/assets/covers/*.jpg
 
 output.*
+ui/build

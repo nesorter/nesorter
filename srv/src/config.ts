@@ -14,12 +14,12 @@ export default {
   SHOUT_DESCRIPTION: process.env.SHOUT_DESCRIPTION || '',
   SHOUT_USER: process.env.SHOUT_USER || '',
 
-  FIFO_PATH: process.env.FIFO_PATH || '/tmp/stream.mp3',
+  FIFO_PATH: process.env.FIFO_PATH || '/tmp/socket.mp3',
 
   MPV_PATH: process.env.MPV_PATH || '/opt/homebrew/bin/mpv',
-  MPV_FADE_TIME: Number(process.env.MPV_FADE_TIME) || 1,
+  MPV_FADE_TIME: Number(process.env.MPV_FADE_TIME) || 0,
 
-  FFMPEG_BITRATE: Number(process.env.FFMPEG_BITRATE) || 196,
+  FFMPEG_BITRATE: Number(process.env.FFMPEG_BITRATE) || 256,
   FFMPEG_CODEC: process.env.FFMPEG_FORMAT === 'ogg' ? 'libvorbis' : 'libmp3lame',
   FFMPEG_OUTPUT_FORMAT: process.env.FFMPEG_FORMAT === 'ogg' ? 'ogg' : 'mp3',
   FFMPEG_CONTENT_TYPE: process.env.FFMPEG_FORMAT === 'ogg' ? 'audio/ogg' : 'audio/mpeg',

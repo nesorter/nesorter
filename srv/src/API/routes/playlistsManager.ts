@@ -82,6 +82,7 @@ export const gen = (
       }
 
       await streamer.runPlaylist(pathlist, req.params.queueId);
+      res.json('ok');
     } catch (e) {
       logger.log({ message: `Failed stream queue ${req.params.queueId}, ${e}`, level: LogLevel.ERROR, tags: [LogTags.API] });
       res.status(500).json(e);

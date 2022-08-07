@@ -1,6 +1,17 @@
 import { readFileSync } from 'fs';
 import { StorageType } from './Storage';
 import { AudioAnalyzer } from '@lesjoursfr/audio-waveform';
+import { spawn } from 'child_process';
+
+export function asyncSpawn(cmd: string, args: string[]): Promise<void> {
+  return new Promise((res, rej) => {
+    spawn(cmd, args, { shell: true }).on('exit', res);
+  });
+}
+
+export function range(num: number): number[] {
+  return Array(num).fill(0).map((_, i) => i);
+}
 
 const wavesCount = 1024 * 2;
 

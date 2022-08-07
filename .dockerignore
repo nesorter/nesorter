@@ -1,0 +1,6 @@
+.idea
+readmeAssets
+srv/node_modules
+srv/dist
+ui/build
+ui/node_modules
