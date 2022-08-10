@@ -12,10 +12,14 @@ import { Classificator } from '../Classificator';
 export class Scanner {
   SLEEP_AFTER_SCAN = true;
   SLEEP_AFTER_SCAN_MS = 1;
-
+  chain: Chain = {};
   scanInProgress = false;
 
-  constructor(private db: StorageType, private logger: Logger, private classificator: Classificator) {}
+  constructor(private db: StorageType, private logger: Logger, private classificator: Classificator) {
+    this.createChain().then((_) => {
+      this.chain = _;
+    });
+  }
 
   getFsItem(filehash: string) {
     return this.db.fSItem.findFirst({ where: { filehash } });
@@ -25,10 +29,14 @@ export class Scanner {
     return this.db.fSItem.update({ where: { filehash }, data: { trimStart, trimEnd } });
   }
 
+  async getChain(): Promise<Chain> {
+    return this.chain;
+  }
+
   /**
    * Создает связный список fsItem; Воссоздаёт структуру файловой системы
    */
-  async getChain(): Promise<Chain> {
+  async createChain(): Promise<Chain> {
     let time = Date.now();
     const chain: Chain = {};
     const items = await this.db.fSItem.findMany();
@@ -161,6 +169,7 @@ export class Scanner {
     }
 
     this.scanInProgress = false;
+    this.chain = await this.createChain();
   }
 
   /**

@@ -10,16 +10,16 @@ COPY srv/prisma /app/prisma
 
 # mpv и ffmpeg на данном этапе устанавливаются для чекалки system-wide зависимостей
 RUN apk add --no-cache ffmpeg mpv libc6-compat openssl && \
-  (cd /app && yarn install --frozen-lockfile) && \
+  (cd /app && yarn install --frozen-lockfile && yarn db:gen) && \
   yarn cache clean
 
 FROM --platform=x86-64 node:16-alpine as builder
 WORKDIR /app
 COPY ./srv /app/.
 COPY --from=deps /app/node_modules /app/node_modules
-RUN (cd /app && yarn service:build)
+RUN (cd /app && yarn service:build && yarn db:gen)
 
-FROM --platform=x86-64 node:16-alpine as runner
+FROM --platform=x86-64 node:16-bullseye as runner
 WORKDIR /app
 COPY --from=deps /app/node_modules /app/node_modules
 COPY --from=builder /app/dist /app/dist
@@ -28,8 +28,11 @@ COPY --from=front_builder /front/build /app/front
 COPY ./dockerMisc/run.sh /app/run.sh
 
 RUN npm i -g local-web-server && \
-  apk add --no-cache bash ffmpeg mpv libc6-compat openssl && \
-  chmod +x /app/run.sh
+  apt update && apt install -y ffmpeg mpv openssl libgtk-3-dev libgconf-2-4 libatk1.0-0 libatk-bridge2.0-0 libgdk-pixbuf2.0-0 libgtk-3-0 libgbm-dev libnss3-dev libxss-dev && \
+  chmod +x /app/run.sh && \
+  apt-get clean autoclean && \
+  apt-get autoremove --yes && \
+  rm -rf /var/lib/{apt,dpkg,cache,log}/
 
 EXPOSE 3000
 CMD ["bash", "/app/run.sh"]

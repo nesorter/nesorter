@@ -13,7 +13,8 @@ services:
     volumes:
       - ./srv/.env:/app/.env
       - ./srv/prisma:/app/prisma
-      - /Users/kugi/Music:/app/lib
+      - /home/kugichka/Music:/app/lib
+      - ./covers:/app/dist/API/routes/assets/covers
 
   icecast2:
     image: pltnk/icecast2
