@@ -44,5 +44,6 @@ services:
     image: grafana/grafana:latest
     ports:
       - "4000:3000"
+    user: "472"
     volumes:
       - ./dockerMisc/grafana:/var/lib/grafana
