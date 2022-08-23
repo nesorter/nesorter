@@ -18,6 +18,8 @@
     "isbin": "^0.0.3",
     "node-id3": "^0.2.3",
     "prisma": "^3.14.0",
+    "winston": "^3.8.1",
+    "winston-loki": "^6.0.5",
     "yup": "^0.32.11"
   },
   "devDependencies": {
@@ -33,7 +35,7 @@
     "db:gen": "prisma migrate dev",
     "service:build": "tsc",
     "service:dev": "ts-node src/main.ts",
-    "start": "node dist/main.js",
-    "postinstall": "ts-node checkSystemDeps.ts && yarn db:gen"
+    "start": "ts-node checkSystemDeps.ts && node dist/main.js",
+    "postinstall": "yarn db:gen"
   }
 }

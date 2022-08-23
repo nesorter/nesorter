@@ -23,4 +23,6 @@ export default {
   FFMPEG_CODEC: process.env.FFMPEG_FORMAT === 'ogg' ? 'libvorbis' : 'libmp3lame',
   FFMPEG_OUTPUT_FORMAT: process.env.FFMPEG_FORMAT === 'ogg' ? 'ogg' : 'mp3',
   FFMPEG_CONTENT_TYPE: process.env.FFMPEG_FORMAT === 'ogg' ? 'audio/ogg' : 'audio/mpeg',
+
+  LOKI_HOST: process.env.LOKI_HOST || 'http://loki:3100',
 }

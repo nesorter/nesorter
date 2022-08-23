@@ -16,7 +16,7 @@ export class Scanner {
   scanInProgress = false;
 
   constructor(private db: StorageType, private logger: Logger, private classificator: Classificator) {
-    this.createChain().then((_) => {
+    this._getChain().then(_ => {
       this.chain = _;
     });
   }
@@ -36,7 +36,7 @@ export class Scanner {
   /**
    * Создает связный список fsItem; Воссоздаёт структуру файловой системы
    */
-  async createChain(): Promise<Chain> {
+  async _getChain(): Promise<Chain> {
     let time = Date.now();
     const chain: Chain = {};
     const items = await this.db.fSItem.findMany();
@@ -169,7 +169,9 @@ export class Scanner {
     }
 
     this.scanInProgress = false;
-    this.chain = await this.createChain();
+    this._getChain().then(_ => {
+      this.chain = _;
+    });
   }
 
   /**

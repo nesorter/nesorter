@@ -8,12 +8,12 @@ services:
     restart: unless-stopped
 
     ports:
-      - '3000:3000'
+      - "3000:3000"
 
     volumes:
       - ./srv/.env:/app/.env
       - ./srv/prisma:/app/prisma
-      - /home/kugichka/Music:/app/lib
+      - /Users/kugi/Music:/app/lib
       - ./covers:/app/dist/API/routes/assets/covers
 
   icecast2:
@@ -21,6 +21,28 @@ services:
     container_name: icecast2
     restart: always
     ports:
-      - 8000:8000
+      - "8000:8000"
     volumes:
       - ./dockerMisc/icecast.xml:/etc/icecast2/icecast.xml
+
+  loki:
+    depends_on:
+      - api
+      - grafana
+    image: grafana/loki:2.6.1
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+
+  promtail:
+    image: grafana/promtail:2.6.1
+    volumes:
+      - /var/log:/var/log
+    command: -config.file=/etc/promtail/config.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "4000:3000"
+    volumes:
+      - ./dockerMisc/grafana:/var/lib/grafana

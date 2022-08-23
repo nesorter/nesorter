@@ -1,5 +1,4 @@
 import { createServer, Server, Socket } from 'net';
-import { open, writeFile } from 'fs/promises';
 import Config from '../config';
 import ffmpeg, {FfmpegCommand} from 'fluent-ffmpeg';
 import { Logger } from '../Logger';
@@ -19,6 +18,7 @@ export class Streamer {
 
   socket: { id: number, instanse: Server, binded: boolean }[] = [];
   outputSocket?: Socket;
+  counter = 0;
 
   constructor(private logger: Logger, private scanner: Scanner) {
     this.init();
@@ -193,6 +193,15 @@ export class Streamer {
     instance.on('error', (err) => {
       this.logger.log({ message: `Stream errored: ${err.message}`, level: LogLevel.ERROR, tags: [LogTags.STREAMER, LogTags.FFMPEG] });
       this.stopStream();
+    });
+
+    instance.on('progress', (progressData) => {
+      this.counter = this.counter + 1;
+
+      if (this.counter === 25) {
+        this.counter = 0;
+        this.logger.log({ message: `FFMpeg info`, extraData: progressData, level: LogLevel.INFO, tags: [LogTags.FFMPEG] });
+      }
     });
 
     instance.once('end', () => {

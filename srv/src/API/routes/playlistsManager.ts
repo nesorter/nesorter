@@ -49,16 +49,19 @@ export const gen = (
     });
 
   api.post('/api/playlistsManager/streamStop', async (req, res) => {
+    logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
     streamer.stopStream();
     res.json('scheduled');
   });
 
   api.post('/api/playlistsManager/streamStart', async (req, res) => {
+    logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
     streamer.startStream();
     res.json('scheduled');
   });
 
   api.post('/api/playlistsManager/stopPlaylist', async (req, res) => {
+    logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
     streamer.stopPlay();
     res.json('scheduled');
   });
