@@ -7,6 +7,7 @@ import { PlaylistsManager } from './PlaylistsManager';
 import { Streamer } from './Streamer';
 import { API } from './API';
 import { Scheduler } from './Scheduler';
+import { LogLevel, LogTags } from "./Logger/types";
 
 const logger = new Logger(Storage);
 const classificator = new Classificator(Storage, logger);
@@ -20,5 +21,13 @@ api.bindRoutes().start();
 
 // TODO: в аргументы запуска
 // scanner.syncStorage(CONFIG.CONTENT_ROOT_DIR_PATH, ({ name }) => /.*\.mp3/.test(name))
+
+process.on('uncaughtException', (error) => {
+  logger.log({ message: `UNHANDLED ERROR: ${error.message}`, level: LogLevel.ERROR, tags: [LogTags.APP] });
+});
+
+process.on('unhandledRejection', (error) => {
+  logger.log({ message: `UNHANDLED REJECTION: ${error}`, level: LogLevel.ERROR, tags: [LogTags.APP] });
+});
 
 export default { api };
