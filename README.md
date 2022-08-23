@@ -10,7 +10,7 @@ ui  - фронтенд часть, существует как отдельны�
 ![Диаграмма классов](https://github.com/nesorter/nesorter/blob/main/readmeAssets/classDiagram.png?raw=true)
 
 ## Запуск в Docker
-0. Скачиваем репо `wget https://github.com/nesorter/nesorter/archive/refs/heads/main.zip`
+0. Скачиваем репо `wget https://github.com/nesorter/nesorter/archive/refs/tags/v2.0.4.zip`
 1. Поправить путь маунта с библиотекой треков, файл docker-compose.yml, строка `/Users/kugi/Music:/app/lib`
 2. Перед запуском нужно подготовить .env-файл с конфигурацией.
 ```sh
