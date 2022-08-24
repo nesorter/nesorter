@@ -25,7 +25,7 @@ export const gen = (logger: Logger, api: Express.Application, scanner: Scanner) 
   api.get('/api/scanner/waveform/:filehash', (req, res) => {
     logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
     scanner.getFsItem(req.params.filehash)
-      .then((item) => getWaveformInfo(item?.path || ''))
+      .then((item) => getWaveformInfo(logger, item?.path || ''))
       .then((waveform) => res.json(waveform))
       .catch((e) => res.status(500).json(e));
   });

@@ -4,7 +4,7 @@ import ffmpeg, {FfmpegCommand} from 'fluent-ffmpeg';
 import { Logger } from '../Logger';
 import { LogLevel, LogTags } from '../Logger/types';
 import { spawn } from 'child_process';
-import { asyncSpawn, makeSafePath, range } from '../utils';
+import { asyncSpawn, getRandomArbitrary, makeSafePath, range } from '../utils';
 import config from '../config';
 import { Scanner } from "../Scanner";
 
@@ -221,28 +221,31 @@ export class Streamer {
     this.playing = true;
     this.currentPlaylistId = playlistId;
 
-    // Да, вот такой вот infinite loop :^)
+    // Да, вот такой вот infinite loop c рандомным порядком :^)
     for (let i = 1; i <= Number.MAX_SAFE_INTEGER; i++) {
-      for (let fileHash of hashes) {
-        try {
-          const fileData = await this.scanner.getFsItem(fileHash);
+      const fileHashIndex = getRandomArbitrary(0, hashes.length);
+      const fileHash = hashes[fileHashIndex];
 
-          if (fileData) {
-            this.currentFile = fileData.filehash;
+      this.logger.log({ message: 'Playing', extraData: { fileHashIndex, fileHash } });
 
-            await this.playFile(
-              fileData.path,
-              fileData.trimStart,
-              fileData.duration - fileData.trimEnd
-            );
-          }
-        } catch (e) {
-          if (e === 'USER_STOP') {
-            this.playing = false;
-            this.currentPlaylistId = undefined;
-            this.currentFile = undefined;
-            return;
-          }
+      try {
+        const fileData = await this.scanner.getFsItem(fileHash);
+
+        if (fileData) {
+          this.currentFile = fileData.filehash;
+
+          await this.playFile(
+            fileData.path,
+            fileData.trimStart,
+            fileData.duration - fileData.trimEnd
+          );
+        }
+      } catch (e) {
+        if (e === 'USER_STOP') {
+          this.playing = false;
+          this.currentPlaylistId = undefined;
+          this.currentFile = undefined;
+          return;
         }
       }
     }

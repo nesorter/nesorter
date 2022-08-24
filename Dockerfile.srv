@@ -1,14 +1,7 @@
-FROM node:16-bullseye as front_builder
-WORKDIR /front
-COPY ./ui /front
-RUN (cd /front && yarn install --frozen-lockfile && yarn build) && yarn cache clean
-
 FROM node:16-bullseye as deps
 WORKDIR /app
 COPY srv/package.json srv/yarn.lock srv/checkSystemDeps.ts /app/
 COPY srv/prisma /app/prisma
-
-# mpv и ffmpeg на данном этапе устанавливаются для чекалки system-wide зависимостей
 RUN (cd /app && yarn install --frozen-lockfile) && yarn cache clean
 
 FROM node:16-bullseye as builder
@@ -22,15 +15,28 @@ WORKDIR /app
 COPY --from=deps /app/node_modules /app/node_modules
 COPY --from=builder /app/dist /app/dist
 COPY srv/package.json srv/yarn.lock srv/.env /app/
-COPY --from=front_builder /front/build /app/front
-COPY ./dockerMisc/run.sh /app/run.sh
+COPY ./dockerMisc/run_srv.sh /app/run.sh
 
-RUN npm i -g local-web-server forever && \
-  apt update && apt install -y ffmpeg mpv openssl libgtk-3-dev libgconf-2-4 libatk1.0-0 libatk-bridge2.0-0 libgdk-pixbuf2.0-0 libgtk-3-0 libgbm-dev libnss3-dev libxss-dev && \
+RUN chown -R node /app
+
+RUN apt update && apt install -y ffmpeg mpv openssl libgtkextra-dev libgconf2-dev libnss3 libasound2 libxtst-dev libxss1 git libx11-xcb1 libxcb-dri3-0 libxtst6 libatk-bridge2.0-0 xvfb libgbm1 libxss1 libnss3 libgtk-3-dev libasound2-dev && \
   chmod +x /app/run.sh && \
   apt-get clean autoclean && \
   apt-get autoremove --yes && \
   rm -rf /var/lib/{apt,dpkg,cache,log}/
 
-EXPOSE 3000
+USER node
+RUN (cd /app && npx electron-rebuild)
+
+USER root
+RUN chown root /app/node_modules/electron/dist/chrome-sandbox
+RUN chmod 4755 /app/node_modules/electron/dist/chrome-sandbox
+
+USER node
+
+EXPOSE 3001
+
+ENV ELECTRON_ENABLE_STACK_DUMPING=true
+ENV ELECTRON_ENABLE_LOGGING=true
+
 CMD ["bash", "/app/run.sh"]

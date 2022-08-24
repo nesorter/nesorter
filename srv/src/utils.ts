@@ -2,6 +2,7 @@ import { readFileSync } from 'fs';
 import { StorageType } from './Storage';
 import { AudioAnalyzer } from '@lesjoursfr/audio-waveform';
 import { spawn } from 'child_process';
+import { Logger } from './Logger';
 
 export function asyncSpawn(cmd: string, args: string[]): Promise<void> {
   return new Promise((res, rej) => {
@@ -31,7 +32,7 @@ export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function getWaveformInfo (filepath: string) {
+export async function getWaveformInfo (logger: Logger, filepath: string) {
   try {
     const audioAnalyzer = new AudioAnalyzer(filepath);
     const data = await audioAnalyzer.waveform();
@@ -47,7 +48,7 @@ export async function getWaveformInfo (filepath: string) {
 
     return results;
   } catch (e) {
-    console.log('ERROR: unable to get waveform: ', e);
+    logger.log({ message: 'ERROR: unable to get waveform: ', extraData: { err: JSON.stringify(e, null, 2) } });
     return [];
   }
 }
@@ -100,4 +101,8 @@ export async function convertJsonDbToNewDb(jsondbFilepath: string, db: StorageTy
       await db.classificatedItem.create({ data: { filehash: scannedItem.filehash, json: JSON.stringify(jsoned) } });
     }
   }
+}
+
+export function getRandomArbitrary(min: number, max: number) {
+  return Math.round(Math.random() * (max - min) + min);
 }

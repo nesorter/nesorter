@@ -1,0 +1,14 @@
+FROM node:16-bullseye as front_builder
+WORKDIR /front
+COPY ./ui /front
+RUN (cd /front && yarn install --frozen-lockfile && yarn build) && yarn cache clean
+
+FROM node:16-bullseye as runner
+WORKDIR /app
+COPY --from=front_builder /front/build /app/front
+COPY ./dockerMisc/run_front.sh /app/run.sh
+
+RUN npm i -g local-web-server forever
+
+EXPOSE 3000
+CMD ["bash", "/app/run.sh"]
