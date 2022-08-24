@@ -12,7 +12,7 @@ ui  - фронтенд часть, существует как отдельны�
 ## Запуск в Docker
 0. Скачиваем репо 
 ```sh
-wget https://github.com/nesorter/nesorter/archive/refs/tags/v2.0.5.zip && \
+wget https://github.com/nesorter/nesorter/archive/refs/tags/v2.0.6.zip && \
 unzip v2.0.6.zip && \
 cd nesorter-2.0.6 && \
 chmod -R 777 dockerMisc/grafana # графана не запустится если файлы её БД будут доступны толко текущему юзеру/группе
