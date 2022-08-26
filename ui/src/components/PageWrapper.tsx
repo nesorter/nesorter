@@ -9,8 +9,7 @@ export const PageWrapper = ({ children }: { children: React.ReactNode }) => {
       gap="lg"
       backgroundColor="dark100"
       flexDirection="column"
-      height="100%"
-      maxHeight="100vh"
+      minHeight="100vh"
     >
       <Box gap="lg">
         {[

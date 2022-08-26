@@ -1,6 +1,6 @@
 import { createServer, Server, Socket } from 'net';
 import Config from '../config';
-import ffmpeg, {FfmpegCommand} from 'fluent-ffmpeg';
+import ffmpeg, { FfmpegCommand } from 'fluent-ffmpeg';
 import { Logger } from '../Logger';
 import { LogLevel, LogTags } from '../Logger/types';
 import { spawn } from 'child_process';
@@ -28,10 +28,10 @@ export class Streamer {
     await Promise.all([
       asyncSpawn('rm', [`/tmp/listen_socket_${0}.mp3`]),
       asyncSpawn('rm', [`/tmp/listen_socket_${1}.mp3`]),
-      asyncSpawn('rm', ['/tmp/output_socket.mp3']),
+      asyncSpawn('rm', [`/tmp/output_socket.mp3`]),
     ]);
     this.logger.log({ message: `Sockets cleaned` });
-    
+
     createServer((client) => {
       this.outputSocket = client;
     }).listen(`/tmp/output_socket.mp3`, () => {
@@ -44,14 +44,21 @@ export class Streamer {
         const socket = createServer();
 
         socket.on('connection', (client) => {
-          // this.logger.log({ message: `Someone connected to socket /tmp/listen_socket_${id}.mp3 (${client.localAddress} ${client.localPort})` });
+          this.logger.log({ message: `Someone connected to socket /tmp/listen_socket_${id}.mp3` });
 
           client.on('data', (data) => {
+            const self = this.socket.find(_ => _.id === id);
+            
+            // Не делаем роутинг в случае когда сокет не используется
+            if (!self?.binded) {
+              return;
+            }
+
             this.outputSocket?.write(data, () => null);
           });
 
           client.on('end', () => {
-            // this.logger.log({ message: `Someone disconnected from socket /tmp/listen_socket_${id}.mp3` });
+            this.logger.log({ message: `Someone disconnected from socket /tmp/listen_socket_${id}.mp3` });
           });
         });
 
@@ -80,7 +87,9 @@ export class Streamer {
   }
 
   playFile(filePath: string, startPosition = 5, endPosition = 25): Promise<void> {
+    const omitedSocket = this.socket.findIndex(_ => _.binded === true);
     const freeSocket = this.socket.findIndex(_ => _.binded === false);
+
     const fadeDuration = Config.MPV_FADE_TIME;
     const args = [
       `--no-video --start=${startPosition} --end=${endPosition}`,
@@ -92,9 +101,14 @@ export class Streamer {
     const childProc = spawn(config.MPV_PATH, args, { shell: true });
 
     childProc.addListener('spawn', () => {
+      if (omitedSocket !== -1) {
+        this.unbindSocket(omitedSocket);
+      }
+
       this.bindSocket(freeSocket);
+
       this.logger.log({
-        message: `Spawned with command: "${childProc.spawnargs.join(' ')}"`,
+        message: `Spawned with command: "${childProc.spawnargs.join(' ')}" on socket: "/tmp/listen_socket_${freeSocket}.mp3"`,
         level: LogLevel.DEBUG,
         tags: [LogTags.STREAMER, LogTags.MPV],
       });
@@ -117,8 +131,14 @@ export class Streamer {
           });
 
           this.needStop = false;
-          childProc.kill('SIGINT');
-          this.unbindSocket(freeSocket);
+
+          setTimeout(() => {
+            childProc.emit('exit', 1);
+            childProc.emit('close');
+            childProc.kill('SIGINT');
+            clearInterval(polling);
+          }, 100);
+
           rej('USER_STOP');
         }
       }, 100);
@@ -129,7 +149,6 @@ export class Streamer {
         setTimeout(() => {
           clearInterval(polling);
           res();
-          this.unbindSocket(freeSocket);
         }, (endPosition - fadeDuration) * 1000);
       }
 
@@ -142,7 +161,6 @@ export class Streamer {
 
         clearInterval(polling);
         res();
-        this.unbindSocket(freeSocket);
       });
 
       childProc.addListener('error', (e) => {
@@ -154,7 +172,6 @@ export class Streamer {
 
         clearInterval(polling);
         rej(e);
-        this.unbindSocket(freeSocket);
       });
     });
   }
@@ -228,24 +245,26 @@ export class Streamer {
 
       this.logger.log({ message: 'Playing', extraData: { fileHashIndex, fileHash } });
 
-      try {
-        const fileData = await this.scanner.getFsItem(fileHash);
+      if (fileHash) {
+        try {
+          const fileData = await this.scanner.getFsItem(fileHash);
 
-        if (fileData) {
-          this.currentFile = fileData.filehash;
+          if (fileData) {
+            this.currentFile = fileData.filehash;
 
-          await this.playFile(
-            fileData.path,
-            fileData.trimStart,
-            fileData.duration - fileData.trimEnd
-          );
-        }
-      } catch (e) {
-        if (e === 'USER_STOP') {
-          this.playing = false;
-          this.currentPlaylistId = undefined;
-          this.currentFile = undefined;
-          return;
+            await this.playFile(
+              fileData.path,
+              fileData.trimStart,
+              fileData.duration - fileData.trimEnd
+            );
+          }
+        } catch (e) {
+          if (e === 'USER_STOP') {
+            this.playing = false;
+            this.currentPlaylistId = undefined;
+            this.currentFile = undefined;
+            return;
+          }
         }
       }
     }

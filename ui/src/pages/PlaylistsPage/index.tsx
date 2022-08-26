@@ -49,7 +49,7 @@ const PlaylistsPage = () => {
         </Pane>
       </Box>
 
-      <Box width="100%">
+      <Box width="100%" maxWidth="calc(100% - 306px)">
         {content}
       </Box>
 
