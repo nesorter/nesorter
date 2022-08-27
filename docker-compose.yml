@@ -2,25 +2,34 @@ version: '3.7'
 
 services:
   api:
-    build:
-      dockerfile: Dockerfile.srv
-      context: .
+    image: kugichka/nesorter-api:2.0.7
     restart: always
-
     ports:
       - "3001:3001"
-
     volumes:
-      - ./srv/.env:/app/.env
-      - ./srv/prisma:/app/prisma
       - /home/kugichka/Music:/app/lib
-      - ./covers:/app/dist/API/routes/assets/covers
+      - ./data/prisma:/app/prisma
+      - ./data/covers:/app/dist/API/routes/assets/covers
+    environment:
+      - CONTENT_ROOT_DIR_PATH=/app/lib
+      - LOG_PATH=/tmp/nesorter.log
+
+      - SHOUT_HOST=icecast2
+      - SHOUT_PORT=8000
+      - SHOUT_MOUNT=neformat.mp3
+      - SHOUT_USER=neformat
+      - SHOUT_PASSWORD=12345678
+      - SHOUT_URL=http://localhost:8000/neformat.mp3
+      - SHOUT_DESCRIPTION=Its test stream
+      
+      - MPV_PATH=mpv
+      - MPV_FADE_TIME=0
+      - FFMPEG_BITRATE=196
+      - FFMPEG_FORMAT=mp3
 
   front:
-    build:
-      dockerfile: Dockerfile.front
-      context: .
-
+    image: kugichka/nesorter-front:2.0.7
+    restart: always
     ports:
       - "3000:3000"
 
@@ -41,12 +50,6 @@ services:
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
-
-  promtail:
-    image: grafana/promtail:2.6.1
-    volumes:
-      - /var/log:/var/log
-    command: -config.file=/etc/promtail/config.yml
 
   grafana:
     image: grafana/grafana:latest
