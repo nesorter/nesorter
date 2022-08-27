@@ -210,6 +210,7 @@ export class Streamer {
     instance.on('error', (err) => {
       this.logger.log({ message: `Stream errored: ${err.message}`, level: LogLevel.ERROR, tags: [LogTags.STREAMER, LogTags.FFMPEG] });
       this.stopStream();
+      this.startStream();
     });
 
     instance.on('progress', (progressData) => {

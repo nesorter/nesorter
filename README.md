@@ -12,9 +12,9 @@ ui  - фронтенд часть, существует как отдельны�
 ## Запуск в Docker
 0. Скачиваем репо 
 ```sh
-wget https://github.com/nesorter/nesorter/archive/refs/tags/v2.0.7.zip && \
-unzip v2.0.7.zip && \
-cd nesorter-2.0.7 && \
+wget https://github.com/nesorter/nesorter/archive/refs/tags/v2.0.8.zip && \
+unzip v2.0.8.zip && \
+cd nesorter-2.0.8 && \
 chmod -R 777 dockerMisc/grafana # графана не запустится если файлы её БД будут доступны толко текущему юзеру/группе
 ```
 1. Поправить путь маунта с библиотекой треков, файл docker-compose.yml, строка `/Users/kugi/Music:/app/lib`
