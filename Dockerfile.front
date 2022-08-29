@@ -1,4 +1,8 @@
 FROM node:16-bullseye as front_builder
+
+LABEL maintainer="Andrew Goncharov <bp.001@yandex.ru>" \
+      github="https://github.com/nesorter/nesorter"
+
 WORKDIR /app
 
 COPY ./ui /app

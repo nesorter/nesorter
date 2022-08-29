@@ -1,34 +1,34 @@
 <icecast>
     <location>Russia</location>
-    <admin>your@address.com</admin>
+    <admin>{SHOUT_ADMIN_EMAIL}</admin>
 
     <limits>
-        <clients>100</clients>
-        <sources>2</sources>
-        <threadpool>5</threadpool>
-        <queue-size>524288</queue-size>
-        <client-timeout>30</client-timeout>
-        <header-timeout>15</header-timeout>
-        <source-timeout>10</source-timeout>
-        <burst-on-connect>1</burst-on-connect>
-        <burst-size>65535</burst-size>
+        <clients>{SHOUT_SYSTEM_TUNE_CLIENTS}</clients>
+        <sources>{SHOUT_SYSTEM_TUNE_SOURCES}</sources>
+        <threadpool>{SHOUT_SYSTEM_TUNE_THREADPOOL}</threadpool>
+        <queue-size>{SHOUT_SYSTEM_TUNE_QUEUE_SIZE}</queue-size>
+        <client-timeout>{SHOUT_SYSTEM_TUNE_CLIENT_TIMEOUT}</client-timeout>
+        <header-timeout>{SHOUT_SYSTEM_TUNE_HEADER_TIMEOUT}</header-timeout>
+        <source-timeout>{SHOUT_SYSTEM_TUNE_SOURCE_TIMEOUT}</source-timeout>
+        <burst-on-connect>{SHOUT_SYSTEM_TUNE_BURST_ON_CONNECT}</burst-on-connect>
+        <burst-size>{SHOUT_SYSTEM_TUNE_BURST_SIZE}</burst-size>
     </limits>
 
     <authentication>
-        <source-password>spass</source-password>
-        <relay-password>rpass</relay-password>
-        <admin-user>admin</admin-user>
-        <admin-password>apass</admin-password>
+        <source-password>{SHOUT_SOURCE_PASSWORD}</source-password>
+        <relay-password>{SHOUT_RELAY_PASSWORD}</relay-password>
+        <admin-user>{SHOUT_ADMIN_USERNAME}</admin-user>
+        <admin-password>{SHOUT_ADMIN_PASSWORD}</admin-password>
     </authentication>
 
     <mount type="normal">
-      <mount-name>/neformat.mp3</mount-name>
-      <username>neformat</username>
-      <password>12345678</password>
+      <mount-name>{SHOUT_MOUNT}</mount-name>
+      <username>{SHOUT_USER}</username>
+      <password>{SHOUT_PASSWORD}</password>
       <public>1</public>
     </mount>
 
-    <hostname>localhost</hostname>
+    <hostname>{SHOUT_SYSTEM_TUNE_HOSTNAME}</hostname>
 
     <listen-socket>
         <port>8000</port>
@@ -44,13 +44,13 @@
         <webroot>/etc/icecast2/web</webroot>
         <adminroot>/etc/icecast2/admin</adminroot>
  
-        <alias source="/" destination="/status.xsl"/>
+        <alias source="/" destination="/status.xsl" />
     </paths>
 
     <logging>
         <accesslog>access.log</accesslog>
         <errorlog>error.log</errorlog>
-      	<loglevel>4</loglevel> <!-- 4 Debug, 3 Info, 2 Warn, 1 Error -->
+      	<loglevel>{SHOUT_SYSTEM_TUNE_LOGLEVEL}</loglevel> <!-- 4 Debug, 3 Info, 2 Warn, 1 Error -->
       	<logsize>10000</logsize> <!-- Max size of a logfile -->
     </logging>
 
@@ -61,5 +61,5 @@
             <user>nobody</user>
             <group>nogroup</group>
         </changeowner>
-        </security>
+    </security>
 </icecast>

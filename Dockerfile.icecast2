@@ -1,0 +1,10 @@
+FROM pltnk/icecast2
+
+LABEL maintainer="Andrew Goncharov <bp.001@yandex.ru>" \
+      github="https://github.com/nesorter/nesorter"
+
+COPY ./dockerMisc/run_icecast.sh /etc/icecast2/run.sh
+COPY ./dockerMisc/icecast.xml /etc/icecast2/icecast.xml
+
+EXPOSE 8000
+CMD ["bash", "/etc/icecast2/run.sh"]

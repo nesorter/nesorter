@@ -3,11 +3,11 @@ require('dotenv').config();
 export default {
   API_LISTEN_PORT: Number(process.env.API_LISTEN_PORT) || 3001,
 
-  CONTENT_ROOT_DIR_PATH: process.env.CONTENT_ROOT_DIR_PATH || '',
-  LOG_PATH: process.env.LOG_PATH || 'logs.log',
+  CONTENT_ROOT_DIR_PATH: process.env.CONTENT_ROOT_DIR_PATH || '/app/lib',
+  LOG_PATH: process.env.LOG_PATH || '/tmp/nesorter.log',
 
   SHOUT_HOST: process.env.SHOUT_HOST || '',
-  SHOUT_PORT: Number(process.env.SHOUT_PORT) || 0,
+  SHOUT_PORT: Number(process.env.SHOUT_PORT) || 8000,
   SHOUT_PASSWORD: process.env.SHOUT_PASSWORD || '',
   SHOUT_URL: process.env.SHOUT_URL || '',
   SHOUT_MOUNT: process.env.SHOUT_MOUNT || '',
@@ -16,7 +16,7 @@ export default {
 
   FIFO_PATH: process.env.FIFO_PATH || '/tmp/socket.mp3',
 
-  MPV_PATH: process.env.MPV_PATH || '/opt/homebrew/bin/mpv',
+  MPV_PATH: process.env.MPV_PATH || '/mpv',
   MPV_FADE_TIME: Number(process.env.MPV_FADE_TIME) || 0,
 
   FFMPEG_BITRATE: Number(process.env.FFMPEG_BITRATE) || 256,

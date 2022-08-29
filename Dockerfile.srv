@@ -1,16 +1,19 @@
 FROM node:16-bullseye as deps
+
+LABEL maintainer="Andrew Goncharov <bp.001@yandex.ru>" \
+      github="https://github.com/nesorter/nesorter"
+
 WORKDIR /app
 
-COPY ./srv /app/.
 COPY ./dockerMisc/run_srv.sh /app/run.sh
-
-RUN (cd /app && yarn install --frozen-lockfile && yarn service:build) && \
-  apt update && apt install -y ffmpeg mpv openssl && \
+RUN apt update && apt install -y ffmpeg mpv openssl && \
   chmod +x /app/run.sh && \
   apt-get clean autoclean && \
   apt-get autoremove --yes && \
-  rm -rf /var/lib/{apt,dpkg,cache,log}/ && \
-  yarn cache clean
+  rm -rf /var/lib/{apt,dpkg,cache,log}/
+
+COPY ./srv /app/.
+RUN (cd /app && yarn install --frozen-lockfile && yarn service:build) && yarn cache clean
 
 EXPOSE 3001
 CMD ["bash", "/app/run.sh"]
