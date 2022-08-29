@@ -1,4 +1,4 @@
-env | grep SHOUT
+#!/bin/bash
 
 sed -i "s/{SHOUT_ADMIN_EMAIL}/$SHOUT_ADMIN_EMAIL/" /etc/icecast2/icecast.xml
 sed -i "s/{SHOUT_SOURCE_PASSWORD}/$SHOUT_SOURCE_PASSWORD/" /etc/icecast2/icecast.xml
@@ -19,5 +19,7 @@ sed -i "s/{SHOUT_SYSTEM_TUNE_BURST_SIZE}/$SHOUT_SYSTEM_TUNE_BURST_SIZE/" /etc/ic
 sed -i "s/{SHOUT_MOUNT}/$SHOUT_MOUNT/" /etc/icecast2/icecast.xml
 sed -i "s/{SHOUT_USER}/$SHOUT_USER/" /etc/icecast2/icecast.xml
 sed -i "s/{SHOUT_PASSWORD}/$SHOUT_PASSWORD/" /etc/icecast2/icecast.xml
+
+cat /etc/icecast2/icecast.xml
 
 /etc/init.d/icecast2 start && tail -F /var/log/icecast2/error.log

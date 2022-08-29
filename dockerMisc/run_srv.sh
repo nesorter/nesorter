@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "start app" >> output.backend
 (cd /app && yarn db:gen)
 

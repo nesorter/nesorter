@@ -22,7 +22,7 @@
     </authentication>
 
     <mount type="normal">
-      <mount-name>{SHOUT_MOUNT}</mount-name>
+      <mount-name>/{SHOUT_MOUNT}</mount-name>
       <username>{SHOUT_USER}</username>
       <password>{SHOUT_PASSWORD}</password>
       <public>1</public>

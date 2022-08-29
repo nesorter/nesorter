@@ -16,7 +16,7 @@ export default {
 
   FIFO_PATH: process.env.FIFO_PATH || '/tmp/socket.mp3',
 
-  MPV_PATH: process.env.MPV_PATH || '/mpv',
+  MPV_PATH: process.env.MPV_PATH || 'mpv',
   MPV_FADE_TIME: Number(process.env.MPV_FADE_TIME) || 0,
 
   FFMPEG_BITRATE: Number(process.env.FFMPEG_BITRATE) || 256,
