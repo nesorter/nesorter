@@ -25,6 +25,8 @@
       <mount-name>/{SHOUT_MOUNT}</mount-name>
       <username>{SHOUT_USER}</username>
       <password>{SHOUT_PASSWORD}</password>
+      <stream-name>{SHOUT_STREAM_NAME}</stream-name>
+      <stream-description>{SHOUT_STREAM_DESCRIPTION}</stream-description>
       <public>1</public>
     </mount>
 

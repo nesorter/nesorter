@@ -7,6 +7,8 @@ import { spawn } from 'child_process';
 import { asyncSpawn, getRandomArbitrary, makeSafePath, range } from '../utils';
 import config from '../config';
 import { Scanner } from "../Scanner";
+import { FSItem } from '@prisma/client';
+import axios from 'axios';
 
 export class Streamer {
   currentPlaylistId?: string;
@@ -84,6 +86,20 @@ export class Streamer {
 
   get streaming(): boolean {
     return this.ffmpeg !== undefined;
+  }
+
+  async publishMetadata(fsitem: FSItem): Promise<void> {
+    await axios.get(`http://${config.SHOUT_HOST}:${config.SHOUT_PORT}/admin/metadata`, {
+      params: {
+        song: `${fsitem.id3Artist} - ${fsitem.id3Title}`,
+        mount: `/${config.SHOUT_MOUNT}`,
+        mode: 'updinfo',
+      },
+      auth: {
+        username: config.SHOUT_ADMIN_USER,
+        password: config.SHOUT_ADMIN_PASSWORD,
+      },
+    });
   }
 
   playFile(filePath: string, startPosition = 5, endPosition = 25): Promise<void> {
@@ -244,15 +260,16 @@ export class Streamer {
       const fileHashIndex = getRandomArbitrary(0, hashes.length);
       const fileHash = hashes[fileHashIndex];
 
-      this.logger.log({ message: 'Playing', extraData: { fileHashIndex, fileHash } });
-
       if (fileHash) {
+        this.logger.log({ message: 'Playing', extraData: { fileHashIndex, fileHash } });
+
         try {
           const fileData = await this.scanner.getFsItem(fileHash);
 
           if (fileData) {
             this.currentFile = fileData.filehash;
 
+            setTimeout(() => this.publishMetadata(fileData), 750);
             await this.playFile(
               fileData.path,
               fileData.trimStart,
@@ -260,6 +277,8 @@ export class Streamer {
             );
           }
         } catch (e) {
+          console.log((e as any).message);
+
           if (e === 'USER_STOP') {
             this.playing = false;
             this.currentPlaylistId = undefined;

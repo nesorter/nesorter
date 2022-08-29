@@ -19,6 +19,8 @@ sed -i "s/{SHOUT_SYSTEM_TUNE_BURST_SIZE}/$SHOUT_SYSTEM_TUNE_BURST_SIZE/" /etc/ic
 sed -i "s/{SHOUT_MOUNT}/$SHOUT_MOUNT/" /etc/icecast2/icecast.xml
 sed -i "s/{SHOUT_USER}/$SHOUT_USER/" /etc/icecast2/icecast.xml
 sed -i "s/{SHOUT_PASSWORD}/$SHOUT_PASSWORD/" /etc/icecast2/icecast.xml
+sed -i "s/{SHOUT_STREAM_NAME}/${SHOUT_STREAM_NAME}/" /etc/icecast2/icecast.xml
+sed -i "s/{SHOUT_STREAM_DESCRIPTION}/${SHOUT_STREAM_DESCRIPTION}/" /etc/icecast2/icecast.xml
 
 cat /etc/icecast2/icecast.xml
 

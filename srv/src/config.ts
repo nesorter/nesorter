@@ -6,6 +6,9 @@ export default {
   CONTENT_ROOT_DIR_PATH: process.env.CONTENT_ROOT_DIR_PATH || '/app/lib',
   LOG_PATH: process.env.LOG_PATH || '/tmp/nesorter.log',
 
+  SHOUT_ADMIN_USER: process.env.SHOUT_ADMIN_USER || '',
+  SHOUT_ADMIN_PASSWORD: process.env.SHOUT_ADMIN_PASSWORD || '',
+
   SHOUT_HOST: process.env.SHOUT_HOST || '',
   SHOUT_PORT: Number(process.env.SHOUT_PORT) || 8000,
   SHOUT_PASSWORD: process.env.SHOUT_PASSWORD || '',
