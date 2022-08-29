@@ -6,7 +6,7 @@ export const Pane = styled(Box)((props) => ({
   borderRadius: "4px",
   width: "100%",
   height: "100%",
-  maxHeight: "100%",
+  maxHeight: "calc(100vh - 130px)",
   flexDirection: "column",
   overflowY: "auto",
   overflowX: "hidden",

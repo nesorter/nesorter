@@ -53,11 +53,20 @@ export class Scheduler {
       const interval = setInterval(() => {
         if (this.shouldEnd(item)) {
           this.logger.log({ message: `Stopping playlist #${item.playlistId}`, level: LogLevel.INFO, tags: [LogTags.SCHEDULER] });
-          this.currentItem = -1;
           this.streamer.stopPlay();
+
+          // Small delay should help avoid race condition
+          setTimeout(() => {
+            this.currentItem = -1;
+          }, 250);
         }
 
         if (this.shouldStart(item)) {
+          // Dont start until something playing
+          if (this.currentItem !== -1) {
+            return;
+          }
+
           this.logger.log({ message: `Starting playlist #${item.playlistId}`, level: LogLevel.INFO, tags: [LogTags.SCHEDULER] });
           const pl = new ManualPlaylist(this.db, item.playlistId);
 
@@ -66,7 +75,7 @@ export class Scheduler {
             this.streamer.runPlaylist(tracks.map(_ => _.filehash), item.playlistId.toString());
           });
         }
-      }, 1000);
+      }, 250);
 
       this.intervals.push(interval);
     });
