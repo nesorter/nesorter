@@ -29,6 +29,20 @@ export class Scheduler {
   }
 
   async createItem(startAt: number, endAt: number, playlistId: number) {
+    if (endAt < startAt) {
+      if (endAt < 60) {
+        return this.db.scheduleItem.create({
+          data: {
+            endAt: secondsInDay,
+            startAt,
+            playlistId,
+          },
+        });
+      } else {
+        throw new Error('startAt must be more then endAt');
+      }
+    }
+
     return this.db.scheduleItem.create({
       data: {
         endAt,
