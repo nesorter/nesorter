@@ -1,16 +1,15 @@
 FROM --platform=x86_64 node:16-bullseye as deps
 
-WORKDIR /app
-
-COPY ./dockerMisc/run_srv.sh /app/run.sh
-RUN apt update && apt install -y ffmpeg mpv openssl && \
-  chmod +x /app/run.sh && \
+RUN apt update && apt install -y ffmpeg mpv openssl alsa-utils pavucontrol && \
   apt-get clean autoclean && \
   apt-get autoremove --yes && \
   rm -rf /var/lib/{apt,dpkg,cache,log}/
 
-COPY ./srv /app/.
-RUN (cd /app && yarn install --frozen-lockfile && yarn service:build) && yarn cache clean
+USER node
+WORKDIR /home/node
+COPY --chown=node:node ./dockerMisc/run_srv.sh /home/node/run.sh
+COPY --chown=node:node ./srv /home/node/.
+RUN (cd /home/node && yarn install --frozen-lockfile && yarn service:build) && yarn cache clean && chmod +x /home/node/run.sh
 
 EXPOSE 3001
-CMD ["bash", "/app/run.sh"]
+CMD ["bash", "/home/node/run.sh"]

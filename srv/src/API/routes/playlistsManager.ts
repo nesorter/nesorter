@@ -70,7 +70,8 @@ export const gen = (
     logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
 
     try {
-      streamer.startStream();
+      // Disable streaming
+      // streamer.startStream();
     } catch (e) {
       logger.log({ message: `Failed start stream process, but we can ignore this now, ${e}`, level: LogLevel.ERROR, tags: [LogTags.API] });
     }

@@ -23,10 +23,16 @@ export class Streamer {
   counter = 0;
 
   constructor(private logger: Logger, private scanner: Scanner) {
-    this.init();
+    logger.log({
+      message: `PLAYING_MODE is '${config.PLAYING_MODE}'. ${config.PLAYING_MODE === 'socket' ? 'Init sockets' : 'Skip init socket'}`
+    });
+
+    if (config.PLAYING_MODE === 'socket') {
+      this.initSockets();
+    }
   }
 
-  async init() {
+  async initSockets() {
     await Promise.all([
       asyncSpawn('rm', [`/tmp/listen_socket_${0}.mp3`]),
       asyncSpawn('rm', [`/tmp/listen_socket_${1}.mp3`]),
@@ -110,24 +116,32 @@ export class Streamer {
     const args = [
       `--no-video --start=${startPosition} --end=${endPosition}`,
       `--af=afade=type=0:duration=${fadeDuration}:start_time=${startPosition},afade=type=1:duration=${fadeDuration}:start_time=${endPosition - fadeDuration}`,
-      `--stream-record=unix:/tmp/listen_socket_${freeSocket}.mp3 -ao=null`, // --hr-seek-demuxer-offset=${startPosition}
+      config.PLAYING_MODE === 'socket' ? `--stream-record=unix:/tmp/listen_socket_${freeSocket}.mp3 -ao=null` : undefined,
       makeSafePath(filePath)
-    ];
+    ].filter(_ => _ !== undefined) as string[];
 
     const childProc = spawn(config.MPV_PATH, args, { shell: true });
 
     childProc.addListener('spawn', () => {
-      if (omitedSocket !== -1) {
-        this.unbindSocket(omitedSocket);
+      if (config.PLAYING_MODE === 'socket') {
+        if (omitedSocket !== -1) {
+          this.unbindSocket(omitedSocket);
+        }
+
+        this.bindSocket(freeSocket);
+
+        this.logger.log({
+          message: `Spawned with command: "${childProc.spawnargs.join(' ')}" on socket: "/tmp/listen_socket_${freeSocket}.mp3"`,
+          level: LogLevel.DEBUG,
+          tags: [LogTags.STREAMER, LogTags.MPV],
+        });
+      } else {
+        this.logger.log({
+          message: `Spawned with command: "${childProc.spawnargs.join(' ')}"`,
+          level: LogLevel.DEBUG,
+          tags: [LogTags.STREAMER, LogTags.MPV],
+        });
       }
-
-      this.bindSocket(freeSocket);
-
-      this.logger.log({
-        message: `Spawned with command: "${childProc.spawnargs.join(' ')}" on socket: "/tmp/listen_socket_${freeSocket}.mp3"`,
-        level: LogLevel.DEBUG,
-        tags: [LogTags.STREAMER, LogTags.MPV],
-      });
     });
 
     childProc.addListener('message', (data) => this.logger.log({
@@ -210,8 +224,12 @@ export class Streamer {
       throw new Error('Stream already in progress!');
     }
 
+    const input = config.PLAYING_MODE === 'socket'
+      ? 'unix:/tmp/output_socket.mp3'
+      : config.HARDWARE_PLAYER_FFMPEG_DEVICE;
+
     const instance = ffmpeg()
-      .input('unix:/tmp/output_socket.mp3')
+      .input(input)
       .addInputOption(['-re', '-stream_loop -1'])
       .audioCodec(config.FFMPEG_CODEC)
       .audioBitrate(config.FFMPEG_BITRATE)
@@ -223,10 +241,17 @@ export class Streamer {
       .outputFormat(config.FFMPEG_OUTPUT_FORMAT)
       .output(`icecast://${Config.SHOUT_USER}:${Config.SHOUT_PASSWORD}@${Config.SHOUT_HOST}:${Config.SHOUT_PORT}/${Config.SHOUT_MOUNT}`);
 
+    if (config.PLAYING_MODE === 'hardware') {
+      instance.inputFormat(config.HARDWARE_PLAYER_FFMPEG_DRIVER);
+    }
+
     instance.on('error', (err) => {
       this.logger.log({ message: `Stream errored: ${err.message}`, level: LogLevel.ERROR, tags: [LogTags.STREAMER, LogTags.FFMPEG] });
       this.stopStream();
-      this.startStream();
+
+      if (!err.message.includes('SIGKILL')) {
+        this.startStream();
+      }
     });
 
     instance.on('progress', (progressData) => {
@@ -269,7 +294,7 @@ export class Streamer {
           if (fileData) {
             this.currentFile = fileData.filehash;
 
-            setTimeout(() => this.publishMetadata(fileData), 750);
+            setTimeout(() => this.publishMetadata(fileData), 2000);
             await this.playFile(
               fileData.path,
               fileData.trimStart,

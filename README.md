@@ -83,6 +83,10 @@ cd ui && yarn start
 
 ## Описание .env [для запуска в Docker и если запуск планируется не в Docker]
 ```
+PLAYING_MODE                  - socket или hardware; режим воспроизведения -- виртуальный или на звуковой карточке; более стабильная работа при воспроизведении на звуковой карточке
+HARDWARE_PLAYER_FFMPEG_DRIVER - чем обращаться к девайсу (alsa/pulse/dshow) https://ffmpeg.org/ffmpeg-devices.html
+HARDWARE_PLAYER_FFMPEG_DEVICE - сам девайс (например hw:0,1; юзай `aplay -L` чоли) https://ffmpeg.org/ffmpeg-devices.html
+
 API_LISTEN_PORT       - порт бекенда, его изменение не аффектит UI-часть, так что в изменении смысла нет
 
 MPV_PATH              - путь ИЛИ имя бинарника mpv

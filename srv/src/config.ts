@@ -17,7 +17,9 @@ export default {
   SHOUT_DESCRIPTION: process.env.SHOUT_DESCRIPTION || '',
   SHOUT_USER: process.env.SHOUT_USER || '',
 
-  FIFO_PATH: process.env.FIFO_PATH || '/tmp/socket.mp3',
+  PLAYING_MODE: process.env.PLAYING_MODE || 'socket',
+  HARDWARE_PLAYER_FFMPEG_DRIVER: process.env.HARDWARE_PLAYER_FFMPEG_DRIVER || '',
+  HARDWARE_PLAYER_FFMPEG_DEVICE: process.env.HARDWARE_PLAYER_FFMPEG_DEVICE || '',
 
   MPV_PATH: process.env.MPV_PATH || 'mpv',
   MPV_FADE_TIME: Number(process.env.MPV_FADE_TIME) || 0,
