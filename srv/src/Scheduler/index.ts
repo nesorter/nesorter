@@ -17,6 +17,10 @@ export class Scheduler {
     return secondsInDay - differenceInSeconds(endOfDay(new Date()), new Date());
   }
 
+  async getPlaylist(id: number) {
+    return this.db.playlists.findFirst({ where: { id } });
+  }
+
   shouldEnd(item: ScheduleItem): boolean {
     return this.currentSecondsFromDayStart >= item.endAt 
       && this.currentItem === item.id;

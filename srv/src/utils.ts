@@ -3,6 +3,15 @@ import { StorageType } from './Storage';
 import { AudioAnalyzer } from '@lesjoursfr/audio-waveform';
 import { spawn } from 'child_process';
 import { Logger } from './Logger';
+import { RequestHandler } from 'express';
+import { LogLevel, LogTags } from './Logger/types';
+
+export function withLogger(logger: Logger, rq: RequestHandler): RequestHandler {
+  return (req, res, next) => {
+    logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
+    rq(req, res, next);
+  }
+}
 
 export function asyncSpawn(cmd: string, args: string[]): Promise<void> {
   return new Promise((res, rej) => {

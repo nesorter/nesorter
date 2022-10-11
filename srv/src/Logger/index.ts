@@ -16,7 +16,7 @@ export class Logger {
   startTime = Date.now();
   winston: WinstonLogger;
 
-  constructor(private db: StorageType) {
+  constructor(private db?: StorageType) {
     this.winston = createLogger({
       transports: [
         new transports.Console({

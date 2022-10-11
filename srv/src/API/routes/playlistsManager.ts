@@ -5,6 +5,7 @@ import { PlaylistsManager } from '../../PlaylistsManager';
 import { ManualPlaylist } from '../../PlaylistsManager/Manual';
 import { StorageType } from '../../Storage';
 import { Streamer } from '../../Streamer';
+import { withLogger } from '../../utils';
 
 export const gen = (
   logger: Logger,
@@ -14,31 +15,26 @@ export const gen = (
   storage: StorageType,
 ) => {
   api.route('/api/playlistsManager/queues')
-    .get((req, res) => {
-      logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
+    .get(withLogger(logger, (req, res) => {
       playlistsManager.getQueues()
         .then((queues) => res.json(queues))
         .catch((e) => res.status(500).json(e));
-    })
-    .post((req, res) => {
-      logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
+    }))
+    .post(withLogger(logger, (req, res) => {
       const { name, type } = req.body as { name: string, type: 'manual' | 'smart' };
       playlistsManager.createQueue(name, type)
         .then((result) => res.json({ result }))
         .catch((e) => res.status(500).json(e));
-    });
+    }));
 
   api.route('/api/playlistsManager/queue/:queueId')
-    .get((req, res) => {
-      logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
+    .get(withLogger(logger, (req, res) => {
       const queue = new ManualPlaylist(storage, Number(req.params.queueId));
       queue.getContent()
         .then((result) => res.json(result))
         .catch((e) => res.status(500).json(e));
-    })
-    .post((req, res) => {
-      logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
-
+    }))
+    .post(withLogger(logger, (req, res) => {
       const queue = new ManualPlaylist(storage, Number(req.params.queueId));
       queue.update(req.body)
         .then((result) => res.json({ result }))
@@ -46,29 +42,24 @@ export const gen = (
           logger.log({ message: `Failed update queue ${req.params.queueId}, ${e}`, level: LogLevel.ERROR, tags: [LogTags.API] });
           res.status(500).json(e)
         });
-    });
+    }));
 
-  api.post('/api/playlistsManager/streamStop', async (req, res) => {
-    logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
+  api.post('/api/playlistsManager/streamStop', withLogger(logger, async (req, res) => {
     streamer.stopStream();
     res.json('scheduled');
-  });
+  }));
 
-  api.post('/api/playlistsManager/streamStart', async (req, res) => {
-    logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
+  api.post('/api/playlistsManager/streamStart', withLogger(logger, async (req, res) => {
     streamer.startStream();
     res.json('scheduled');
-  });
+  }));
 
-  api.post('/api/playlistsManager/stopPlaylist', async (req, res) => {
-    logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
+  api.post('/api/playlistsManager/stopPlaylist', withLogger(logger, async (req, res) => {
     streamer.stopPlay();
     res.json('scheduled');
-  });
+  }));
 
-  api.post('/api/playlistsManager/queue/:queueId/stream', async (req, res) => {
-    logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
-
+  api.post('/api/playlistsManager/queue/:queueId/stream', withLogger(logger, async (req, res) => {
     try {
       // Disable streaming
       // streamer.startStream();
@@ -91,5 +82,5 @@ export const gen = (
       logger.log({ message: `Failed stream queue ${req.params.queueId}, ${e}`, level: LogLevel.ERROR, tags: [LogTags.API] });
       res.status(500).json(e);
     }
-  });
+  }));
 }

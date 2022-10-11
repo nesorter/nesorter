@@ -11,13 +11,24 @@ export const gen = (api: Express.Application, logger: Logger, streamer: Streamer
       .catch((e) => res.status(500).json(e));
   });
 
-  api.get('/api/status', (_req, res) => {
+  api.get('/api/status', async (_req, res) => {
+    let fileData = null;
+    let playlistData = null;
+
+    if (streamer.playing) {
+      fileData = await scanner.getFsItem(streamer.currentFile || '');
+      playlistData = await scheduler.getPlaylist(Number(streamer.currentPlaylistId));
+    }
+
     res.json({
       scheduling: scheduler.processing,
       playing: streamer.playing,
       syncing: scanner.scanInProgress,
       streaming: streamer.streaming,
       currentFile: streamer.currentFile,
+      thumbnailPath: `/api/scanner/image/${streamer.currentFile}`,
+      fileData,
+      playlistData,
       currentPlaylistId: streamer.currentPlaylistId,
     });
   });

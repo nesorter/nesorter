@@ -2,57 +2,50 @@ import Express from 'express';
 import NodeID3 from 'node-id3';
 import CONFIG from '../../config';
 import { Logger } from '../../Logger';
-import { LogLevel, LogTags } from '../../Logger/types';
 import { Scanner } from '../../Scanner';
-import { getWaveformInfo } from '../../utils';
+import { getWaveformInfo, withLogger } from '../../utils';
 import { writeFile } from 'fs/promises';
 
 export const gen = (logger: Logger, api: Express.Application, scanner: Scanner) => {
-  api.get('/api/scanner/sync', (req, res) => {
-    logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
+  api.get('/api/scanner/sync', withLogger(logger, (req, res) => {
     scanner.syncStorage(CONFIG.CONTENT_ROOT_DIR_PATH, ({ name }) => /.*\.mp3/.test(name))
       .then(() => res.json('ok'))
       .catch((e) => res.status(500).json(e));
-  });
+  }));
 
-  api.get('/api/scanner/chain', (req, res) => {
-    logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
+  api.get('/api/scanner/chain', withLogger(logger, (req, res) => {
     scanner.getChain()
       .then((chain) => res.json(chain))
       .catch((e) => res.status(500).json(e));
-  });
+  }));
 
-  api.get('/api/scanner/waveform/:filehash', (req, res) => {
-    logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
+  api.get('/api/scanner/waveform/:filehash', withLogger(logger, (req, res) => {
     scanner.getFsItem(req.params.filehash)
       .then((item) => getWaveformInfo(logger, item?.path || ''))
       .then((waveform) => res.json(waveform))
       .catch((e) => res.status(500).json(e));
-  });
+  }));
 
-  api.get('/api/scanner/fsitem/:filehash', (req, res) => {
-    logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
+  api.get('/api/scanner/fsitem/:filehash', withLogger(logger, (req, res) => {
     scanner.getFsItem(req.params.filehash)
       .then((item) => res.json(item))
       .catch((e) => res.status(500).json(e));
-  });
+  }));
 
-  api.post('/api/scanner/fsitem/trim/:filehash', async (req, res) => {
+  api.post('/api/scanner/fsitem/trim/:filehash', withLogger(logger, async (req, res) => {
     const { start, end } = req.body as { start: number; end: number };
     scanner.setTrim(req.params.filehash, start, end)
       .then(() => res.json('ok!'))
       .catch((e) => res.status(500).json(e));
-  });
+  }));
 
-  api.get('/api/scanner/plainfile/:filehash', (req, res) => {
-    logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
+  api.get('/api/scanner/plainfile/:filehash', withLogger(logger, (req, res) => {
     scanner.getFsItem(req.params.filehash)
       .then((item) => res.sendFile(item?.path || ''))
       .catch((e) => res.status(500).json(e));
-  });
+  }));
 
-  api.get('/api/scanner/image/:filehash', (req, res) => {
-    logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
+  api.get('/api/scanner/image/:filehash', withLogger(logger, (req, res) => {
     scanner.getFsItem(req.params.filehash)
       .then((item) => {
         NodeID3.Promise.read(item?.path || '')
@@ -68,5 +61,5 @@ export const gen = (logger: Logger, api: Express.Application, scanner: Scanner) 
           });
       })
       .catch((e) => res.status(500).json(e));
-  })
+  }));
 }
