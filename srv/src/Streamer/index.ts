@@ -4,7 +4,7 @@ import ffmpeg, { FfmpegCommand } from 'fluent-ffmpeg';
 import { Logger } from '../Logger';
 import { LogLevel, LogTags } from '../Logger/types';
 import { spawn } from 'child_process';
-import { asyncSpawn, getRandomArbitrary, makeSafePath, range } from '../utils';
+import { asyncSpawn, getRandomArbitrary, makeSafePath, range, shuffle } from '../utils';
 import config from '../config';
 import { Scanner } from "../Scanner";
 import { FSItem } from '@prisma/client';
@@ -282,11 +282,10 @@ export class Streamer {
 
     // Да, вот такой вот infinite loop c рандомным порядком :^)
     for (let i = 1; i <= Number.MAX_SAFE_INTEGER; i++) {
-      const fileHashIndex = getRandomArbitrary(0, hashes.length);
-      const fileHash = hashes[fileHashIndex];
+      const shuffled = shuffle([...hashes]);
 
-      if (fileHash) {
-        this.logger.log({ message: 'Playing', extraData: { fileHashIndex, fileHash } });
+      for (let fileHash of shuffled) {
+        this.logger.log({ message: 'Playing', extraData: { fileHash } });
 
         try {
           const fileData = await this.scanner.getFsItem(fileHash);
