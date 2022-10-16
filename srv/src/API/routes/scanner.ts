@@ -8,7 +8,7 @@ import { writeFile } from 'fs/promises';
 
 export const gen = (logger: Logger, api: Express.Application, scanner: Scanner) => {
   api.get('/api/scanner/sync', withLogger(logger, (req, res) => {
-    scanner.syncStorage(CONFIG.CONTENT_ROOT_DIR_PATH, ({ name }) => /.*\.mp3/.test(name))
+    scanner.syncStorage(CONFIG.CONTENT_ROOT_DIR_PATH, ({ name }) => /.*\.mp3/.test(name) || /.*\.ogg/.test(name))
       .then(() => res.json('ok'))
       .catch((e) => res.status(500).json(e));
   }));

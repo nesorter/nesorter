@@ -21,7 +21,7 @@ export default {
   HARDWARE_PLAYER_FFMPEG_DRIVER: process.env.HARDWARE_PLAYER_FFMPEG_DRIVER || '',
   HARDWARE_PLAYER_FFMPEG_DEVICE: process.env.HARDWARE_PLAYER_FFMPEG_DEVICE || '',
 
-  MPV_PATH: process.env.MPV_PATH || 'mpv',
+  MPV_PATH: process.env.MPV_PATH || '/usr/bin/mpv',
   MPV_FADE_TIME: Number(process.env.MPV_FADE_TIME) || 0,
 
   FFMPEG_BITRATE: Number(process.env.FFMPEG_BITRATE) || 256,

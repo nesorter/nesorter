@@ -19,6 +19,7 @@
     "isbin": "^0.0.3",
     "node-id3": "^0.2.3",
     "prisma": "^3.14.0",
+    "tree-kill": "^1.2.2",
     "winston": "^3.8.1",
     "winston-loki": "^6.0.5",
     "yup": "^0.32.11"

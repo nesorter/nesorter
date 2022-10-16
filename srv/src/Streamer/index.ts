@@ -3,12 +3,14 @@ import Config from '../config';
 import ffmpeg, { FfmpegCommand } from 'fluent-ffmpeg';
 import { Logger } from '../Logger';
 import { LogLevel, LogTags } from '../Logger/types';
-import { spawn } from 'child_process';
+import { spawn, exec } from 'child_process';
 import { asyncSpawn, getRandomArbitrary, makeSafePath, range, shuffle } from '../utils';
 import config from '../config';
 import { Scanner } from "../Scanner";
 import { FSItem } from '@prisma/client';
 import axios from 'axios';
+
+const kill = require('tree-kill');
 
 export class Streamer {
   currentPlaylistId?: string;
@@ -137,7 +139,7 @@ export class Streamer {
         });
       } else {
         this.logger.log({
-          message: `Spawned with command: "${childProc.spawnargs.join(' ')}"`,
+          message: `Spawned with command: "${childProc.spawnargs.join(' ')}" pid: ${childProc.pid}`,
           level: LogLevel.DEBUG,
           tags: [LogTags.STREAMER, LogTags.MPV],
         });
@@ -150,28 +152,27 @@ export class Streamer {
       tags: [LogTags.STREAMER, LogTags.MPV],
     }));
 
+    childProc.stdout.on('data', d => console.log(d.toString()));
+
     return new Promise((res, rej) => {
       // делаем поллинг для остановки проигрывания
       const polling = setInterval(() => {
-        if (this.needStop) {
-          this.logger.log({
-            message: `Catch up user stop request. For: ${filePath}`,
-            level: LogLevel.DEBUG,
-            tags: [LogTags.STREAMER, LogTags.MPV],
-          });
-
-          this.needStop = false;
-
-          setTimeout(() => {
-            childProc.emit('exit', 1);
-            childProc.emit('close');
-            childProc.kill('SIGINT');
-            clearInterval(polling);
-          }, 100);
-
-          rej('USER_STOP');
+        if (!this.needStop)  {
+          return;
         }
-      }, 100);
+
+        this.logger.log({
+          message: `Catch up user stop request. For: ${filePath}`,
+          level: LogLevel.DEBUG,
+          tags: [LogTags.STREAMER, LogTags.MPV],
+        });
+
+        this.needStop = false;
+
+        rej('USER_STOP');
+        kill(childProc.pid, 'SIGKILL');
+        clearInterval(polling);
+      }, 50);
 
       // делаем резолв раньше времени, чтобы можно было организовать миксинг треков без лишних костыликов
       // дропаем поллинг, это важно
@@ -193,16 +194,16 @@ export class Streamer {
         res();
       });
 
-      childProc.addListener('error', (e) => {
-        this.logger.log({
-          message: `While playing file: ${filePath} ${e}`,
-          level: LogLevel.ERROR,
-          tags: [LogTags.STREAMER, LogTags.MPV],
-        });
+      // childProc.addListener('error', (e) => {
+      //   this.logger.log({
+      //     message: `While playing file: ${filePath} ${e}`,
+      //     level: LogLevel.ERROR,
+      //     tags: [LogTags.STREAMER, LogTags.MPV],
+      //   });
 
-        clearInterval(polling);
-        rej(e);
-      });
+      //   clearInterval(polling);
+      //   rej(e);
+      // });
     });
   }
 
