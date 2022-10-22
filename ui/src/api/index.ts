@@ -220,6 +220,10 @@ export const api = {
      */
     startStream() {
       return post('/api/playlistsManager/streamStart', {});
+    },
+
+    startAllPlaylists() {
+      return post('/api/playlistManager/playAllPlaylists', {});
     }
   }
 };

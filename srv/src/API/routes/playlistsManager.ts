@@ -59,6 +59,31 @@ export const gen = (
     res.json('scheduled');
   }));
 
+  api.post('/api/playlistManager/playAllPlaylists', withLogger(logger, async (req, res) => {
+    try {
+      const playlists: {hashes: string[], playlistId: string}[] = [];
+      const playlistsIds = (await storage.playlists.findMany({ select: { id: true } })).map(_ => _.id.toString());
+
+      for (let playlistId of playlistsIds) {
+        const queue = new ManualPlaylist(storage, Number(playlistId));
+        const items = await queue.getContent();
+        const hashes: string[] = [];
+  
+        for (let item of items) {
+          hashes.push(item.filehash);
+        }
+
+        playlists.push({ hashes, playlistId });
+      }
+
+      streamer.runPlaylists(playlists);
+      res.json('ok');
+    } catch (e) {
+      logger.log({ message: `Failed stream queue, ${e}`, level: LogLevel.ERROR, tags: [LogTags.API] });
+      res.status(500).json(e);
+    }
+  }));
+
   api.post('/api/playlistsManager/queue/:queueId/stream', withLogger(logger, async (req, res) => {
     try {
       // Disable streaming
@@ -70,13 +95,13 @@ export const gen = (
     try {
       const queue = new ManualPlaylist(storage, Number(req.params.queueId));
       const items = await queue.getContent();
-      const pathlist: string[] = [];
+      const hashes: string[] = [];
 
       for (let item of items) {
-        pathlist.push(item.filehash);
+        hashes.push(item.filehash);
       }
 
-      await streamer.runPlaylist(pathlist, req.params.queueId);
+      streamer.runPlaylist(hashes, req.params.queueId);
       res.json('ok');
     } catch (e) {
       logger.log({ message: `Failed stream queue ${req.params.queueId}, ${e}`, level: LogLevel.ERROR, tags: [LogTags.API] });

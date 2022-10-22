@@ -193,17 +193,6 @@ export class Streamer {
         clearInterval(polling);
         res();
       });
-
-      // childProc.addListener('error', (e) => {
-      //   this.logger.log({
-      //     message: `While playing file: ${filePath} ${e}`,
-      //     level: LogLevel.ERROR,
-      //     tags: [LogTags.STREAMER, LogTags.MPV],
-      //   });
-
-      //   clearInterval(polling);
-      //   rej(e);
-      // });
     });
   }
 
@@ -275,6 +264,52 @@ export class Streamer {
 
     this.ffmpeg = instance;
     instance.run();
+  }
+
+  async runPlaylists(playlists: { hashes: string[], playlistId: string }[]) {
+    this.playing = true;
+
+    // Да, вот такой вот infinite loop c рандомным порядком :^)
+    for (let i = 1; i <= Number.MAX_SAFE_INTEGER; i++) {
+      const shuffled = shuffle([...playlists]);
+
+      for (let playlist of shuffled) {
+        this.currentPlaylistId = playlist.playlistId;
+        this.logger.log({ message: 'Start playlist', extraData: { plId: playlist.playlistId } });
+
+        for (let fileHash of playlist.hashes) {
+          this.logger.log({ message: 'Playing', extraData: { fileHash } });
+
+          try {
+            const fileData = await this.scanner.getFsItem(fileHash);
+  
+            if (fileData) {
+              this.currentFile = fileData.filehash;
+  
+              setTimeout(() => this.publishMetadata(fileData), 2000);
+              await this.playFile(
+                fileData.path,
+                fileData.trimStart,
+                fileData.duration - fileData.trimEnd
+              );
+            }
+          } catch (e) {
+            console.log((e as any).message);
+  
+            if (e === 'USER_STOP') {
+              this.playing = false;
+              this.currentPlaylistId = undefined;
+              this.currentFile = undefined;
+              return;
+            }
+          }
+        }        
+      }
+    }
+
+    this.playing = false;
+    this.currentPlaylistId = undefined;
+    this.currentFile = undefined;
   }
 
   async runPlaylist(hashes: string[], playlistId?: string) {

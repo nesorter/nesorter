@@ -26,8 +26,13 @@ export const ActionBox = () => {
     api.scheduler.start();
   }
 
+  const handleStartAllPlaylists = () => {
+    api.streamer.startAllPlaylists();
+  }
+
   return (
     <Box flexDirection="column" gap={7} width={256}>
+      <Button variant="secondary" size="small" onClick={handleStartAllPlaylists}>Play all playlists (randomly)</Button>
       <Button variant="secondary" size="small" onClick={handleStartStream}>Start stream</Button>
       <Button variant="secondary" size="small" onClick={handleStopStream}>Stop stream</Button>
       <Button variant="secondary" size="small" onClick={handleStopPlay}>Stop playing</Button>
