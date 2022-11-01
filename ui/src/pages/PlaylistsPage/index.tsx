@@ -46,6 +46,12 @@ const PlaylistsPage = () => {
               </Box>
             </PaneItem>
           ))}
+
+          {!Boolean(playlists.length) && (
+            <PaneItem key="none" isSelected={false} onSelect={() => null} step={1}>
+              <Text color="textLight" fontSize="sm" variant="oneline">None created</Text>
+            </PaneItem>
+          )}
         </Pane>
       </Box>
 

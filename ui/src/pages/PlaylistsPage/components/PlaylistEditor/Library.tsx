@@ -6,9 +6,10 @@ import { useFetch } from "../../../../hooks/useFetch";
 
 type Props = {
   onAdd: (hash: string) => unknown;
+  onAddAll: (hashes: string[]) => Promise<void>;
 }
 
-export const Library = ({ onAdd }: Props) => {
+export const Library = ({ onAdd, onAddAll }: Props) => {
   const chainFetch = useFetch();
   const catsFetch = useFetch();
 
@@ -109,6 +110,11 @@ export const Library = ({ onAdd }: Props) => {
 
       <Box width="100%" padding="10px" flexDirection="column" gap={10}>
         {chainFetch.isFetching && <Text fontSize="desc" color="textLight">tracks fetching</Text>}
+
+        {Boolean(files.length) && (
+          <Button variant="primary" size="small" onClick={() => onAddAll(files.map(_ => _.filehash)).catch(e => alert(e.message))}>Add all</Button>
+        )}
+
         {files.map((item) => {
           const file = chainValues.find(i => i.fsItem?.filehash === item.filehash);
 
@@ -128,6 +134,10 @@ export const Library = ({ onAdd }: Props) => {
             </Box>
           );
         })}
+
+        {!Boolean(files.length) && (
+          <Text fontSize="desc" color="textLight">None found. Try add files to categories or another filters</Text>
+        )}
       </Box>
     </Box>
   );

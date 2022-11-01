@@ -63,8 +63,19 @@ export const PlaylistEditor = ({ id }: Props) => {
     api.streamer.startPlaylist(id);
   }
 
+  const handleAddAll = async (hashes: string[]) => {
+    const items: UpdatePlaylistItemDto = hashes.map((_, index) => ({ order: index, filehash: _ }));
+
+    return api.playlistsManager.updatePlaylist(id, items).then(() => {
+      return api.playlistsManager.getPlaylist(id)
+        .then(setTracks)
+        .catch(alert)
+        .finally(setFetched);
+    });
+  }
+
   const library = (
-    <Library onAdd={handleAdd} />
+    <Library onAdd={handleAdd} onAddAll={handleAddAll} />
   );
 
   const added = (

@@ -6,7 +6,7 @@ import { Box, Button, Modal } from "../../../components"
 import { UseModalReturn } from "../../../hooks/useModal"
 
 export const CatsEditModal = ({ modalState }: { modalState: UseModalReturn }): JSX.Element => {
-  const addNewForm = useForm<{ name: string, values: string }>({ defaultValues: { name: 'NameMe!', values: 'Tag1,Tag2,etc' } });
+  const addNewForm = useForm<{ name: string, values: string }>({ defaultValues: { name: 'Category name', values: 'Tag1,Tag2,etc' } });
   const [addNew, setAddNew] = useState(false);
   const [defaultCategories, setDefaultCategories] = useState<ClassificationCategory[]>([]);
 
@@ -72,8 +72,8 @@ export const CatsEditModal = ({ modalState }: { modalState: UseModalReturn }): J
           </form>
         ) : (
           <Box gap={14}>
-            <Button size="small" variant="secondary" onClick={() => handleAddNew()}>Add new category</Button>
-            <Button size="small" variant="primary" onClick={() => handleApply()}>Apply</Button>
+            <Button size="small" variant="primary" onClick={() => handleAddNew()}>Add new category</Button>
+            {Boolean(defaultCategories.length) && <Button size="small" variant="primary" onClick={() => handleApply()}>Apply</Button>}
           </Box>
         )}
       </Box>

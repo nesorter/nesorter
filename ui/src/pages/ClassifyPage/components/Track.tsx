@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
-import { api } from "../../../api";
-import { ChainItem, ClassificationCategory } from "../../../api/types";
-import { Box, Button, StatedButton, Text } from "../../../components";
+import { useEffect, useState } from 'react';
+import { api } from '../../../api';
+import { ChainItem, ClassificationCategory } from '../../../api/types';
+import { Box, Button, StatedButton, Text } from '../../../components';
 
 type Props = {
   track: ChainItem;
-  onNavigate: (direction: 'prev' | 'next') => void;
   onTrackEdit: () => void;
+  onHandleApplyAll: (fileHash: string, categories: ClassificationCategory[]) => Promise<void>;
 }
 
-export const Track = ({ track, onNavigate, onTrackEdit }: Props): JSX.Element => {
+export const Track = ({ track, onTrackEdit, onHandleApplyAll }: Props): JSX.Element => {
+  const [applyFetching, setApplyFetching] = useState(false);
   const [defaultCategories, setDefaultCategories] = useState<ClassificationCategory[]>([]);
   const [categories, setCategories] = useState<ClassificationCategory[]>([]);
   const audioProps = {
@@ -54,12 +55,12 @@ export const Track = ({ track, onNavigate, onTrackEdit }: Props): JSX.Element =>
       api.classificator.setCategories(track.fsItem?.filehash || '', next);
       return next;
     });
-  }
+  };
 
   const TrackInfo = () => (
     <Box gap={14} width="100%">
       <Box backgroundColor="#999" width="140px" height="140px" borderRadius="8px" overflow="hidden">
-        <img src={api.scanner.getFileImageAsPath(track?.fsItem?.filehash || '')} alt="" style={{ objectFit: 'cover' }} />
+        <img src={api.scanner.getFileImageAsPath(track?.fsItem?.filehash || '')} alt="" style={{ objectFit: 'cover' }}/>
       </Box>
 
       <Box width="100%" maxWidth="550px" flexDirection="column" gap={7} justifyContent="space-between">
@@ -70,15 +71,26 @@ export const Track = ({ track, onNavigate, onTrackEdit }: Props): JSX.Element =>
 
         <Box flexDirection="column" gap={7}>
           <audio {...audioProps}>
-            <source src={api.scanner.getFileAsPath(track?.fsItem?.filehash || '')} />
+            <source src={api.scanner.getFileAsPath(track?.fsItem?.filehash || '')}/>
             Your browser does not support the audio element.
           </audio>
 
           <Box gap={7} justifyContent="space-between">
             <Box gap={7}>
-              <Button variant="secondary" size="normal" onClick={() => onNavigate('prev')}>Prev</Button>
-              <Button variant="secondary" size="normal" onClick={() => onNavigate('next')}>Next</Button>
-              <Button variant="secondary" size="normal">Apply Prev</Button>
+              <Button variant="secondary" size="normal" disabled={applyFetching} onClick={() => {
+                setApplyFetching(true);
+
+                onHandleApplyAll(track.fsItem?.filehash || '', categories)
+                  .then(() => {
+                    alert('done, run "sync" (in status page) for update global chain state');
+                  })
+                  .catch((e) => {
+                    alert(e.message);
+                  })
+                  .finally(() => {
+                    setApplyFetching(false);
+                  });
+              }}>Apply to all tracks in category</Button>
             </Box>
 
             <Button variant="secondary" size="normal" onClick={onTrackEdit}>Open track editor</Button>
@@ -112,8 +124,8 @@ export const Track = ({ track, onNavigate, onTrackEdit }: Props): JSX.Element =>
 
   return (
     <Box width="100%" flexDirection="column" gap={14}>
-      <TrackInfo />
-      <Categories />
+      <TrackInfo/>
+      <Categories/>
     </Box>
-  )
-}
+  );
+};

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../../api";
-import { Chain } from "../../api/types";
+import { Chain, ClassificationCategory } from '../../api/types';
 import { Box, Button } from "../../components";
 import { useModal } from "../../hooks/useModal";
 import { CatsEditModal } from "./components/CatsEditModal";
@@ -13,7 +13,6 @@ const ClassifyPage = () => {
   const [selectedTrack, setSelectedTrack] = useState('');
 
   const selectedAsChainItem = useMemo(() => Object.values(chain).find(_ => _.key === selectedTrack), [chain, selectedTrack]);
-  const selectedIndex = useMemo(() => Object.values(chain).findIndex(_ => _.key === selectedTrack), [chain, selectedTrack]);
 
   const editCatsModalState = useModal(false);
   const editTrackModal = useModal(false);
@@ -24,13 +23,23 @@ const ClassifyPage = () => {
       .catch(console.log);
   }, []);
 
-  const handleNavigate = (direction: 'prev' | 'next') => {
-    if (!selectedIndex) {
+  const handleApplyAll = async (fileHash: string, categories: ClassificationCategory[]) => {
+    const plain = Object.values(chain);
+    const item = plain.find(_ => _.fsItem?.filehash === fileHash);
+
+    if (!item) {
       return;
     }
 
-    const next = Object.values(chain).at(selectedIndex + (direction === 'prev' ? -1 : 1));
-    setSelectedTrack(next?.key || '');
+    const siblings = plain.filter(_ => _.parent === item.parent);
+
+    if (!siblings) {
+      return;
+    }
+
+    for (let sibling of siblings) {
+      await api.classificator.setCategories(sibling.fsItem?.filehash || '', categories);
+    }
   }
 
   return (
@@ -40,7 +49,7 @@ const ClassifyPage = () => {
         <TrackTree chain={chain} selectedTrack={selectedTrack} setSelectedTrack={setSelectedTrack} />
       </Box>
 
-      <Box width="100%">{selectedAsChainItem ? <Track track={selectedAsChainItem} onNavigate={handleNavigate} onTrackEdit={() => editTrackModal.setOpen(true)} /> : null}</Box>
+      <Box width="100%">{selectedAsChainItem ? <Track track={selectedAsChainItem} onHandleApplyAll={handleApplyAll} onTrackEdit={() => editTrackModal.setOpen(true)} /> : null}</Box>
 
       <CatsEditModal modalState={editCatsModalState} />
       <TrackEditModal modalState={editTrackModal} trackHash={selectedAsChainItem?.fsItem?.filehash || ''} />
