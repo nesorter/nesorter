@@ -8,7 +8,7 @@ import { Box, Button, Pane, Text } from "../../components";
 type Form = {
   start: string;
   end: string;
-  playlistId: string;
+  playlistIds: string;
 };
 
 export const SchedulerPage = () => {
@@ -25,8 +25,7 @@ export const SchedulerPage = () => {
   };
 
   const handleSubmit = (data: Form) => {
-    console.log(currentSecond(data.start), currentSecond(data.end), data.playlistId);
-    return api.scheduler.createItem(currentSecond(data.start), currentSecond(data.end), data.playlistId).then(init).catch(alert);
+    return api.scheduler.createItem(currentSecond(data.start), currentSecond(data.end), data.playlistIds).then(init).catch(alert);
   };
 
   const getTime = (time: number) => {
@@ -46,9 +45,9 @@ export const SchedulerPage = () => {
               <Text color="textLight">#{_.id} {getTime(_.startAt)} - {getTime(_.endAt)}</Text>
               <Text color="textLight" fontWeight="bold">PL#{_.playlistId}</Text>
 
-              <Button 
-                size="small" 
-                variant="secondary" 
+              <Button
+                size="small"
+                variant="secondary"
                 onClick={() => api.scheduler.deleteItem(_.id).then(init)}
               >
                 Delete
@@ -62,7 +61,7 @@ export const SchedulerPage = () => {
         <Box flexDirection="column">
           <input type="time" {...createForm.register('start')} placeholder="start time" />
           <input type="time" {...createForm.register('end')} placeholder="end time" />
-          <input type="number" {...createForm.register('playlistId')} placeholder="playlist id" />
+          <input {...createForm.register('playlistIds')} placeholder="playlists id (use ',' as separator)" />
           <input type="submit" value="create" />
         </Box>
       </form>

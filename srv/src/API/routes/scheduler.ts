@@ -2,6 +2,7 @@ import Express from 'express';
 import { Logger } from "../../Logger";
 import { Scheduler } from "../../Scheduler";
 import { withLogger } from '../../utils';
+import { ScheduleItem } from '@prisma/client';
 
 export const gen = (logger: Logger, api: Express.Application, scheduler: Scheduler) => {
   api.get('/api/scheduler/start', withLogger(logger, (req, res) => {
@@ -22,10 +23,18 @@ export const gen = (logger: Logger, api: Express.Application, scheduler: Schedul
       .catch((e) => res.status(500).json(e));
   }));
 
-  api.post('/api/scheduler', withLogger(logger, async (req, res) => {
-    const { start, end, playlistId } = req.body as { start: number; end: number; playlistId: number };
+  api.post('/api/scheduler/:id', withLogger(logger, (req, res) => {
+    const { id, data } = req.body as { id: number, data: Omit<ScheduleItem, 'id'> };
 
-    scheduler.createItem(start, end, Number(playlistId))
+    scheduler.updateItem(id, data)
+      .then((_) => res.json(_))
+      .catch((e) => res.status(500).json(e));
+  }));
+
+  api.post('/api/scheduler', withLogger(logger, async (req, res) => {
+    const { start, end, playlistIds } = req.body as { start: number; end: number; playlistIds: string };
+
+    scheduler.createItem(start, end, playlistIds)
       .then((_) => res.json(_))
       .catch((e) => res.status(500).json(e));
   }));

@@ -12,7 +12,7 @@ model ScheduleItem {
   id      Int @id @default(autoincrement())
   startAt Int
   endAt   Int
-  playlistId Int
+  playlistIds String
 }
 
 model Classification {

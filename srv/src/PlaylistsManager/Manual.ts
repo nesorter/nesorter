@@ -37,6 +37,10 @@ export class ManualPlaylist {
     }
   }
 
+  async delete() {
+    await this.db.playlists.delete({ where: { id: this.playlistId } });
+  }
+
   getContent(): Promise<ManualPlaylistItem[]> {
     return this.db.manualPlaylistItem.findMany({ where: { playlistId: this.playlistId } });
   }

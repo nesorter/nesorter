@@ -42,6 +42,15 @@ export const gen = (
           logger.log({ message: `Failed update queue ${req.params.queueId}, ${e}`, level: LogLevel.ERROR, tags: [LogTags.API] });
           res.status(500).json(e)
         });
+    }))
+    .delete(withLogger(logger, (req, res) => {
+      const queue = new ManualPlaylist(storage, Number(req.params.queueId));
+      queue.delete()
+        .then((result) => res.json({ result }))
+        .catch((e) => {
+          logger.log({ message: `Failed delete queue ${req.params.queueId}, ${e}`, level: LogLevel.ERROR, tags: [LogTags.API] });
+          res.status(500).json(e)
+        });
     }));
 
   api.post('/api/playlistsManager/streamStop', withLogger(logger, async (req, res) => {
@@ -68,7 +77,7 @@ export const gen = (
         const queue = new ManualPlaylist(storage, Number(playlistId));
         const items = await queue.getContent();
         const hashes: string[] = [];
-  
+
         for (let item of items) {
           hashes.push(item.filehash);
         }

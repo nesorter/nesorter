@@ -43,6 +43,13 @@ const PlaylistsPage = () => {
               <Box gap={7} alignItems="center" width="100%">
                 <Icon name="dir" color="#999" size={14} />
                 <Text color="textLight" fontSize="sm" variant="oneline">{_.name} #{_.id}</Text>
+                <Text color="textLight" fontSize="sm" variant="oneline" onClick={() => {
+                  api.playlistsManager.deletePlaylist(_.id)
+                    .catch(alert)
+                    .finally(() => {
+                      location.reload();
+                    });
+                }}>[delete]</Text>
               </Box>
             </PaneItem>
           ))}

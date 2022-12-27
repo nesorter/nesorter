@@ -1,5 +1,5 @@
 import { delete_, get, post, put } from "./methods";
-import { 
+import {
   Chain,
   ClassificatedItem,
   ClassificationCategory,
@@ -53,15 +53,22 @@ export const api = {
     /**
      * Создает айтем в расписании
      */
-    createItem(start: number, end: number, playlistId: number | string) {
-      return post('/api/scheduler', { start, end, playlistId });
+    createItem(start: number, end: number, playlistIds: string) {
+      return post('/api/scheduler', { start, end, playlistIds });
+    },
+
+    /**
+     * Обновляет айтем расписания
+     */
+    updateItem(itemId: number | string, data: { start: number, end: number, playlistIds: string }) {
+      return post('/api/scheduler', { itemId, data });
     },
 
     /**
      * Удаляет айтем в расписании
      */
-    deleteItem(playlistId: number | string) {
-      return delete_(`/api/scheduler/${playlistId}`);
+    deleteItem(itemId: number | string) {
+      return delete_(`/api/scheduler/${itemId}`);
     },
   },
 
@@ -96,7 +103,7 @@ export const api = {
     getClassifiedList(filters?: GetClassifiedFiltersDTO) {
       return get<ClassificatedItem[]>('/api/classificator/items', filters || {});
     },
-    
+
     /**
      * Возвращает категории для трека
      */
@@ -190,6 +197,13 @@ export const api = {
      */
     updatePlaylist(id: string | number, items: UpdatePlaylistItemDto) {
       return post(`/api/playlistsManager/queue/${id}`, items);
+    },
+
+    /**
+     * Удаляет плейлист
+     */
+    deletePlaylist(id: string | number) {
+      return delete_(`/api/playlistsManager/queue/${id}`);
     },
   },
 
