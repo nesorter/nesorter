@@ -74,5 +74,5 @@ export type SchedulerItem = {
   id: number;
   startAt: number;
   endAt: number;
-  playlistId: number;
+  playlistIds: string;
 };

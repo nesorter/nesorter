@@ -58,7 +58,7 @@ export class Streamer {
 
           client.on('data', (data) => {
             const self = this.socket.find(_ => _.id === id);
-            
+
             // Не делаем роутинг в случае когда сокет не используется
             if (!self?.binded) {
               return;
@@ -282,10 +282,10 @@ export class Streamer {
 
           try {
             const fileData = await this.scanner.getFsItem(fileHash);
-  
+
             if (fileData) {
               this.currentFile = fileData.filehash;
-  
+
               setTimeout(() => this.publishMetadata(fileData), 2000);
               await this.playFile(
                 fileData.path,
@@ -295,7 +295,7 @@ export class Streamer {
             }
           } catch (e) {
             console.log((e as any).message);
-  
+
             if (e === 'USER_STOP') {
               this.playing = false;
               this.currentPlaylistId = undefined;
@@ -303,7 +303,7 @@ export class Streamer {
               return;
             }
           }
-        }        
+        }
       }
     }
 
@@ -329,7 +329,12 @@ export class Streamer {
           if (fileData) {
             this.currentFile = fileData.filehash;
 
-            setTimeout(() => this.publishMetadata(fileData), 2000);
+            setTimeout(() => {
+              try {
+                this.publishMetadata(fileData).catch(() => null);
+              } catch {}
+            }, 2000);
+
             await this.playFile(
               fileData.path,
               fileData.trimStart,

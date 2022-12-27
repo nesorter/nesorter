@@ -41,9 +41,11 @@ export const SchedulerPage = () => {
       <Box width="100%" maxWidth="256px" minWidth="256px">
         <Pane padding="14px">
           {items.map(_ => (
-            <Box key={_.id} gap={14} alignItems="center">
-              <Text color="textLight">#{_.id} {getTime(_.startAt)} - {getTime(_.endAt)}</Text>
-              <Text color="textLight" fontWeight="bold">PL#{_.playlistId}</Text>
+            <Box key={_.id} flexDirection="column" justifyContent="start" alignItems="start" paddingBottom="14px">
+              <Box gap={14} alignItems="center" flexWrap="wrap">
+                <Text color="textLight" variant="oneline">#{_.id} {getTime(_.startAt)}-{getTime(_.endAt)}</Text>
+                <Text color="textLight" fontWeight="bold" variant="oneline">[{_.playlistIds}]</Text>
+              </Box>
 
               <Button
                 size="small"
