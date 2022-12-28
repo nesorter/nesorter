@@ -41,16 +41,18 @@ const PlaylistsPage = () => {
           {playlists.map(_ => (
             <PaneItem key={_.id} isSelected={selected === _.id} step={1} onSelect={() => setSelected(_.id)}>
               <Box gap={7} alignItems="center" width="100%">
-                <Icon name="dir" color="#999" size={14} />
-                <Text color="textLight" fontSize="sm" variant="oneline">{_.name} #{_.id}</Text>
-                <Text color="textLight" fontSize="sm" variant="oneline" onClick={() => {
+                <Button size="small" variant="secondary" style={{ padding: '0px 4px', width: 'auto', minWidth: 'unset' }} onClick={() => {
                   api.playlistsManager.deletePlaylist(_.id)
                     .catch(alert)
                     .finally(() => {
                       // eslint-disable-next-line no-restricted-globals
                       location.reload();
                     });
-                }}>[delete]</Text>
+                }}>
+                  <Text color="textLight" fontSize="sm" variant="oneline">[x]</Text>
+                </Button>
+                <Icon name="dir" color="#999" size={14} />
+                <Text color="textLight" fontSize="sm" variant="oneline">{_.name} #{_.id}</Text>
               </Box>
             </PaneItem>
           ))}

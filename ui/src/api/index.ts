@@ -60,8 +60,8 @@ export const api = {
     /**
      * Обновляет айтем расписания
      */
-    updateItem(itemId: number | string, data: { start: number, end: number, playlistIds: string }) {
-      return post('/api/scheduler', { itemId, data });
+    updateItem(itemId: number | string, data: { startAt: number, endAt: number, playlistIds: string }) {
+      return post(`/api/scheduler/${itemId}`, { id: itemId, data });
     },
 
     /**
