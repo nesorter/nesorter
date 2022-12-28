@@ -47,6 +47,7 @@ const PlaylistsPage = () => {
                   api.playlistsManager.deletePlaylist(_.id)
                     .catch(alert)
                     .finally(() => {
+                      // eslint-disable-next-line no-restricted-globals
                       location.reload();
                     });
                 }}>[delete]</Text>

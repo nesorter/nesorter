@@ -7,6 +7,8 @@ import { LogLevel, LogTags } from "../Logger/types";
 import { ScheduleItem } from "@prisma/client";
 import { shuffle } from '../utils';
 
+const getSamaraDate = () => (new Date((new Date()).setHours(new Date().getHours() + 4)));
+
 export class Scheduler {
   intervals: NodeJS.Timer[] = [];
   currentItem = -1;
@@ -16,7 +18,7 @@ export class Scheduler {
   constructor(private db: StorageType, private logger: Logger, private streamer: Streamer) {}
 
   get currentSecondsFromDayStart() {
-    return secondsInDay - differenceInSeconds(endOfDay(new Date()), new Date());
+    return secondsInDay - differenceInSeconds(endOfDay(getSamaraDate()), getSamaraDate());
   }
 
   async getPlaylist(id: number) {
