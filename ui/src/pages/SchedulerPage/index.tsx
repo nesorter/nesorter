@@ -1,12 +1,11 @@
-import { addSeconds, differenceInSeconds, endOfDay, format, parse, secondsInDay, startOfDay } from "date-fns";
+import { differenceInSeconds, endOfDay, parse, secondsInDay } from "date-fns";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { api } from "../../api";
 import { SchedulerItem } from "../../api/types";
-import { Box, Button, Pane, Text } from "../../components";
+import { Box } from "../../components";
 import { Timeline } from './components/Timeline';
 import { ScheduleItems } from './components/ScheduleItems';
-import { getTimeFormatted } from './utils';
 
 type Form = {
   start: string;

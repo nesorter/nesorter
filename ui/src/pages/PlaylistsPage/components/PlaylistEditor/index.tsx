@@ -20,7 +20,7 @@ export const PlaylistEditor = ({ id }: Props) => {
       .then(setChain)
       .catch(alert)
       .finally(chainFetch.setFetched);
-  }, []);
+  }, [chainFetch]);
 
   const { isFetching, setFetched, setFetching } = useFetch();
   const [tracks, setTracks] = useState<ManualPlaylistItem[]>([]);
@@ -32,7 +32,7 @@ export const PlaylistEditor = ({ id }: Props) => {
       .then(setTracks)
       .catch(alert)
       .finally(setFetched);
-  }, [id]);
+  }, [id, setFetched, setFetching, chainFetch]);
 
   const handleAdd = (filehash: string) => {
     const items: UpdatePlaylistItemDto = tracks.map(_ => ({ order: _.order, filehash: _.filehash }));
@@ -60,7 +60,7 @@ export const PlaylistEditor = ({ id }: Props) => {
   }
 
   const handlePlay = () => {
-    api.streamer.startPlaylist(id);
+    api.streamer.startPlaylist(id).catch(console.error);
   }
 
   const handleAddAll = async (hashes: string[]) => {

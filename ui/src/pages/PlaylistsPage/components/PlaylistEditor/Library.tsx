@@ -33,7 +33,7 @@ export const Library = ({ onAdd, onAddAll }: Props) => {
       .then(setChain)
       .catch(alert)
       .finally(chainFetch.setFetched);
-  }, []);
+  }, [chainFetch, catsFetch]);
 
   useEffect(() => {
     if (!chainValues.length) {
@@ -56,7 +56,7 @@ export const Library = ({ onAdd, onAddAll }: Props) => {
         }).filter(i => i !== undefined) as FSItem[]
       ))
       .catch(console.error);
-  }, [filters, chainValues.length]);
+  }, [filters, chainValues]);
 
   const handleToggle = (catId: number, catName: string, catValue: string) => {
     setFilters((prev) => {

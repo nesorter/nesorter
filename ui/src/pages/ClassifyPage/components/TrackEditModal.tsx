@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { api } from "../../../api";
-import { ClassificationCategory, FSItem } from "../../../api/types";
-import { Box, Button, Modal, Text } from "../../../components"
+import { Box, Modal, Text } from "../../../components"
 import { useFetch } from "../../../hooks/useFetch";
 import { UseModalReturn } from "../../../hooks/useModal"
 import { useTrimmerState } from "../../../hooks/useTrimmerState";
@@ -13,7 +11,6 @@ export const TrackEditModal = ({ modalState, trackHash }: { modalState: UseModal
   const { isFetching, setFetched, setFetching } = useFetch();
   const trimmerState = useTrimmerState({ start: 0, end: 0, duration: 0 });
 
-  const [fsItem, setFsItem] = useState<FSItem>();
   const [waveForm, setWaveForm] = useState<number[]>([]);
 
   const audioProps = {
@@ -31,11 +28,11 @@ export const TrackEditModal = ({ modalState, trackHash }: { modalState: UseModal
     Promise.all([
       api.scanner.getWaveform(trackHash).then(setWaveForm),
       api.scanner.getFsItem(trackHash).then(_ => {
-        setFsItem(_);
+        // setFsItem(_);
         trimmerState.setState({ start: _.trimStart, end: _.duration - _.trimEnd, duration: _.duration });
       }),
     ]).catch(alert).finally(setFetched);
-  }, [trackHash]);
+  }, [trackHash, trimmerState, setFetching, setFetched]);
 
   const handleSave = () => {
     api.scanner.setTrim(trackHash, trimmerState.state.start, trimmerState.state.duration - trimmerState.state.end)

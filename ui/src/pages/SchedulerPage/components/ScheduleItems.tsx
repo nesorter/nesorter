@@ -57,7 +57,7 @@ const ScheduleItem = ({ id, playlistIds, startAt, endAt, index }: SchedulerItem 
         } as Option)));
       })
       .catch(alert);
-  }, []);
+  }, [playlistIds]);
 
   const currentSecond = (data: string) => {
     const date = parse(data, 'HH:mm', new Date());
