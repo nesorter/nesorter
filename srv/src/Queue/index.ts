@@ -6,6 +6,7 @@ import config from '../config';
 export type QueueItem = {
   order: number;
   fileHash: string;
+  playlistId?: number;
   startAt: number;
   endAt: number;
 }
@@ -15,6 +16,7 @@ export type QueueState = 'stopped' | 'playing';
 export class Queue {
   public items: QueueItem[] = [];
   public currentOrder: number | null = null;
+  public currentPlaylistId: number | undefined = undefined;
   private internalOrder = 0;
   public state: QueueState = 'stopped';
 
@@ -30,11 +32,16 @@ export class Queue {
   }
 
   private async runLoop() {
+    if (this.state === 'stopped') {
+      return;
+    }
+
     const currentSeconds = currentSecondsFromDayStart();
     const item = this.items.find((_) => _.startAt <= currentSeconds && _.endAt >= currentSeconds);
 
     if (item && item?.order !== this.currentOrder) {
       this.currentOrder = item.order;
+      this.currentPlaylistId = item.playlistId;
       const file = await this.db.fSItem.findFirst({ where: { filehash: item.fileHash } });
       if (file) {
         const endPosition = item.endAt - item.startAt;
@@ -53,6 +60,10 @@ export class Queue {
     return this.items.find(_ => _.order === this.currentOrder)?.fileHash;
   }
 
+  public clear() {
+    this.items = this.items.filter(_ => _.order === this.currentOrder);
+  }
+
   public play() {
     this.state = 'playing';
     this.runLoop();
@@ -64,7 +75,7 @@ export class Queue {
     this.player.stopPlay();
   }
 
-  public async add(fileHash: string, hardEndAt?: number) {
+  public async add(fileHash: string, hardEndAt: number | undefined, playlistId: number | undefined) {
     const file = await this.db.fSItem.findFirst({ where: { filehash: fileHash } });
     if (!file) {
       throw new Error('Wrong fileHash');
@@ -91,6 +102,7 @@ export class Queue {
     this.items.push({
       order: Number(this.internalOrder),
       fileHash,
+      playlistId,
       startAt,
       endAt,
     });

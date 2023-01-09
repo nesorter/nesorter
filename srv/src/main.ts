@@ -10,6 +10,7 @@ import { API } from './API';
 import { Scheduler } from './Scheduler';
 import { LogLevel, LogTags } from "./Logger/types";
 import { Publisher } from './Publisher';
+import { PlaylistsPlayHelper } from './PlaylistsPlayHelper';
 
 const logger = new Logger(Storage);
 const classificator = new Classificator(Storage, logger);
@@ -20,8 +21,9 @@ const publisher = new Publisher(logger);
 const player = new Player(logger, publisher);
 const queue = new Queue(Storage, player);
 const scheduler = new Scheduler(Storage, logger, queue);
+const playHelper = new PlaylistsPlayHelper(Storage, queue);
 
-const api = new API(Storage, logger, scanner, classificator, playlistsManager, streamer, scheduler, queue);
+const api = new API(Storage, logger, scanner, classificator, playlistsManager, streamer, scheduler, queue, playHelper);
 api.bindRoutes().start();
 
 // TODO: в аргументы запуска

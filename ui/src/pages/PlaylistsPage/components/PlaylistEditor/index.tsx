@@ -44,7 +44,7 @@ export const PlaylistEditor = ({ id }: Props) => {
         .catch(alert)
         .finally(setFetched);
     });
-  }
+  };
 
   const handleDelete = (filehash: string) => {
     const items: UpdatePlaylistItemDto = tracks
@@ -57,11 +57,11 @@ export const PlaylistEditor = ({ id }: Props) => {
         .catch(alert)
         .finally(setFetched);
     });
-  }
+  };
 
   const handlePlay = () => {
-    alert('missed implementation');
-  }
+    api.player.playPlaylist(id);
+  };
 
   const handleAddAll = async (hashes: string[]) => {
     const items: UpdatePlaylistItemDto = hashes.map((_, index) => ({ order: index, filehash: _ }));
@@ -72,7 +72,7 @@ export const PlaylistEditor = ({ id }: Props) => {
         .catch(alert)
         .finally(setFetched);
     });
-  }
+  };
 
   const library = (
     <Library onAdd={handleAdd} onAddAll={handleAddAll} />

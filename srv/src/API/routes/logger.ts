@@ -16,14 +16,14 @@ export const gen = (api: Express.Application, logger: Logger, streamer: Streamer
     let fileData = null;
     let playlistData = null;
 
-    if (streamer.playing) {
+    if (queue.state === 'playing') {
       fileData = await scanner.getFsItem(queue.currentFileHash || '');
-      playlistData = await scheduler.getPlaylist(Number(streamer.currentPlaylistId));
+      playlistData = await scheduler.getPlaylist(Number(queue.currentPlaylistId));
     }
 
     res.json({
       scheduling: scheduler.processing,
-      playing: streamer.playing,
+      playing: queue.state === 'playing',
       syncing: scanner.scanInProgress,
       streaming: streamer.streaming,
       currentFile: queue.currentFileHash,
@@ -35,7 +35,7 @@ export const gen = (api: Express.Application, logger: Logger, streamer: Streamer
       thumbnailPath: `/api/scanner/image/${queue.currentFileHash}`,
       fileData,
       playlistData,
-      currentPlaylistId: streamer.currentPlaylistId,
+      currentPlaylistId: queue.currentPlaylistId,
     });
   });
 }

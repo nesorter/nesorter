@@ -10,6 +10,7 @@ import { StorageType } from '../Storage';
 import { Streamer } from '../Streamer';
 import { Scheduler } from '../Scheduler';
 import { Queue } from '../Queue';
+import { PlaylistsPlayHelper } from './../PlaylistsPlayHelper';
 
 import { gen as genScannerRoutes } from './routes/scanner';
 import { gen as genLoggerRoutes } from './routes/logger';
@@ -33,6 +34,7 @@ export class API {
     private streamer: Streamer,
     private scheduler: Scheduler,
     private queue: Queue,
+    private playHelper: PlaylistsPlayHelper,
   ) {
     this.router = Express();
     this.router.use(Express.json());
@@ -44,7 +46,7 @@ export class API {
     genPLaylistsManagerRoutes(this.logger, this.router, this.playlistsManager, this.streamer, this.db);
     genScannerRoutes(this.logger, this.router, this.scanner);
     genSchedulerRoutes(this.logger, this.router, this.scheduler);
-    getPlayerRoutes(this.logger, this.router, this.queue);
+    getPlayerRoutes(this.logger, this.router, this.queue, this.playHelper);
 
     return this;
   }

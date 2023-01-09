@@ -1,9 +1,10 @@
 import Express from 'express';
 import { Logger } from '../../Logger';
-import { withLogger } from '../../utils';
 import { Queue } from '../../Queue';
+import { PlaylistsPlayHelper } from './../../PlaylistsPlayHelper';
+import { withLogger } from '../../utils';
 
-export const gen = (logger: Logger, api: Express.Application, queue: Queue) => {
+export const gen = (logger: Logger, api: Express.Application, queue: Queue, playHelper: PlaylistsPlayHelper) => {
   api.post('/api/player/play', withLogger(logger, (_req, res) => {
     try {
       queue.play();
@@ -17,6 +18,34 @@ export const gen = (logger: Logger, api: Express.Application, queue: Queue) => {
     try {
       queue.stop();
       res.status(200).json({ message: 'stopped' });
+    } catch (e) {
+      res.status(500).json(e);
+    }
+  }));
+
+  api.post('/api/player/clear', withLogger(logger, (_req, res) => {
+    try {
+      queue.clear();
+      res.status(200).json({ message: 'cleared' });
+    } catch (e) {
+      res.status(500).json(e);
+    }
+  }));
+
+  api.post('/api/player/helper/random', withLogger(logger, (_req, res) => {
+    try {
+      playHelper.queueAllPlaylistsRandomly();
+      res.status(200).json({ message: 'queued' });
+    } catch (e) {
+      res.status(500).json(e);
+    }
+  }));
+
+  api.post('/api/player/helper/playlist/:id', withLogger(logger, (req, res) => {
+    try {
+      const { id } = req.params as { id: string };
+      playHelper.queuePlaylist(Number(id));
+      res.status(200).json({ message: 'queued' });
     } catch (e) {
       res.status(500).json(e);
     }

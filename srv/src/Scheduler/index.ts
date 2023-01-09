@@ -109,7 +109,7 @@ export class Scheduler {
               const file = await this.db.fSItem.findFirst({ where: { filehash: track.filehash } });
               if (file) {
                 durationAccumulator += file.duration;
-                this.queue.add(track.filehash, item.endAt);
+                this.queue.add(track.filehash, item.endAt, playlistId);
               }
             }
           });

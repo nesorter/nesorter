@@ -237,5 +237,26 @@ export const api = {
     stop() {
       return post('/api/player/stop', {});
     },
+
+    /**
+     * Очищает queue
+     */
+    clear() {
+      return post('/api/player/clear', {});
+    },
+
+    /**
+     * Включает режим рандомных плейлистов в queue
+     */
+    playRandom() {
+      return post('/api/player/helper/random', {});
+    },
+
+    /**
+     * Включает плейлист в queue
+     */
+    playPlaylist(id: number) {
+      return post(`/api/player/helper/playlist/${id}`, {});
+    },
   }
 };
