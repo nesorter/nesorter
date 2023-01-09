@@ -24,6 +24,8 @@ export default {
   MPV_PATH: process.env.MPV_PATH || '/usr/bin/mpv',
   MPV_FADE_TIME: Number(process.env.MPV_FADE_TIME) || 0,
 
+  TZ_HOURS_SHIFT: Number(process.env.TZ_HOURS_SHIFT) || 0,
+
   FFMPEG_BITRATE: Number(process.env.FFMPEG_BITRATE) || 256,
   FFMPEG_CODEC: process.env.FFMPEG_FORMAT === 'ogg' ? 'libvorbis' : 'libmp3lame',
   FFMPEG_OUTPUT_FORMAT: process.env.FFMPEG_FORMAT === 'ogg' ? 'ogg' : 'mp3',

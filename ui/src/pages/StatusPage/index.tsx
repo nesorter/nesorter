@@ -16,7 +16,7 @@ const StatusPage = () => {
       </Box>
 
       <Box gap={7} flexDirection="column">
-        <Text color="textLight" fontSize="body" fontWeight="bold">Current playlist tracklist:</Text>
+        <Text color="textLight" fontSize="body" fontWeight="bold">Queue:</Text>
 
         <Box paddingLeft="14px">
           <PlaylistBox />

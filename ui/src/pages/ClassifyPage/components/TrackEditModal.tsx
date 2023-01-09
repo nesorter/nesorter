@@ -26,13 +26,13 @@ export const TrackEditModal = ({ modalState, trackHash }: { modalState: UseModal
     setFetching();
 
     Promise.all([
-      api.scanner.getWaveform(trackHash).then(setWaveForm),
+      // api.scanner.getWaveform(trackHash).then(setWaveForm),
       api.scanner.getFsItem(trackHash).then(_ => {
         // setFsItem(_);
         trimmerState.setState({ start: _.trimStart, end: _.duration - _.trimEnd, duration: _.duration });
       }),
     ]).catch(alert).finally(setFetched);
-  }, [trackHash, trimmerState, setFetching, setFetched]);
+  }, [trackHash]);
 
   const handleSave = () => {
     api.scanner.setTrim(trackHash, trimmerState.state.start, trimmerState.state.duration - trimmerState.state.end)

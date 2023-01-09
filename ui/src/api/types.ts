@@ -68,6 +68,18 @@ export type Status = {
   streaming: boolean;
   currentFile?: string;
   currentPlaylistId?: string;
+  queue: {
+    items: QueueItem[];
+    currentOrder: null | number;
+    state: 'stopped' | 'playing';
+  }
+};
+
+export type QueueItem = {
+  order: number;
+  fileHash: string;
+  startAt: number;
+  endAt: number;
 };
 
 export type SchedulerItem = {

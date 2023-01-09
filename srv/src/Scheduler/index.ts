@@ -1,13 +1,11 @@
+import { Queue } from './../Queue';
 import { Logger } from "../Logger";
 import { ManualPlaylist } from "../PlaylistsManager/Manual";
 import { StorageType } from "../Storage";
-import { Streamer } from "../Streamer";
-import { secondsInDay, differenceInSeconds, endOfDay } from "date-fns";
+import { secondsInDay } from "date-fns";
 import { LogLevel, LogTags } from "../Logger/types";
 import { ScheduleItem } from "@prisma/client";
-import { shuffle } from '../utils';
-
-const getSamaraDate = () => (new Date((new Date()).setHours(new Date().getHours() + 4)));
+import { currentSecondsFromDayStart, shuffle } from '../utils';
 
 export class Scheduler {
   intervals: NodeJS.Timer[] = [];
@@ -15,24 +13,20 @@ export class Scheduler {
   currentPlaylist = -1;
   processing: boolean = false;
 
-  constructor(private db: StorageType, private logger: Logger, private streamer: Streamer) {}
-
-  get currentSecondsFromDayStart() {
-    return secondsInDay - differenceInSeconds(endOfDay(getSamaraDate()), getSamaraDate());
-  }
+  constructor(private db: StorageType, private logger: Logger, private queue: Queue) {}
 
   async getPlaylist(id: number) {
     return this.db.playlists.findFirst({ where: { id } });
   }
 
   shouldEnd(item: ScheduleItem): boolean {
-    return this.currentSecondsFromDayStart >= item.endAt
+    return currentSecondsFromDayStart() >= item.endAt
       && this.currentItem === item.id;
   }
 
   shouldStart(item: ScheduleItem): boolean {
-    return this.currentSecondsFromDayStart >= item.startAt
-      && this.currentSecondsFromDayStart < item.endAt
+    return currentSecondsFromDayStart() >= item.startAt
+      && currentSecondsFromDayStart() < item.endAt
       && this.currentItem !== item.id;
   }
 
@@ -79,7 +73,6 @@ export class Scheduler {
       const interval = setInterval(() => {
         if (this.shouldEnd(item)) {
           this.logger.log({ message: `Stopping playlist #${this.currentPlaylist}`, level: LogLevel.INFO, tags: [LogTags.SCHEDULER] });
-          this.streamer.stopPlay();
 
           // Small delay should help avoid race condition
           setTimeout(() => {
@@ -100,10 +93,25 @@ export class Scheduler {
           this.logger.log({ message: `Starting playlist #${playlistId}`, level: LogLevel.INFO, tags: [LogTags.SCHEDULER] });
           const pl = new ManualPlaylist(this.db, playlistId);
 
-          pl.getContent().then((tracks) => {
+          pl.getContent().then(async (tracks) => {
             this.currentItem = item.id;
             this.currentPlaylist = playlistId;
-            this.streamer.runPlaylist(tracks.map(_ => _.filehash), playlistId.toString());
+
+            const scheduleDuration = item.endAt - item.startAt;
+            const shuffled = shuffle(tracks);
+            let durationAccumulator = 0;
+            
+            for (let track of shuffled) {
+              if (durationAccumulator > scheduleDuration) {
+                return;
+              }
+
+              const file = await this.db.fSItem.findFirst({ where: { filehash: track.filehash } });
+              if (file) {
+                durationAccumulator += file.duration;
+                this.queue.add(track.filehash, item.endAt);
+              }
+            }
           });
         }
       }, 250);

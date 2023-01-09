@@ -9,13 +9,14 @@ import { Scanner } from '../Scanner';
 import { StorageType } from '../Storage';
 import { Streamer } from '../Streamer';
 import { Scheduler } from '../Scheduler';
+import { Queue } from '../Queue';
 
 import { gen as genScannerRoutes } from './routes/scanner';
 import { gen as genLoggerRoutes } from './routes/logger';
 import { gen as genClassificatorRoutes } from './routes/classificator';
 import { gen as genPLaylistsManagerRoutes } from './routes/playlistsManager';
 import { gen as genSchedulerRoutes } from './routes/scheduler';
-
+import { gen as getPlayerRoutes } from './routes/player';
 
 /**
  * Класс гигачад
@@ -31,17 +32,19 @@ export class API {
     private playlistsManager: PlaylistsManager,
     private streamer: Streamer,
     private scheduler: Scheduler,
+    private queue: Queue,
   ) {
     this.router = Express();
     this.router.use(Express.json());
   }
 
   bindRoutes(): API {
-    genLoggerRoutes(this.router, this.logger, this.streamer, this.scanner, this.scheduler);
+    genLoggerRoutes(this.router, this.logger, this.streamer, this.scanner, this.scheduler, this.queue);
     genClassificatorRoutes(this.logger, this.router, this.classificator);
     genPLaylistsManagerRoutes(this.logger, this.router, this.playlistsManager, this.streamer, this.db);
     genScannerRoutes(this.logger, this.router, this.scanner);
     genSchedulerRoutes(this.logger, this.router, this.scheduler);
+    getPlayerRoutes(this.logger, this.router, this.queue);
 
     return this;
   }

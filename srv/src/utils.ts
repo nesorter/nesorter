@@ -5,6 +5,8 @@ import { spawn } from 'child_process';
 import { Logger } from './Logger';
 import { RequestHandler } from 'express';
 import { LogLevel, LogTags } from './Logger/types';
+import { differenceInSeconds, endOfDay, secondsInDay } from 'date-fns';
+import config from './config';
 
 export function withLogger(logger: Logger, rq: RequestHandler): RequestHandler {
   return (req, res, next) => {
@@ -137,4 +139,10 @@ export function shuffle<T>(array: Array<T>) {
   }
 
   return array;
+}
+
+export const getSamaraDate = () => (new Date((new Date()).setHours(new Date().getHours() + config.TZ_HOURS_SHIFT)));
+
+export function currentSecondsFromDayStart() {
+  return secondsInDay - differenceInSeconds(endOfDay(getSamaraDate()), getSamaraDate());
 }

@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react"
+import { addSeconds, format, startOfDay } from "date-fns";
+import { useEffect, useMemo, useState } from "react"
 import { api } from "../../../api";
-import { Chain, ManualPlaylistItem, Status } from "../../../api/types"
-import { Box, Text } from "../../../components";
+import { Chain, Status } from "../../../api/types"
+import { Box } from "../../../components";
+import { StyledTd } from "./styles";
 
 export const PlaylistBox = () => {
   const [chain, setChain] = useState<Chain>({});
-  const chainValues = Object.values(chain);
-  const [tracks, setTracks] = useState<ManualPlaylistItem[]>([]);
+  const chainValues = useMemo(() => Object.values(chain), [chain]);
 
   const [status, setStatus] = useState<Status>({
     playing: false,
@@ -15,6 +16,11 @@ export const PlaylistBox = () => {
     scheduling: false,
     currentFile: undefined,
     currentPlaylistId: undefined,
+    queue: {
+      currentOrder: null,
+      items: [],
+      state: 'stopped',
+    }
   });
 
   useEffect(() => {
@@ -31,28 +37,35 @@ export const PlaylistBox = () => {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (status.currentPlaylistId === undefined) {
-      setTracks([]);
-      return;
-    }
-
-    api.playlistsManager.getPlaylist(status.currentPlaylistId)
-      .then(setTracks)
-      .catch(alert);
-  }, [status.currentPlaylistId]);
-
   return (
-    <Box flexDirection="column" height="100%" overflowX="hidden" maxWidth="480px">
-      {tracks.map((track) => {
-        const current = track.filehash === status.currentFile;
-        const chainItem = chainValues.find(_ => _.fsItem?.filehash === track.filehash);
-        const trackName = chainItem ? `${chainItem.fsItem?.id3Artist} - ${chainItem.fsItem?.id3Title}` : track.filehash;
+    <Box flexDirection="column" height="100%" overflowX="hidden">
+      <table>
+        <thead>
+          <StyledTd className="order">order</StyledTd>
+          <StyledTd className="state">state</StyledTd>
+          <StyledTd className="name">name</StyledTd>
+          <StyledTd className="start">start</StyledTd>
+          <StyledTd className="end">end</StyledTd>
+        </thead>
 
-        return (
-          <Text variant="oneline" key={track.filehash} color="textLight" padding={current ? '10px 0' : ''}>{current ? '->>' : ''} {trackName}</Text>
-        );
-      })}
+        <tbody>
+          {status.queue.items.map((track) => {
+            const current = status.queue.currentOrder === track.order;
+            const chainItem = chainValues.find(_ => _.fsItem?.filehash === track.fileHash);
+            const trackName = chainItem ? `${chainItem.fsItem?.id3Artist} - ${chainItem.fsItem?.id3Title}` : track.fileHash;
+
+            return (
+              <tr key={track.fileHash}>
+                <StyledTd className="order">{track.order}</StyledTd>
+                <StyledTd className="state">{current && '>'}</StyledTd>
+                <StyledTd className="name">{trackName}</StyledTd>
+                <StyledTd className="start">{format(addSeconds(startOfDay(new Date()), track.startAt), 'HH:mm:ss')}</StyledTd>
+                <StyledTd className="end">{format(addSeconds(startOfDay(new Date()), track.endAt), 'HH:mm:ss')}</StyledTd>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </Box>
   );
 }

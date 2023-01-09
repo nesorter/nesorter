@@ -9,6 +9,11 @@ export const StatusBox = () => {
     playing: false,
     syncing: false,
     streaming: false,
+    queue: {
+      currentOrder: null,
+      items: [],
+      state: 'stopped',
+    }
   });
 
   useEffect(() => {

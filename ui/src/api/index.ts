@@ -209,20 +209,6 @@ export const api = {
 
   streamer: {
     /**
-     * Останавливает плейлист (не пауза, полный сброс прогресса проигрывания)
-     */
-    stopPlaylist() {
-      return post('/api/playlistsManager/stopPlaylist', {});
-    },
-
-    /**
-     * Запускает проигрывание плейлиста
-     */
-    startPlaylist(id: string | number) {
-      return post(`/api/playlistsManager/queue/${id}/stream`, {});
-    },
-
-    /**
      * Останавливает ffmpeg-стрим на icecast
      */
     stopStream() {
@@ -234,10 +220,22 @@ export const api = {
      */
     startStream() {
       return post('/api/playlistsManager/streamStart', {});
+    }
+  },
+
+  player: {
+    /**
+     * Запускает queue
+     */
+    play() {
+      return post('/api/player/play', {});
     },
 
-    startAllPlaylists() {
-      return post('/api/playlistManager/playAllPlaylists', {});
-    }
+    /**
+     * Стопит queue
+     */
+    stop() {
+      return post('/api/player/stop', {});
+    },
   }
 };

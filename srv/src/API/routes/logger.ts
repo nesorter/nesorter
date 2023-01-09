@@ -1,10 +1,11 @@
 import Express from 'express';
 import { Logger } from '../../Logger';
+import { Queue } from '../../Queue';
 import { Scanner } from '../../Scanner';
 import { Scheduler } from '../../Scheduler';
 import { Streamer } from '../../Streamer';
 
-export const gen = (api: Express.Application, logger: Logger, streamer: Streamer, scanner: Scanner, scheduler: Scheduler) => {
+export const gen = (api: Express.Application, logger: Logger, streamer: Streamer, scanner: Scanner, scheduler: Scheduler, queue: Queue) => {
   api.get('/api/logger', (_req, res) => {
     logger.getLogs()
       .then((logs) => res.json(logs))
@@ -16,7 +17,7 @@ export const gen = (api: Express.Application, logger: Logger, streamer: Streamer
     let playlistData = null;
 
     if (streamer.playing) {
-      fileData = await scanner.getFsItem(streamer.currentFile || '');
+      fileData = await scanner.getFsItem(queue.currentFileHash || '');
       playlistData = await scheduler.getPlaylist(Number(streamer.currentPlaylistId));
     }
 
@@ -25,8 +26,13 @@ export const gen = (api: Express.Application, logger: Logger, streamer: Streamer
       playing: streamer.playing,
       syncing: scanner.scanInProgress,
       streaming: streamer.streaming,
-      currentFile: streamer.currentFile,
-      thumbnailPath: `/api/scanner/image/${streamer.currentFile}`,
+      currentFile: queue.currentFileHash,
+      queue: {
+        items: queue.items,
+        currentOrder: queue.currentOrder,
+        state: queue.state,
+      },
+      thumbnailPath: `/api/scanner/image/${queue.currentFileHash}`,
       fileData,
       playlistData,
       currentPlaylistId: streamer.currentPlaylistId,

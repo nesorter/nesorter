@@ -21,7 +21,7 @@ const PlaylistsPage = () => {
       .then(setPlaylists)
       .catch(alert)
       .finally(setFetched);
-  }, [setFetched, setFetching]);
+  }, []);
 
   if (isFetching) {
     return <Text color="textLight">Loading...</Text>;

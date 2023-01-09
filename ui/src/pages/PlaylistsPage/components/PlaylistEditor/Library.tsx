@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { api } from "../../../../api";
 import { Chain, ClassificationCategory, FSItem } from "../../../../api/types";
 import { Box, Button, Text } from "../../../../components"
@@ -16,7 +16,7 @@ export const Library = ({ onAdd, onAddAll }: Props) => {
   const [chain, setChain] = useState<Chain>({});
   const [categories, setCategories] = useState<ClassificationCategory[]>([]);
 
-  const chainValues = Object.values(chain);
+  const chainValues = useMemo(() => Object.values(chain), [chain]);
   const [filters, setFilters] = useState<ClassificationCategory[]>([]);
   const [files, setFiles] = useState<FSItem[]>([]);
 
@@ -33,7 +33,7 @@ export const Library = ({ onAdd, onAddAll }: Props) => {
       .then(setChain)
       .catch(alert)
       .finally(chainFetch.setFetched);
-  }, [chainFetch, catsFetch]);
+  }, []);
 
   useEffect(() => {
     if (!chainValues.length) {
