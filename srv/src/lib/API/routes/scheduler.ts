@@ -1,7 +1,7 @@
 import Express from 'express';
 import { Logger } from "../../Logger";
 import { Scheduler } from "../../Scheduler";
-import { withLogger } from '../../utils';
+import { withLogger } from '../../../utils';
 import { ScheduleItem } from '@prisma/client';
 
 export const gen = (logger: Logger, api: Express.Application, scheduler: Scheduler) => {

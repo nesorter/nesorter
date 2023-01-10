@@ -1,10 +1,10 @@
-import { Publisher } from './../Publisher';
+import { Publisher } from './Publisher';
 import { FSItem } from '@prisma/client';
-import { Logger } from '../Logger';
+import { Logger } from './Logger';
 import { asyncSpawn, makeSafePath, range } from '../utils';
 import { createServer, Server, Socket } from 'net';
 import { spawn } from 'child_process';
-import { LogLevel, LogTags } from '../Logger/types';
+import { LogLevel, LogTags } from './Logger.types';
 import config from '../config';
 
 const kill = require('tree-kill');

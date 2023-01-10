@@ -1,9 +1,9 @@
-import { Queue } from './../Queue';
-import { Logger } from "../Logger";
-import { ManualPlaylist } from "../PlaylistsManager/Manual";
-import { StorageType } from "../Storage";
+import { Queue } from './Queue';
+import { Logger } from "./Logger";
+import { ManualPlaylist } from "./PlaylistsManager.ManualPlaylist";
+import { StorageType } from "./Storage";
 import { secondsInDay } from "date-fns";
-import { LogLevel, LogTags } from "../Logger/types";
+import { LogLevel, LogTags } from "./Logger.types";
 import { ScheduleItem } from "@prisma/client";
 import { currentSecondsFromDayStart, shuffle } from '../utils';
 
@@ -100,7 +100,7 @@ export class Scheduler {
             const scheduleDuration = item.endAt - item.startAt;
             const shuffled = shuffle(tracks);
             let durationAccumulator = 0;
-            
+
             for (let track of shuffled) {
               if (durationAccumulator > scheduleDuration) {
                 return;

@@ -1,8 +1,8 @@
 import Express from 'express';
 import { Classificator } from '../../Classificator';
 import { Logger } from '../../Logger';
-import { LogLevel, LogTags } from '../../Logger/types';
-import { withLogger } from '../../utils';
+import { LogLevel, LogTags } from '../../Logger.types';
+import { withLogger } from '../../../utils';
 
 export const gen = (logger: Logger, api: Express.Application, classificator: Classificator) => {
   api.route('/api/classificator/categories')

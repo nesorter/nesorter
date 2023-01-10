@@ -25,7 +25,7 @@ yarn-error.log*
 
 .idea
 
-srv/src/API/routes/assets/covers/*.jpg
+srv/src/lib/API/routes/assets/covers/*.jpg
 
 output.*
 ui/build

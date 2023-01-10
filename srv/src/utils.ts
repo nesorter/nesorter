@@ -1,10 +1,10 @@
 import { readFileSync } from 'fs';
-import { StorageType } from './Storage';
+import { StorageType } from './lib/Storage';
 import { AudioAnalyzer } from '@lesjoursfr/audio-waveform';
 import { spawn } from 'child_process';
-import { Logger } from './Logger';
+import { Logger } from './lib/Logger';
 import { RequestHandler } from 'express';
-import { LogLevel, LogTags } from './Logger/types';
+import { LogLevel, LogTags } from './lib/Logger.types';
 import { differenceInSeconds, endOfDay, secondsInDay } from 'date-fns';
 import config from './config';
 

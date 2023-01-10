@@ -1,5 +1,5 @@
-import { StorageType } from "../Storage";
-import { LogLevel, LogTags } from "./types";
+import { StorageType } from "./Storage";
+import { LogLevel, LogTags } from "./Logger.types";
 import config from "../config";
 
 import { createLogger, transports, format, Logger as WinstonLogger } from "winston";
@@ -21,7 +21,7 @@ export class Logger {
       transports: [
         new transports.Console({
           format: format.combine(format.simple(), format.colorize())
-        }), 
+        }),
       ]
     });
 

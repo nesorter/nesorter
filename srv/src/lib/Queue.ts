@@ -1,6 +1,6 @@
-import { StorageType } from '../Storage';
+import { StorageType } from './Storage';
 import { currentSecondsFromDayStart, sleep } from '../utils';
-import { Player } from '../Player';
+import { Player } from './Player';
 import config from '../config';
 
 export type QueueItem = {

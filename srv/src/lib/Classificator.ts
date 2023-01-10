@@ -1,7 +1,7 @@
-import { Logger } from '../Logger';
-import { LogLevel, LogTags } from '../Logger/types';
-import { StorageType } from './../Storage';
-import type { ClassificationCategory } from './types';
+import { Logger } from './Logger';
+import { LogLevel, LogTags } from './Logger.types';
+import { StorageType } from './Storage';
+import type { ClassificationCategory } from './Classificator.types';
 
 export class Classificator {
   constructor(private db: StorageType, private logger: Logger) {}
@@ -53,7 +53,7 @@ export class Classificator {
     const asEntries = Object.entries(filters || {});
 
     return (await this.db.classificatedItem.findMany())
-      // фильтр хуеват, работает как ИЛИ 
+      // фильтр хуеват, работает как ИЛИ
       // (хотелось бы как И, но мейби сделаю как-нибудь иначе)
       .filter((rawItem) => {
         if (!asEntries.length) {

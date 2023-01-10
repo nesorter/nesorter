@@ -1,16 +1,16 @@
 import Express from 'express';
-import CONFIG from '../config';
+import CONFIG from '../../config';
 
 import { Classificator } from '../Classificator';
 import { Logger } from '../Logger';
-import { LogLevel, LogTags } from '../Logger/types';
+import { LogLevel, LogTags } from '../Logger.types';
 import { PlaylistsManager } from '../PlaylistsManager';
 import { Scanner } from '../Scanner';
 import { StorageType } from '../Storage';
 import { Streamer } from '../Streamer';
 import { Scheduler } from '../Scheduler';
 import { Queue } from '../Queue';
-import { PlaylistsPlayHelper } from './../PlaylistsPlayHelper';
+import { PlaylistsPlayHelper } from '../PlaylistsPlayHelper';
 
 import { gen as genScannerRoutes } from './routes/scanner';
 import { gen as genLoggerRoutes } from './routes/logger';

@@ -1,9 +1,9 @@
 import Express from 'express';
 import NodeID3 from 'node-id3';
-import CONFIG from '../../config';
+import CONFIG from '../../../config';
 import { Logger } from '../../Logger';
 import { Scanner } from '../../Scanner';
-import { getWaveformInfo, withLogger } from '../../utils';
+import { getWaveformInfo, withLogger } from '../../../utils';
 import { writeFile } from 'fs/promises';
 
 export const gen = (logger: Logger, api: Express.Application, scanner: Scanner) => {

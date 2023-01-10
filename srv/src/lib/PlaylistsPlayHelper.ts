@@ -1,5 +1,5 @@
-import { Queue } from './../Queue/index';
-import { StorageType } from "../Storage";
+import { Queue } from './Queue';
+import { StorageType } from "./Storage";
 import { shuffle } from '../utils';
 import config from '../config';
 
