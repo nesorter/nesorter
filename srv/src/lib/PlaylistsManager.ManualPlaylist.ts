@@ -1,18 +1,20 @@
-import { ManualPlaylistItem } from "@prisma/client";
-import { StorageType } from "lib/Storage";
+import { ManualPlaylistItem } from '@prisma/client';
+import { StorageType } from 'lib/Storage';
 
 export class ManualPlaylist {
-  constructor (private db: StorageType, private playlistId: number) {}
+  constructor(private db: StorageType, private playlistId: number) {}
 
   async update(items: { order: number; filehash: string }[]): Promise<void> {
     const content = await this.getContent();
-    const selectedForDelete = content.filter(_ => items.find(__ => __.filehash === _.filehash) === undefined);
+    const selectedForDelete = content.filter(
+      (_) => items.find((__) => __.filehash === _.filehash) === undefined,
+    );
 
-    for (let item of selectedForDelete) {
+    for (const item of selectedForDelete) {
       await this.db.manualPlaylistItem.delete({ where: { id: item.id } });
     }
 
-    for (let item of items) {
+    for (const item of items) {
       // Беру тут айтем из БД потому что... какой-то странный ORM, даёт в блоке WHERE указать только Id
       const dbitem = await this.db.manualPlaylistItem.findFirst({
         where: {
@@ -28,11 +30,11 @@ export class ManualPlaylist {
           playlistId: this.playlistId,
         },
         update: {
-          order: item.order
+          order: item.order,
         },
         where: {
-          id: dbitem?.id || 0
-        }
+          id: dbitem?.id || 0,
+        },
       });
     }
   }

@@ -5,13 +5,14 @@ import { Scanner } from 'lib/Scanner';
 import { Scheduler } from 'lib/Scheduler';
 import { Streamer } from 'lib/Streamer';
 
-export const gen = (api: Express.Application, logger: Logger, streamer: Streamer, scanner: Scanner, scheduler: Scheduler, queue: Queue) => {
-  api.get('/api/logger', (_req, res) => {
-    logger.getLogs()
-      .then((logs) => res.json(logs))
-      .catch((e) => res.status(500).json(e));
-  });
-
+export const gen = (
+  api: Express.Application,
+  logger: Logger,
+  streamer: Streamer,
+  scanner: Scanner,
+  scheduler: Scheduler,
+  queue: Queue,
+) => {
   api.get('/api/status', async (_req, res) => {
     let fileData = null;
     let playlistData = null;
@@ -38,4 +39,4 @@ export const gen = (api: Express.Application, logger: Logger, streamer: Streamer
       currentPlaylistId: queue.currentPlaylistId,
     });
   });
-}
+};

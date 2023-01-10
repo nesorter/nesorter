@@ -1,13 +1,13 @@
-import { readdir, stat, readFile } from 'fs/promises';
 import { createHash } from 'crypto';
-import NodeID3 from 'node-id3';
+import { readdir, readFile, stat } from 'fs/promises';
 import musicDuration from 'get-audio-duration';
-import { StorageType } from 'lib/Storage';
-import { sleep } from 'lib/utils';
+import { Classificator } from 'lib/Classificator';
 import { Logger } from 'lib/Logger';
 import { LogLevel, LogTags } from 'lib/Logger.types';
 import { Chain, ScannedItem } from 'lib/Scanner.types';
-import { Classificator } from 'lib/Classificator';
+import { StorageType } from 'lib/Storage';
+import { sleep } from 'lib/utils';
+import NodeID3 from 'node-id3';
 
 export class Scanner {
   SLEEP_AFTER_SCAN = true;
@@ -15,8 +15,12 @@ export class Scanner {
   chain: Chain = {};
   scanInProgress = false;
 
-  constructor(private db: StorageType, private logger: Logger, private classificator: Classificator) {
-    this._getChain().then(_ => {
+  constructor(
+    private db: StorageType,
+    private logger: Logger,
+    private classificator: Classificator,
+  ) {
+    this._getChain().then((_) => {
       this.chain = _;
     });
   }
@@ -29,7 +33,7 @@ export class Scanner {
     return this.db.fSItem.update({ where: { filehash }, data: { trimStart, trimEnd } });
   }
 
-  async getChain(): Promise<Chain> {
+  getChain(): Chain {
     return this.chain;
   }
 
@@ -40,11 +44,15 @@ export class Scanner {
     let time = Date.now();
     const chain: Chain = {};
     const items = await this.db.fSItem.findMany();
-    this.logger.log({ message: `Read track from DB took ${Date.now() - time}ms`, tags: [LogTags.SCANNER], level: LogLevel.DEBUG });
+    this.logger.log({
+      message: `Read track from DB took ${Date.now() - time}ms`,
+      tags: [LogTags.SCANNER],
+      level: LogLevel.DEBUG,
+    });
     time = Date.now();
 
-    for (let item of items) {
-      const chunks = item.path.split('/').filter(i => i !== '');
+    for (const item of items) {
+      const chunks = item.path.split('/').filter((i) => i !== '');
       const path: string[] = chunks.slice(0, chunks.length - 1);
       const filename: string = chunks.at(-1) || 'nulled';
       const pathIndexed = path.map((c, i) => `${i}-${c}`);
@@ -69,11 +77,15 @@ export class Scanner {
           key: chunk,
           name: path[index],
           parent: index > 0 ? pathIndexed[index - 1] : null,
-        }
+        };
       });
     }
 
-    this.logger.log({ message: `Construct chain took ${Date.now() - time}ms`, tags: [LogTags.SCANNER], level: LogLevel.DEBUG });
+    this.logger.log({
+      message: `Construct chain took ${Date.now() - time}ms`,
+      tags: [LogTags.SCANNER],
+      level: LogLevel.DEBUG,
+    });
     return chain;
   }
 
@@ -88,9 +100,9 @@ export class Scanner {
     }
 
     this.scanInProgress = true;
-    const scannedItems = (await this.scan(dir, filter)).filter(i => i.isFile);
+    const scannedItems = (await this.scan(dir, filter)).filter((i) => i.isFile);
 
-    for (let index in scannedItems) {
+    for (const index in scannedItems) {
       const scannedItem = scannedItems[index];
       const startTime = Date.now();
 
@@ -112,9 +124,19 @@ export class Scanner {
         }
 
         const time = Date.now() - startTime;
-        this.logger.log({ message: `Scan meta (took ${time}ms) for ${index}/${scannedItems.length} for file "${scannedItem.name}"`, tags: [LogTags.SCANNER], level: LogLevel.DEBUG });
+        this.logger.log({
+          message: `Scan meta (took ${time}ms) for ${index}/${scannedItems.length} for file "${scannedItem.name}"`,
+          tags: [LogTags.SCANNER],
+          level: LogLevel.DEBUG,
+        });
       } catch (e) {
-        this.logger.log({ message: `Scan meta failed for file "${scannedItem.name}" cause "${(e as Error).message}"`, tags: [LogTags.SCANNER], level: LogLevel.ERROR });
+        this.logger.log({
+          message: `Scan meta failed for file "${scannedItem.name}" cause "${
+            (e as Error).message
+          }"`,
+          tags: [LogTags.SCANNER],
+          level: LogLevel.ERROR,
+        });
         continue;
       }
 
@@ -122,10 +144,10 @@ export class Scanner {
         const item = await this.db.fSItem.findFirst({ where: { filehash: scannedItem.hash } });
 
         if (item) {
-          await this.logger.log({
+          this.logger.log({
             message: `Update record for '${scannedItem.name}' [${scannedItem.hash}]`,
             tags: [LogTags.SCANNER],
-            level: LogLevel.INFO
+            level: LogLevel.INFO,
           });
 
           await this.db.fSItem.update({
@@ -137,14 +159,14 @@ export class Scanner {
               duration: scannedItem.duration || 0,
             },
             where: {
-              filehash: scannedItem.hash
+              filehash: scannedItem.hash,
             },
           });
         } else {
-          await this.logger.log({
+          this.logger.log({
             message: `Create record for '${scannedItem.name}' [${scannedItem.hash}]`,
             tags: [LogTags.SCANNER],
-            level: LogLevel.INFO
+            level: LogLevel.INFO,
           });
 
           await this.db.fSItem.create({
@@ -156,20 +178,20 @@ export class Scanner {
               id3Artist: scannedItem.id3?.artist || 'nulled',
               id3Title: scannedItem.id3?.title || 'nulled',
               duration: scannedItem.duration || 0,
-            }
+            },
           });
         }
       } catch (e) {
-        await this.logger.log({
+        this.logger.log({
           message: `Failed process record for '${scannedItem.name}' [${scannedItem.hash}]`,
           tags: [LogTags.SCANNER],
-          level: LogLevel.ERROR
+          level: LogLevel.ERROR,
         });
       }
     }
 
     this.scanInProgress = false;
-    this._getChain().then(_ => {
+    this._getChain().then((_) => {
       this.chain = _;
     });
   }
@@ -178,17 +200,21 @@ export class Scanner {
    * Рекурсивная функция сканирования ФС
    */
   private async scan(dir: string, filter: (item: ScannedItem) => boolean): Promise<ScannedItem[]> {
-    await this.logger.log({ message: `Scan '${dir}'`, tags: [LogTags.SCANNER], level: LogLevel.DEBUG });
+    this.logger.log({
+      message: `Scan '${dir}'`,
+      tags: [LogTags.SCANNER],
+      level: LogLevel.DEBUG,
+    });
 
-    let content: ScannedItem[] = [];
+    const content: ScannedItem[] = [];
 
     try {
       const dirContent = await this.getDirContent(dir);
 
-      await this.logger.log({
+      this.logger.log({
         message: `Scanned '${dir}', found ${dirContent.length} entries`,
         tags: [LogTags.SCANNER],
-        level: LogLevel.DEBUG
+        level: LogLevel.DEBUG,
       });
 
       for (const item of dirContent) {
@@ -208,7 +234,11 @@ export class Scanner {
         }
       }
     } catch (e) {
-      await this.logger.log({ message: `Failed scan '${dir}', cause ${e}`, tags: [LogTags.SCANNER], level: LogLevel.ERROR });
+      this.logger.log({
+        message: `Failed scan '${dir}', cause ${e}`,
+        tags: [LogTags.SCANNER],
+        level: LogLevel.ERROR,
+      });
     }
 
     return content;

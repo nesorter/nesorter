@@ -1,8 +1,8 @@
-import config from 'lib/config';
 import ffmpeg, { FfmpegCommand } from 'fluent-ffmpeg';
+import config from 'lib/config';
 import { Logger } from 'lib/Logger';
 import { LogLevel, LogTags } from 'lib/Logger.types';
-import { Scanner } from "lib/Scanner";
+import { Scanner } from 'lib/Scanner';
 
 export class Streamer {
   currentPlaylistId?: string;
@@ -25,14 +25,15 @@ export class Streamer {
     this.ffmpeg = undefined;
   }
 
-  public async startStream() {
+  public startStream() {
     if (this.streaming) {
       throw new Error('Stream already in progress!');
     }
 
-    const input = config.PLAYING_MODE === 'socket'
-      ? 'unix:/tmp/output_socket.mp3'
-      : config.HARDWARE_PLAYER_FFMPEG_DEVICE;
+    const input =
+      config.PLAYING_MODE === 'socket'
+        ? 'unix:/tmp/output_socket.mp3'
+        : config.HARDWARE_PLAYER_FFMPEG_DEVICE;
 
     const instance = ffmpeg()
       .input(input)
@@ -45,17 +46,23 @@ export class Streamer {
         '-map_metadata 0:s:0',
       ])
       .outputFormat(config.FFMPEG_OUTPUT_FORMAT)
-      .output(`icecast://${config.SHOUT_USER}:${config.SHOUT_PASSWORD}@${config.SHOUT_HOST}:${config.SHOUT_PORT}/${config.SHOUT_MOUNT}`);
+      .output(
+        `icecast://${config.SHOUT_USER}:${config.SHOUT_PASSWORD}@${config.SHOUT_HOST}:${config.SHOUT_PORT}/${config.SHOUT_MOUNT}`,
+      );
 
     if (config.PLAYING_MODE === 'hardware') {
       instance.inputFormat(config.HARDWARE_PLAYER_FFMPEG_DRIVER);
     }
 
     instance.on('error', (err) => {
-      this.logger.log({ message: `Stream errored: ${err.message}`, level: LogLevel.ERROR, tags: [LogTags.STREAMER, LogTags.FFMPEG] });
+      this.logger.log({
+        message: `Stream errored: ${(err as Error).message}`,
+        level: LogLevel.ERROR,
+        tags: [LogTags.STREAMER, LogTags.FFMPEG],
+      });
       this.stopStream();
 
-      if (!err.message.includes('SIGKILL')) {
+      if (!(err as Error).message.includes('SIGKILL')) {
         this.startStream();
       }
     });
@@ -65,7 +72,12 @@ export class Streamer {
 
       if (this.counter === 25) {
         this.counter = 0;
-        this.logger.log({ message: `FFMpeg info`, extraData: progressData, level: LogLevel.INFO, tags: [LogTags.FFMPEG] });
+        this.logger.log({
+          message: `FFMpeg info`,
+          extraData: progressData as Record<string, unknown>,
+          level: LogLevel.INFO,
+          tags: [LogTags.FFMPEG],
+        });
       }
     });
 
@@ -75,7 +87,11 @@ export class Streamer {
     });
 
     instance.once('start', (commandLine) => {
-      this.logger.log({ message: `Spawned with command: "${commandLine}"`, level: LogLevel.DEBUG, tags: [LogTags.STREAMER, LogTags.FFMPEG] });
+      this.logger.log({
+        message: `Spawned with command: "${commandLine}"`,
+        level: LogLevel.DEBUG,
+        tags: [LogTags.STREAMER, LogTags.FFMPEG],
+      });
     });
 
     this.ffmpeg = instance;

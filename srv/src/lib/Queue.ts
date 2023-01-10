@@ -1,7 +1,7 @@
+import config from 'lib/config';
+import { Player } from 'lib/Player';
 import { StorageType } from 'lib/Storage';
 import { currentSecondsFromDayStart, sleep } from 'lib/utils';
-import { Player } from 'lib/Player';
-import config from 'lib/config';
 
 export type QueueItem = {
   order: number;
@@ -9,7 +9,7 @@ export type QueueItem = {
   playlistId?: number;
   startAt: number;
   endAt: number;
-}
+};
 
 export type QueueState = 'stopped' | 'playing';
 
@@ -26,7 +26,7 @@ export class Queue {
 
   private runCleanupLoop() {
     const currentSeconds = currentSecondsFromDayStart();
-    this.items = this.items.filter(_ => _.endAt + config.MPV_FADE_TIME + 1 > currentSeconds);
+    this.items = this.items.filter((_) => _.endAt + config.MPV_FADE_TIME + 1 > currentSeconds);
 
     setTimeout(() => this.runCleanupLoop(), 1000);
   }
@@ -57,11 +57,11 @@ export class Queue {
   }
 
   public get currentFileHash() {
-    return this.items.find(_ => _.order === this.currentOrder)?.fileHash;
+    return this.items.find((_) => _.order === this.currentOrder)?.fileHash;
   }
 
   public clear() {
-    this.items = this.items.filter(_ => _.order === this.currentOrder);
+    this.items = this.items.filter((_) => _.order === this.currentOrder);
   }
 
   public play() {
@@ -75,7 +75,11 @@ export class Queue {
     this.player.stopPlay();
   }
 
-  public async add(fileHash: string, hardEndAt: number | undefined, playlistId: number | undefined) {
+  public async add(
+    fileHash: string,
+    hardEndAt: number | undefined,
+    playlistId: number | undefined,
+  ) {
     const file = await this.db.fSItem.findFirst({ where: { filehash: fileHash } });
     if (!file) {
       throw new Error('Wrong fileHash');

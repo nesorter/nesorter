@@ -1,16 +1,15 @@
-import { Publisher } from 'lib/Publisher';
 import { FSItem } from '@prisma/client';
+import { spawn } from 'child_process';
+import config from 'lib/config';
 import { Logger } from 'lib/Logger';
+import { LogLevel, LogTags } from 'lib/Logger.types';
+import { Publisher } from 'lib/Publisher';
 import { asyncSpawn, makeSafePath, range } from 'lib/utils';
 import { createServer, Server, Socket } from 'net';
-import { spawn } from 'child_process';
-import { LogLevel, LogTags } from 'lib/Logger.types';
-import config from 'lib/config';
-
-const kill = require('tree-kill');
+import kill from 'tree-kill';
 
 export class Player {
-  socket: { id: number, instanse: Server, binded: boolean }[] = [];
+  socket: { id: number; instanse: Server; binded: boolean }[] = [];
   outputSocket?: Socket;
   needStop = false;
 
@@ -47,7 +46,7 @@ export class Player {
           this.logger.log({ message: `Someone connected to socket /tmp/listen_socket_${id}.mp3` });
 
           client.on('data', (data) => {
-            const self = this.socket.find(_ => _.id === id);
+            const self = this.socket.find((_) => _.id === id);
 
             // Не делаем роутинг в случае когда сокет не используется
             if (!self?.binded) {
@@ -58,7 +57,9 @@ export class Player {
           });
 
           client.on('end', () => {
-            this.logger.log({ message: `Someone disconnected from socket /tmp/listen_socket_${id}.mp3` });
+            this.logger.log({
+              message: `Someone disconnected from socket /tmp/listen_socket_${id}.mp3`,
+            });
           });
         });
 
@@ -73,12 +74,12 @@ export class Player {
   }
 
   private bindSocket(id: number) {
-    const index = this.socket.findIndex(_ => _.id === id);
+    const index = this.socket.findIndex((_) => _.id === id);
     this.socket[index].binded = true;
   }
 
   private unbindSocket(id: number) {
-    const index = this.socket.findIndex(_ => _.id === id);
+    const index = this.socket.findIndex((_) => _.id === id);
     this.socket[index].binded = false;
   }
 
@@ -87,8 +88,8 @@ export class Player {
   }
 
   public async play(fsItem: FSItem, customEndPosition?: number): Promise<void> {
-    const omittedSocket = this.socket.findIndex(_ => _.binded === true);
-    const freeSocket = this.socket.findIndex(_ => _.binded === false);
+    const omittedSocket = this.socket.findIndex((_) => _.binded === true);
+    const freeSocket = this.socket.findIndex((_) => _.binded === false);
 
     const startPosition = fsItem.trimStart;
     const endPosition = customEndPosition || fsItem.duration - fsItem.trimEnd;
@@ -97,7 +98,9 @@ export class Player {
     const fadeDuration = config.MPV_FADE_TIME;
     const args = [
       `--no-video --start=${startPosition} --end=${endPosition}`,
-      `--af=afade=type=0:duration=${fadeDuration}:start_time=${startPosition},afade=type=1:duration=${fadeDuration}:start_time=${endPosition - fadeDuration}`,
+      `--af=afade=type=0:duration=${fadeDuration}:start_time=${startPosition},afade=type=1:duration=${fadeDuration}:start_time=${
+        endPosition - fadeDuration
+      }`,
     ];
 
     if (config.PLAYING_MODE === 'socket') {
@@ -117,7 +120,9 @@ export class Player {
         this.bindSocket(freeSocket);
 
         this.logger.log({
-          message: `Spawned with command: "${childProc.spawnargs.join(' ')}" on socket: "/tmp/listen_socket_${freeSocket}.mp3"`,
+          message: `Spawned with command: "${childProc.spawnargs.join(
+            ' ',
+          )}" on socket: "/tmp/listen_socket_${freeSocket}.mp3"`,
           level: LogLevel.DEBUG,
           tags: [LogTags.STREAMER, LogTags.MPV],
         });
@@ -130,18 +135,20 @@ export class Player {
       }
     });
 
-    childProc.addListener('message', (data) => this.logger.log({
-      message: `process ${childProc.pid}: ${data.toString()}`,
-      level: LogLevel.DEBUG,
-      tags: [LogTags.STREAMER, LogTags.MPV],
-    }));
+    childProc.addListener('message', (data) =>
+      this.logger.log({
+        message: `process ${childProc.pid}: ${data.toString()}`,
+        level: LogLevel.DEBUG,
+        tags: [LogTags.STREAMER, LogTags.MPV],
+      }),
+    );
 
-    childProc.stdout.on('data', d => console.log(d.toString()));
+    childProc.stdout.on('data', (d) => console.log((d as Buffer).toString()));
 
     return new Promise((res, rej) => {
       // делаем поллинг для остановки проигрывания
       const polling = setInterval(() => {
-        if (!this.needStop)  {
+        if (!this.needStop) {
           return;
         }
 
@@ -154,7 +161,7 @@ export class Player {
         this.needStop = false;
 
         rej('USER_STOP');
-        kill(childProc.pid, 'SIGKILL');
+        kill(Number(childProc.pid), 'SIGKILL');
         clearInterval(polling);
       }, 50);
 

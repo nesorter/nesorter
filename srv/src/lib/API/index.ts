@@ -1,23 +1,21 @@
 import Express from 'express';
-import config from 'lib/config';
-
+import { gen as genClassificatorRoutes } from 'lib/API/routes/classificator';
+import { gen as genLoggerRoutes } from 'lib/API/routes/logger';
+import { gen as getPlayerRoutes } from 'lib/API/routes/player';
+import { gen as genPLaylistsManagerRoutes } from 'lib/API/routes/playlistsManager';
+import { gen as genScannerRoutes } from 'lib/API/routes/scanner';
+import { gen as genSchedulerRoutes } from 'lib/API/routes/scheduler';
 import { Classificator } from 'lib/Classificator';
+import config from 'lib/config';
 import { Logger } from 'lib/Logger';
 import { LogLevel, LogTags } from 'lib/Logger.types';
 import { PlaylistsManager } from 'lib/PlaylistsManager';
+import { PlaylistsPlayHelper } from 'lib/PlaylistsPlayHelper';
+import { Queue } from 'lib/Queue';
 import { Scanner } from 'lib/Scanner';
+import { Scheduler } from 'lib/Scheduler';
 import { StorageType } from 'lib/Storage';
 import { Streamer } from 'lib/Streamer';
-import { Scheduler } from 'lib/Scheduler';
-import { Queue } from 'lib/Queue';
-import { PlaylistsPlayHelper } from 'lib/PlaylistsPlayHelper';
-
-import { gen as genScannerRoutes } from 'lib/API/routes/scanner';
-import { gen as genLoggerRoutes } from 'lib/API/routes/logger';
-import { gen as genClassificatorRoutes } from 'lib/API/routes/classificator';
-import { gen as genPLaylistsManagerRoutes } from 'lib/API/routes/playlistsManager';
-import { gen as genSchedulerRoutes } from 'lib/API/routes/scheduler';
-import { gen as getPlayerRoutes } from 'lib/API/routes/player';
 
 /**
  * Класс гигачад
@@ -41,9 +39,22 @@ export class API {
   }
 
   bindRoutes(): API {
-    genLoggerRoutes(this.router, this.logger, this.streamer, this.scanner, this.scheduler, this.queue);
+    genLoggerRoutes(
+      this.router,
+      this.logger,
+      this.streamer,
+      this.scanner,
+      this.scheduler,
+      this.queue,
+    );
     genClassificatorRoutes(this.logger, this.router, this.classificator);
-    genPLaylistsManagerRoutes(this.logger, this.router, this.playlistsManager, this.streamer, this.db);
+    genPLaylistsManagerRoutes(
+      this.logger,
+      this.router,
+      this.playlistsManager,
+      this.streamer,
+      this.db,
+    );
     genScannerRoutes(this.logger, this.router, this.scanner);
     genSchedulerRoutes(this.logger, this.router, this.scheduler);
     getPlayerRoutes(this.logger, this.router, this.queue, this.playHelper);
@@ -52,10 +63,12 @@ export class API {
   }
 
   start(): void {
-    this.router.listen(config.API_LISTEN_PORT, () => this.logger.log({
-      message: `Server start listening on ${config.API_LISTEN_PORT}`,
-      level: LogLevel.INFO,
-      tags: [LogTags.APP],
-    }));
+    this.router.listen(config.API_LISTEN_PORT, () =>
+      this.logger.log({
+        message: `Server start listening on ${config.API_LISTEN_PORT}`,
+        level: LogLevel.INFO,
+        tags: [LogTags.APP],
+      }),
+    );
   }
 }

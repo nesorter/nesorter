@@ -24,7 +24,7 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
-  "plugins": ["prettier", "simple-import-sort", "@typescript-eslint"],
+  "plugins": ["prettier", "simple-import-sort", "@typescript-eslint", "no-cyrillic-string"],
   "rules": {
     "prettier/prettier": "warn",
 
@@ -40,6 +40,9 @@
 
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
-    "@typescript-eslint/no-misused-promises": "off"
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/no-for-in-array": "off",
+    "@typescript-eslint/no-var-requires": "off"
   }
 }

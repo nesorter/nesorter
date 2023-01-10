@@ -1,11 +1,11 @@
-import { Logger } from 'lib/Logger';
 import { FSItem } from '@prisma/client';
 import axios from 'axios';
 import config from 'lib/config';
+import { Logger } from 'lib/Logger';
 import { LogLevel, LogTags } from 'lib/Logger.types';
 
 export class Publisher {
-  constructor (private logger: Logger) {}
+  constructor(private logger: Logger) {}
 
   public async publish(fsitem: FSItem): Promise<void> {
     try {
@@ -24,7 +24,7 @@ export class Publisher {
       this.logger.log({
         message: `Error at publishing metadata for '${fsitem.id3Artist} - ${fsitem.id3Title}' at '/${config.SHOUT_MOUNT}'`,
         tags: [LogTags.MPV],
-        level: LogLevel.ERROR
+        level: LogLevel.ERROR,
       });
     }
   }

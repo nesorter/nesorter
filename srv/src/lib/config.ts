@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
 require('dotenv').config();
 
 export default {
@@ -32,4 +33,4 @@ export default {
   FFMPEG_CONTENT_TYPE: process.env.FFMPEG_FORMAT === 'ogg' ? 'audio/ogg' : 'audio/mpeg',
 
   LOKI_HOST: process.env.LOKI_HOST,
-}
+};

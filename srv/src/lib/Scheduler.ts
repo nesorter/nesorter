@@ -1,17 +1,17 @@
+import { ScheduleItem } from '@prisma/client';
+import { secondsInDay } from 'date-fns';
+import { Logger } from 'lib/Logger';
+import { LogLevel, LogTags } from 'lib/Logger.types';
+import { ManualPlaylist } from 'lib/PlaylistsManager.ManualPlaylist';
 import { Queue } from 'lib/Queue';
-import { Logger } from "lib/Logger";
-import { ManualPlaylist } from "lib/PlaylistsManager.ManualPlaylist";
-import { StorageType } from "lib/Storage";
-import { secondsInDay } from "date-fns";
-import { LogLevel, LogTags } from "lib/Logger.types";
-import { ScheduleItem } from "@prisma/client";
+import { StorageType } from 'lib/Storage';
 import { currentSecondsFromDayStart, shuffle } from 'lib/utils';
 
 export class Scheduler {
   intervals: NodeJS.Timer[] = [];
   currentItem = -1;
   currentPlaylist = -1;
-  processing: boolean = false;
+  processing = false;
 
   constructor(private db: StorageType, private logger: Logger, private queue: Queue) {}
 
@@ -20,14 +20,15 @@ export class Scheduler {
   }
 
   shouldEnd(item: ScheduleItem): boolean {
-    return currentSecondsFromDayStart() >= item.endAt
-      && this.currentItem === item.id;
+    return currentSecondsFromDayStart() >= item.endAt && this.currentItem === item.id;
   }
 
   shouldStart(item: ScheduleItem): boolean {
-    return currentSecondsFromDayStart() >= item.startAt
-      && currentSecondsFromDayStart() < item.endAt
-      && this.currentItem !== item.id;
+    return (
+      currentSecondsFromDayStart() >= item.startAt &&
+      currentSecondsFromDayStart() < item.endAt &&
+      this.currentItem !== item.id
+    );
   }
 
   async createItem(startAt: number, endAt: number, playlistIds: string) {
@@ -69,10 +70,14 @@ export class Scheduler {
   async start() {
     const items = await this.getItems();
 
-    items.map(item => {
+    items.map((item) => {
       const interval = setInterval(() => {
         if (this.shouldEnd(item)) {
-          this.logger.log({ message: `Stopping playlist #${this.currentPlaylist}`, level: LogLevel.INFO, tags: [LogTags.SCHEDULER] });
+          this.logger.log({
+            message: `Stopping playlist #${this.currentPlaylist}`,
+            level: LogLevel.INFO,
+            tags: [LogTags.SCHEDULER],
+          });
 
           // Small delay should help avoid race condition
           setTimeout(() => {
@@ -87,10 +92,14 @@ export class Scheduler {
             return;
           }
 
-          const playlists = item.playlistIds.split(',').map(_ => Number(_));
+          const playlists = item.playlistIds.split(',').map((_) => Number(_));
           const playlistId = shuffle(playlists)[0]; // pick random pl
 
-          this.logger.log({ message: `Starting playlist #${playlistId}`, level: LogLevel.INFO, tags: [LogTags.SCHEDULER] });
+          this.logger.log({
+            message: `Starting playlist #${playlistId}`,
+            level: LogLevel.INFO,
+            tags: [LogTags.SCHEDULER],
+          });
           const pl = new ManualPlaylist(this.db, playlistId);
 
           pl.getContent().then(async (tracks) => {
@@ -101,7 +110,7 @@ export class Scheduler {
             const shuffled = shuffle(tracks);
             let durationAccumulator = 0;
 
-            for (let track of shuffled) {
+            for (const track of shuffled) {
               if (durationAccumulator > scheduleDuration) {
                 return;
               }
@@ -122,8 +131,8 @@ export class Scheduler {
     this.processing = true;
   }
 
-  async stop() {
-    this.intervals.forEach(_ => clearInterval(_));
+  stop() {
+    this.intervals.forEach((_) => clearInterval(_));
     this.intervals = [];
     this.currentItem = -1;
 

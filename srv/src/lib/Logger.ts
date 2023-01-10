@@ -1,9 +1,7 @@
-import { StorageType } from "lib/Storage";
-import { LogLevel, LogTags } from "lib/Logger.types";
-import config from "lib/config";
-
-import { createLogger, transports, format, Logger as WinstonLogger } from "winston";
-import LokiTransport from "winston-loki";
+import config from 'lib/config';
+import { LogLevel, LogTags } from 'lib/Logger.types';
+import { createLogger, format, Logger as WinstonLogger, transports } from 'winston';
+import LokiTransport from 'winston-loki';
 
 type logParams = {
   message: string;
@@ -13,47 +11,46 @@ type logParams = {
 };
 
 export class Logger {
-  startTime = Date.now();
   winston: WinstonLogger;
 
-  constructor(private db?: StorageType) {
+  constructor() {
     this.winston = createLogger({
       transports: [
         new transports.Console({
-          format: format.combine(format.simple(), format.colorize())
+          format: format.combine(format.simple(), format.colorize()),
         }),
-      ]
+      ],
     });
 
     if (config.LOKI_HOST) {
-      this.winston.add(new LokiTransport({
-        host: config.LOKI_HOST,
-        labels: { app: 'nesorter' },
-        json: true,
-        format: format.json(),
-        replaceTimestamp: true,
-        onConnectionError: (err) => console.error(err)
-      }));
+      this.winston.add(
+        new LokiTransport({
+          host: config.LOKI_HOST,
+          labels: { app: 'nesorter' },
+          json: true,
+          format: format.json(),
+          replaceTimestamp: true,
+          onConnectionError: (err) => console.error(err),
+        }),
+      );
     }
   }
 
-  async log({ message, tags = [LogTags.APP], level = LogLevel.INFO, extraData = {} }: logParams): Promise<void> {
+  log({ message, tags = [LogTags.APP], level = LogLevel.INFO, extraData = {} }: logParams): void {
     const data = {
       msg: message,
       level,
       ...extraData,
     };
 
-    const str = Object.entries(data).map(([key, value]) => `${key}='${value}'`).join(',');
+    const str = Object.entries(data)
+      .map(([key, value]) => `${key}='${value}'`)
+      .join(',');
 
     this.winston.log({
       message: str,
       level: 'info',
-      labels: { 'module': tags.join('_') }
+      labels: { module: tags.join('_') },
     });
-  }
-
-  async getLogs() {
-    return []; // this.db.log.findMany();
   }
 }
