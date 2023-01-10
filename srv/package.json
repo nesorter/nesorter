@@ -29,6 +29,13 @@
     "@types/fluent-ffmpeg": "^2.1.20",
     "@types/node": "^18.11.18",
     "@types/yup": "^0.29.14",
+    "@typescript-eslint/eslint-plugin": "^5.48.1",
+    "@typescript-eslint/parser": "^5.48.1",
+    "eslint": "8.31.0",
+    "eslint-plugin-no-cyrillic-string": "^1.0.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-simple-import-sort": "^8.0.0",
+    "prettier": "2.8.2",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.4"
   },
@@ -38,6 +45,9 @@
     "service:build": "tsc",
     "service:dev": "ts-node src/main.ts",
     "start": "ts-node checkSystemDeps.ts && node dist/main.js",
-    "postinstall": "yarn db:gen"
+    "postinstall": "yarn db:gen",
+    "update-deps": "npx npm-check-updates -u",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix"
   }
 }
