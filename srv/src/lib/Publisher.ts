@@ -1,8 +1,8 @@
-import { Logger } from './Logger';
+import { Logger } from 'lib/Logger';
 import { FSItem } from '@prisma/client';
 import axios from 'axios';
-import config from '../config';
-import { LogLevel, LogTags } from './Logger.types';
+import config from 'lib/config';
+import { LogLevel, LogTags } from 'lib/Logger.types';
 
 export class Publisher {
   constructor (private logger: Logger) {}

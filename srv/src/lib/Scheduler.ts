@@ -1,11 +1,11 @@
-import { Queue } from './Queue';
-import { Logger } from "./Logger";
-import { ManualPlaylist } from "./PlaylistsManager.ManualPlaylist";
-import { StorageType } from "./Storage";
+import { Queue } from 'lib/Queue';
+import { Logger } from "lib/Logger";
+import { ManualPlaylist } from "lib/PlaylistsManager.ManualPlaylist";
+import { StorageType } from "lib/Storage";
 import { secondsInDay } from "date-fns";
-import { LogLevel, LogTags } from "./Logger.types";
+import { LogLevel, LogTags } from "lib/Logger.types";
 import { ScheduleItem } from "@prisma/client";
-import { currentSecondsFromDayStart, shuffle } from '../utils';
+import { currentSecondsFromDayStart, shuffle } from 'lib/utils';
 
 export class Scheduler {
   intervals: NodeJS.Timer[] = [];

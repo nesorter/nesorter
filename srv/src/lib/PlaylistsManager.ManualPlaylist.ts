@@ -1,5 +1,5 @@
 import { ManualPlaylistItem } from "@prisma/client";
-import { StorageType } from "./Storage";
+import { StorageType } from "lib/Storage";
 
 export class ManualPlaylist {
   constructor (private db: StorageType, private playlistId: number) {}

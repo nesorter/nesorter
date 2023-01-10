@@ -1,7 +1,7 @@
-import { Logger } from './Logger';
-import { LogLevel, LogTags } from './Logger.types';
-import { StorageType } from './Storage';
-import type { ClassificationCategory } from './Classificator.types';
+import { Logger } from 'lib/Logger';
+import { LogLevel, LogTags } from 'lib/Logger.types';
+import { StorageType } from 'lib/Storage';
+import type { ClassificationCategory } from 'lib/Classificator.types';
 
 export class Classificator {
   constructor(private db: StorageType, private logger: Logger) {}

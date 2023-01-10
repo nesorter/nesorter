@@ -1,7 +1,7 @@
-import { StorageType } from './Storage';
-import { currentSecondsFromDayStart, sleep } from '../utils';
-import { Player } from './Player';
-import config from '../config';
+import { StorageType } from 'lib/Storage';
+import { currentSecondsFromDayStart, sleep } from 'lib/utils';
+import { Player } from 'lib/Player';
+import config from 'lib/config';
 
 export type QueueItem = {
   order: number;

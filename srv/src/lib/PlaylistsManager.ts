@@ -1,5 +1,5 @@
-import { Logger } from "./Logger";
-import { StorageType } from "./Storage";
+import { Logger } from "lib/Logger";
+import { StorageType } from "lib/Storage";
 
 export class PlaylistsManager {
   constructor (private db: StorageType, private logger: Logger) {}

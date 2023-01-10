@@ -1,18 +1,18 @@
 import { readFileSync } from 'fs';
-import { StorageType } from './lib/Storage';
 import { AudioAnalyzer } from '@lesjoursfr/audio-waveform';
 import { spawn } from 'child_process';
-import { Logger } from './lib/Logger';
+import { Logger } from 'lib/Logger';
 import { RequestHandler } from 'express';
-import { LogLevel, LogTags } from './lib/Logger.types';
+import { LogLevel, LogTags } from 'lib/Logger.types';
 import { differenceInSeconds, endOfDay, secondsInDay } from 'date-fns';
-import config from './config';
+import config from 'lib/config';
+import { StorageType } from 'lib/Storage';
 
 export function withLogger(logger: Logger, rq: RequestHandler): RequestHandler {
   return (req, res, next) => {
     logger.log({ message: `${req.method} ${req.path}`, level: LogLevel.DEBUG, tags: [LogTags.API] });
     rq(req, res, next);
-  }
+  };
 }
 
 export function asyncSpawn(cmd: string, args: string[]): Promise<void> {
@@ -48,7 +48,7 @@ export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function getWaveformInfo (logger: Logger, filepath: string) {
+export async function getWaveformInfo(logger: Logger, filepath: string) {
   try {
     const audioAnalyzer = new AudioAnalyzer(filepath);
     const data = await audioAnalyzer.waveform();
@@ -81,13 +81,16 @@ export async function convertJsonDbToNewDb(jsondbFilepath: string, db: StorageTy
     .map(([key, value]) => ({
       name: key,
       items: (value as { order: number, filePath: string }[])
-        .map(i => ({ ...i, filePath: i.filePath.replaceAll('/home/kugichka/music/avgustina/', '') }))
+        .map(i => ({ ...i, filePath: i.filePath.replaceAll('/home/kugichka/music/avgustina/', '') })),
     }));
 
   const trackData = Object
     .entries(data)
     .filter(([key]) => key.includes('classificator_'))
-    .map(([key, value]) => ({ filename: key.replaceAll('classificator_', ''), categories: value as { name: string, values: string[] }[] }));
+    .map(([key, value]) => ({
+      filename: key.replaceAll('classificator_', ''),
+      categories: value as { name: string, values: string[] }[],
+    }));
 
   for (let cat of categories) {
     await db.classification.create({ data: { name: cat.name, values: cat.values.join(',') } });
@@ -95,7 +98,7 @@ export async function convertJsonDbToNewDb(jsondbFilepath: string, db: StorageTy
 
   for (let queue of queuesData) {
     const name = queue.name;
-    const createdPlaylist = await db.playlists.create({ data: { name, type: 'manual' } })
+    const createdPlaylist = await db.playlists.create({ data: { name, type: 'manual' } });
     const playlistId = createdPlaylist.id;
 
     for (let item of queue.items) {
@@ -113,7 +116,11 @@ export async function convertJsonDbToNewDb(jsondbFilepath: string, db: StorageTy
     const scannedItem = scanned.find(si => si.name === item.filename);
 
     if (scannedItem) {
-      const jsoned = item.categories.map(cat => ({ id: classifications.find(i => i.name === cat.name)?.id || 0, name: cat.name, values: cat.values }));
+      const jsoned = item.categories.map(cat => ({
+        id: classifications.find(i => i.name === cat.name)?.id || 0,
+        name: cat.name,
+        values: cat.values,
+      }));
       await db.classificatedItem.create({ data: { filehash: scannedItem.filehash, json: JSON.stringify(jsoned) } });
     }
   }
@@ -124,7 +131,7 @@ export function getRandomArbitrary(min: number, max: number) {
 }
 
 export function shuffle<T>(array: Array<T>) {
-  let currentIndex = array.length,  randomIndex;
+  let currentIndex = array.length, randomIndex;
 
   // While there remain elements to shuffle.
   while (currentIndex != 0) {

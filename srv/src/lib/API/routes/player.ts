@@ -1,8 +1,8 @@
 import Express from 'express';
-import { Logger } from '../../Logger';
-import { Queue } from '../../Queue';
-import { PlaylistsPlayHelper } from '../../PlaylistsPlayHelper';
-import { withLogger } from '../../../utils';
+import { Logger } from 'lib/Logger';
+import { Queue } from 'lib/Queue';
+import { PlaylistsPlayHelper } from 'lib/PlaylistsPlayHelper';
+import { withLogger } from 'lib/utils';
 
 export const gen = (logger: Logger, api: Express.Application, queue: Queue, playHelper: PlaylistsPlayHelper) => {
   api.post('/api/player/play', withLogger(logger, (_req, res) => {

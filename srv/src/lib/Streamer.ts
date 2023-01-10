@@ -1,9 +1,8 @@
-import Config from '../config';
+import config from 'lib/config';
 import ffmpeg, { FfmpegCommand } from 'fluent-ffmpeg';
-import { Logger } from './Logger';
-import { LogLevel, LogTags } from './Logger.types';
-import config from '../config';
-import { Scanner } from "./Scanner";
+import { Logger } from 'lib/Logger';
+import { LogLevel, LogTags } from 'lib/Logger.types';
+import { Scanner } from "lib/Scanner";
 
 export class Streamer {
   currentPlaylistId?: string;
@@ -46,7 +45,7 @@ export class Streamer {
         '-map_metadata 0:s:0',
       ])
       .outputFormat(config.FFMPEG_OUTPUT_FORMAT)
-      .output(`icecast://${Config.SHOUT_USER}:${Config.SHOUT_PASSWORD}@${Config.SHOUT_HOST}:${Config.SHOUT_PORT}/${Config.SHOUT_MOUNT}`);
+      .output(`icecast://${config.SHOUT_USER}:${config.SHOUT_PASSWORD}@${config.SHOUT_HOST}:${config.SHOUT_PORT}/${config.SHOUT_MOUNT}`);
 
     if (config.PLAYING_MODE === 'hardware') {
       instance.inputFormat(config.HARDWARE_PLAYER_FFMPEG_DRIVER);

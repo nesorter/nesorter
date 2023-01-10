@@ -1,7 +1,7 @@
-import { Queue } from './Queue';
-import { StorageType } from "./Storage";
-import { shuffle } from '../utils';
-import config from '../config';
+import { Queue } from 'lib/Queue';
+import { StorageType } from "lib/Storage";
+import { shuffle } from 'lib/utils';
+import config from 'lib/config';
 
 export class PlaylistsPlayHelper {
   constructor (private db: StorageType, private queue: Queue) {}

@@ -1,9 +1,9 @@
 import Express from 'express';
-import { Logger } from '../../Logger';
-import { Queue } from '../../Queue';
-import { Scanner } from '../../Scanner';
-import { Scheduler } from '../../Scheduler';
-import { Streamer } from '../../Streamer';
+import { Logger } from 'lib/Logger';
+import { Queue } from 'lib/Queue';
+import { Scanner } from 'lib/Scanner';
+import { Scheduler } from 'lib/Scheduler';
+import { Streamer } from 'lib/Streamer';
 
 export const gen = (api: Express.Application, logger: Logger, streamer: Streamer, scanner: Scanner, scheduler: Scheduler, queue: Queue) => {
   api.get('/api/logger', (_req, res) => {

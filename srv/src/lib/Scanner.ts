@@ -2,12 +2,12 @@ import { readdir, stat, readFile } from 'fs/promises';
 import { createHash } from 'crypto';
 import NodeID3 from 'node-id3';
 import musicDuration from 'get-audio-duration';
-import { StorageType } from './Storage';
-import { sleep } from '../utils';
-import { Logger } from './Logger';
-import { LogLevel, LogTags } from './Logger.types';
-import { Chain, ScannedItem } from './Scanner.types';
-import { Classificator } from './Classificator';
+import { StorageType } from 'lib/Storage';
+import { sleep } from 'lib/utils';
+import { Logger } from 'lib/Logger';
+import { LogLevel, LogTags } from 'lib/Logger.types';
+import { Chain, ScannedItem } from 'lib/Scanner.types';
+import { Classificator } from 'lib/Classificator';
 
 export class Scanner {
   SLEEP_AFTER_SCAN = true;

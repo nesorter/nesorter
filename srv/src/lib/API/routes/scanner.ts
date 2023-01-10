@@ -1,14 +1,14 @@
 import Express from 'express';
 import NodeID3 from 'node-id3';
-import CONFIG from '../../../config';
-import { Logger } from '../../Logger';
-import { Scanner } from '../../Scanner';
-import { getWaveformInfo, withLogger } from '../../../utils';
+import config from 'lib/config';
+import { Logger } from 'lib/Logger';
+import { Scanner } from 'lib/Scanner';
+import { getWaveformInfo, withLogger } from 'lib/utils';
 import { writeFile } from 'fs/promises';
 
 export const gen = (logger: Logger, api: Express.Application, scanner: Scanner) => {
   api.get('/api/scanner/sync', withLogger(logger, (req, res) => {
-    scanner.syncStorage(CONFIG.CONTENT_ROOT_DIR_PATH, ({ name }) => /.*\.mp3/.test(name) || /.*\.ogg/.test(name))
+    scanner.syncStorage(config.CONTENT_ROOT_DIR_PATH, ({ name }) => /.*\.mp3/.test(name) || /.*\.ogg/.test(name))
       .then(() => res.json('ok'))
       .catch((e) => res.status(500).json(e));
   }));

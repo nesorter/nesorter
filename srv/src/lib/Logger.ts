@@ -1,6 +1,6 @@
-import { StorageType } from "./Storage";
-import { LogLevel, LogTags } from "./Logger.types";
-import config from "../config";
+import { StorageType } from "lib/Storage";
+import { LogLevel, LogTags } from "lib/Logger.types";
+import config from "lib/config";
 
 import { createLogger, transports, format, Logger as WinstonLogger } from "winston";
 import LokiTransport from "winston-loki";

@@ -1,23 +1,23 @@
 import Express from 'express';
-import CONFIG from '../../config';
+import config from 'lib/config';
 
-import { Classificator } from '../Classificator';
-import { Logger } from '../Logger';
-import { LogLevel, LogTags } from '../Logger.types';
-import { PlaylistsManager } from '../PlaylistsManager';
-import { Scanner } from '../Scanner';
-import { StorageType } from '../Storage';
-import { Streamer } from '../Streamer';
-import { Scheduler } from '../Scheduler';
-import { Queue } from '../Queue';
-import { PlaylistsPlayHelper } from '../PlaylistsPlayHelper';
+import { Classificator } from 'lib/Classificator';
+import { Logger } from 'lib/Logger';
+import { LogLevel, LogTags } from 'lib/Logger.types';
+import { PlaylistsManager } from 'lib/PlaylistsManager';
+import { Scanner } from 'lib/Scanner';
+import { StorageType } from 'lib/Storage';
+import { Streamer } from 'lib/Streamer';
+import { Scheduler } from 'lib/Scheduler';
+import { Queue } from 'lib/Queue';
+import { PlaylistsPlayHelper } from 'lib/PlaylistsPlayHelper';
 
-import { gen as genScannerRoutes } from './routes/scanner';
-import { gen as genLoggerRoutes } from './routes/logger';
-import { gen as genClassificatorRoutes } from './routes/classificator';
-import { gen as genPLaylistsManagerRoutes } from './routes/playlistsManager';
-import { gen as genSchedulerRoutes } from './routes/scheduler';
-import { gen as getPlayerRoutes } from './routes/player';
+import { gen as genScannerRoutes } from 'lib/API/routes/scanner';
+import { gen as genLoggerRoutes } from 'lib/API/routes/logger';
+import { gen as genClassificatorRoutes } from 'lib/API/routes/classificator';
+import { gen as genPLaylistsManagerRoutes } from 'lib/API/routes/playlistsManager';
+import { gen as genSchedulerRoutes } from 'lib/API/routes/scheduler';
+import { gen as getPlayerRoutes } from 'lib/API/routes/player';
 
 /**
  * Класс гигачад
@@ -52,8 +52,8 @@ export class API {
   }
 
   start(): void {
-    this.router.listen(CONFIG.API_LISTEN_PORT, () => this.logger.log({
-      message: `Server start listening on ${CONFIG.API_LISTEN_PORT}`,
+    this.router.listen(config.API_LISTEN_PORT, () => this.logger.log({
+      message: `Server start listening on ${config.API_LISTEN_PORT}`,
       level: LogLevel.INFO,
       tags: [LogTags.APP],
     }));

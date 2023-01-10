@@ -1,11 +1,11 @@
 import Express from 'express';
-import { Logger } from '../../Logger';
-import { LogLevel, LogTags } from '../../Logger.types';
-import { PlaylistsManager } from '../../PlaylistsManager';
-import { ManualPlaylist } from '../../PlaylistsManager.ManualPlaylist';
-import { StorageType } from '../../Storage';
-import { Streamer } from '../../Streamer';
-import { withLogger } from '../../../utils';
+import { Logger } from 'lib/Logger';
+import { LogLevel, LogTags } from 'lib/Logger.types';
+import { PlaylistsManager } from 'lib/PlaylistsManager';
+import { ManualPlaylist } from 'lib/PlaylistsManager.ManualPlaylist';
+import { StorageType } from 'lib/Storage';
+import { Streamer } from 'lib/Streamer';
+import { withLogger } from 'lib/utils';
 
 export const gen = (
   logger: Logger,
