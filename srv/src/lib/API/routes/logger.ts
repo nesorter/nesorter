@@ -1,9 +1,10 @@
 import Express from 'express';
-import { Logger } from 'lib/Logger';
-import { Queue } from 'lib/Queue';
-import { Scanner } from 'lib/Scanner';
-import { Scheduler } from 'lib/Scheduler';
-import { Streamer } from 'lib/Streamer';
+
+import { Logger } from '../../Logger';
+import { Queue } from '../../Queue';
+import { Scanner } from '../../Scanner';
+import { Scheduler } from '../../Scheduler';
+import { Streamer } from '../../Streamer';
 
 export const gen = (
   api: Express.Application,

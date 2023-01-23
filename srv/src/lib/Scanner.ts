@@ -1,13 +1,14 @@
 import { createHash } from 'crypto';
 import { readdir, readFile, stat } from 'fs/promises';
 import musicDuration from 'get-audio-duration';
-import { Classificator } from 'lib/Classificator';
-import { Logger } from 'lib/Logger';
-import { LogLevel, LogTags } from 'lib/Logger.types';
-import { Chain, ScannedItem } from 'lib/Scanner.types';
-import { StorageType } from 'lib/Storage';
-import { sleep } from 'lib/utils';
 import NodeID3 from 'node-id3';
+
+import { Classificator } from './Classificator';
+import { Logger } from './Logger';
+import { LogLevel, LogTags } from './Logger.types';
+import { Chain, ScannedItem } from './Scanner.types';
+import { StorageType } from './Storage';
+import { sleep } from './utils';
 
 export class Scanner {
   SLEEP_AFTER_SCAN = true;

@@ -1,16 +1,16 @@
-import { API } from 'lib/API';
-import { Classificator } from 'lib/Classificator';
-import { Logger } from 'lib/Logger';
-import { LogLevel, LogTags } from 'lib/Logger.types';
-import { Player } from 'lib/Player';
-import { PlaylistsManager } from 'lib/PlaylistsManager';
-import { PlaylistsPlayHelper } from 'lib/PlaylistsPlayHelper';
-import { Publisher } from 'lib/Publisher';
-import { Queue } from 'lib/Queue';
-import { Scanner } from 'lib/Scanner';
-import { Scheduler } from 'lib/Scheduler';
-import { Storage } from 'lib/Storage';
-import { Streamer } from 'lib/Streamer';
+import { API } from './lib/API';
+import { Classificator } from './lib/Classificator';
+import { Logger } from './lib/Logger';
+import { LogLevel, LogTags } from './lib/Logger.types';
+import { Player } from './lib/Player';
+import { PlaylistsManager } from './lib/PlaylistsManager';
+import { PlaylistsPlayHelper } from './lib/PlaylistsPlayHelper';
+import { Publisher } from './lib/Publisher';
+import { Queue } from './lib/Queue';
+import { Scanner } from './lib/Scanner';
+import { Scheduler } from './lib/Scheduler';
+import { Storage } from './lib/Storage';
+import { Streamer } from './lib/Streamer';
 
 const logger = new Logger();
 const classificator = new Classificator(Storage, logger);
@@ -54,5 +54,3 @@ process.on('unhandledRejection', (error) => {
     tags: [LogTags.APP],
   });
 });
-
-export default { api };

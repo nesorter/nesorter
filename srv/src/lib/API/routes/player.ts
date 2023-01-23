@@ -1,8 +1,9 @@
 import Express from 'express';
-import { Logger } from 'lib/Logger';
-import { PlaylistsPlayHelper } from 'lib/PlaylistsPlayHelper';
-import { Queue } from 'lib/Queue';
-import { withLogger } from 'lib/utils';
+
+import { Logger } from '../../Logger';
+import { PlaylistsPlayHelper } from '../../PlaylistsPlayHelper';
+import { Queue } from '../../Queue';
+import { withLogger } from '../../utils';
 
 export const gen = (
   logger: Logger,

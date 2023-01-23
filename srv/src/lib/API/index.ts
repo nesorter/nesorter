@@ -1,21 +1,22 @@
 import Express from 'express';
-import { gen as genClassificatorRoutes } from 'lib/API/routes/classificator';
-import { gen as genLoggerRoutes } from 'lib/API/routes/logger';
-import { gen as getPlayerRoutes } from 'lib/API/routes/player';
-import { gen as genPLaylistsManagerRoutes } from 'lib/API/routes/playlistsManager';
-import { gen as genScannerRoutes } from 'lib/API/routes/scanner';
-import { gen as genSchedulerRoutes } from 'lib/API/routes/scheduler';
-import { Classificator } from 'lib/Classificator';
-import config from 'lib/config';
-import { Logger } from 'lib/Logger';
-import { LogLevel, LogTags } from 'lib/Logger.types';
-import { PlaylistsManager } from 'lib/PlaylistsManager';
-import { PlaylistsPlayHelper } from 'lib/PlaylistsPlayHelper';
-import { Queue } from 'lib/Queue';
-import { Scanner } from 'lib/Scanner';
-import { Scheduler } from 'lib/Scheduler';
-import { StorageType } from 'lib/Storage';
-import { Streamer } from 'lib/Streamer';
+
+import { Classificator } from '../Classificator';
+import config from '../config';
+import { Logger } from '../Logger';
+import { LogLevel, LogTags } from '../Logger.types';
+import { PlaylistsManager } from '../PlaylistsManager';
+import { PlaylistsPlayHelper } from '../PlaylistsPlayHelper';
+import { Queue } from '../Queue';
+import { Scanner } from '../Scanner';
+import { Scheduler } from '../Scheduler';
+import { StorageType } from '../Storage';
+import { Streamer } from '../Streamer';
+import { gen as genClassificatorRoutes } from './routes/classificator';
+import { gen as genLoggerRoutes } from './routes/logger';
+import { gen as getPlayerRoutes } from './routes/player';
+import { gen as genPLaylistsManagerRoutes } from './routes/playlistsManager';
+import { gen as genScannerRoutes } from './routes/scanner';
+import { gen as genSchedulerRoutes } from './routes/scheduler';
 
 /**
  * Класс гигачад

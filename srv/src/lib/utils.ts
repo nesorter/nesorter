@@ -1,10 +1,10 @@
 import { AudioAnalyzer } from '@lesjoursfr/audio-waveform';
+import config from './config';
+import { Logger } from './Logger';
+import { LogLevel, LogTags } from './Logger.types';
 import { spawn } from 'child_process';
 import { differenceInSeconds, endOfDay, secondsInDay } from 'date-fns';
 import { RequestHandler } from 'express';
-import config from 'lib/config';
-import { Logger } from 'lib/Logger';
-import { LogLevel, LogTags } from 'lib/Logger.types';
 
 export function withLogger(logger: Logger, rq: RequestHandler): RequestHandler {
   return (req, res, next) => {

@@ -1,10 +1,10 @@
 import Express from 'express';
-import { Classificator } from 'lib/Classificator';
-import { Logger } from 'lib/Logger';
-import { LogLevel, LogTags } from 'lib/Logger.types';
-import { withLogger } from 'lib/utils';
 
+import { Classificator } from '../../Classificator';
 import { ClassificationCategory } from '../../Classificator.types';
+import { Logger } from '../../Logger';
+import { LogLevel, LogTags } from '../../Logger.types';
+import { withLogger } from '../../utils';
 
 export const gen = (logger: Logger, api: Express.Application, classificator: Classificator) => {
   api

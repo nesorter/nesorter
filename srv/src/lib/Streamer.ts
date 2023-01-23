@@ -1,8 +1,9 @@
 import ffmpeg, { FfmpegCommand } from 'fluent-ffmpeg';
-import config from 'lib/config';
-import { Logger } from 'lib/Logger';
-import { LogLevel, LogTags } from 'lib/Logger.types';
-import { Scanner } from 'lib/Scanner';
+
+import config from './config';
+import { Logger } from './Logger';
+import { LogLevel, LogTags } from './Logger.types';
+import { Scanner } from './Scanner';
 
 export class Streamer {
   currentPlaylistId?: string;

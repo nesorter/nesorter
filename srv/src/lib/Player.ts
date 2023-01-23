@@ -1,12 +1,13 @@
 import { FSItem } from '@prisma/client';
 import { spawn } from 'child_process';
-import config from 'lib/config';
-import { Logger } from 'lib/Logger';
-import { LogLevel, LogTags } from 'lib/Logger.types';
-import { Publisher } from 'lib/Publisher';
-import { asyncSpawn, makeSafePath, range } from 'lib/utils';
 import { createServer, Server, Socket } from 'net';
 import kill from 'tree-kill';
+
+import config from './config';
+import { Logger } from './Logger';
+import { LogLevel, LogTags } from './Logger.types';
+import { Publisher } from './Publisher';
+import { asyncSpawn, makeSafePath, range } from './utils';
 
 export class Player {
   socket: { id: number; instanse: Server; binded: boolean }[] = [];

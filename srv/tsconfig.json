@@ -1,10 +1,8 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
     "target": "ESNext",
     "module": "CommonJS",
     "lib": ["esnext"],
-    "jsx": "react",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
@@ -13,14 +11,11 @@
     "removeComments": true,
     "strict": true,
 
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
 
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-
-    "baseUrl": "./src",
   },
-  "include": ["src"]
+  "include": ["src/main.ts"]
 }

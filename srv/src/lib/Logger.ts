@@ -1,7 +1,8 @@
-import config from 'lib/config';
-import { LogLevel, LogTags } from 'lib/Logger.types';
 import { createLogger, format, Logger as WinstonLogger, transports } from 'winston';
 import LokiTransport from 'winston-loki';
+
+import config from './config';
+import { LogLevel, LogTags } from './Logger.types';
 
 type logParams = {
   message: string;
