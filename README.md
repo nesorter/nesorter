@@ -9,7 +9,10 @@ ui  - фронтенд часть, существует как отдельны�
 
 ![Диаграмма классов](https://github.com/nesorter/nesorter/blob/main/readmeAssets/classDiagram.png?raw=true)
 
-## Запуск в Docker
+## Запуск в Docker: просто
+0. Смотрим в репо https://github.com/nesorter/nesorter-docker
+
+## Запуск в Docker: замороченно
 0. Скачиваем репо 
 ```sh
 wget https://github.com/nesorter/nesorter/archive/refs/tags/v2.0.9.zip && \
