@@ -2,5 +2,8 @@
 readmeAssets
 srv/node_modules
 srv/dist
+srv/.env
+srv/prisma/db/storage.db
+srv/prisma/db/storage.db-journal
 ui/build
 ui/node_modules

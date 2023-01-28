@@ -1,4 +1,4 @@
-import { ScheduleItem } from '@prisma/client';
+import { ManualPlaylistItem, ScheduleItem } from '@prisma/client';
 import { secondsInDay } from 'date-fns';
 
 import { Logger } from './Logger';
@@ -6,7 +6,7 @@ import { LogLevel, LogTags } from './Logger.types';
 import { ManualPlaylist } from './PlaylistsManager.ManualPlaylist';
 import { Queue } from './Queue';
 import { StorageType } from './Storage';
-import { currentSecondsFromDayStart, shuffle } from './utils';
+import { currentSecondsFromDayStart, getRandomArbitrary, shuffle } from './utils';
 
 export class Scheduler {
   intervals: NodeJS.Timer[] = [];
@@ -70,9 +70,8 @@ export class Scheduler {
 
   async start() {
     const items = await this.getItems();
-
-    items.map((item) => {
-      const interval = setInterval(() => {
+    for (const item of items) {
+      const interval = setInterval(async () => {
         if (this.shouldEnd(item)) {
           this.logger.log({
             message: `Stopping playlist #${this.currentPlaylist}`,
@@ -93,41 +92,53 @@ export class Scheduler {
             return;
           }
 
-          const playlists = item.playlistIds.split(',').map((_) => Number(_));
-          const playlistId = shuffle(playlists)[0]; // pick random pl
-
+          this.currentItem = item.id;
+          this.currentPlaylist = Number(item.playlistIds.split(',')[0]);
           this.logger.log({
-            message: `Starting playlist #${playlistId}`,
+            message: `Starting schedule item #${item.id} with PLs ${item.playlistIds}`,
             level: LogLevel.INFO,
             tags: [LogTags.SCHEDULER],
           });
-          const pl = new ManualPlaylist(this.db, playlistId);
 
-          pl.getContent().then(async (tracks) => {
-            this.currentItem = item.id;
-            this.currentPlaylist = playlistId;
+          const playlists = item.playlistIds.split(',').map((_) => Number(_));
 
-            const scheduleDuration = item.endAt - item.startAt;
-            const shuffled = shuffle(tracks);
-            let durationAccumulator = 0;
+          const tracks: { playlistId: number; content: ManualPlaylistItem[]; index: number }[] = [];
+          for (const playlistId of playlists) {
+            tracks.push({
+              playlistId,
+              content: shuffle(await new ManualPlaylist(this.db, playlistId).getContent()),
+              index: 0,
+            });
+          }
 
-            for (const track of shuffled) {
-              if (durationAccumulator > scheduleDuration) {
-                return;
-              }
-
-              const file = await this.db.fSItem.findFirst({ where: { filehash: track.filehash } });
-              if (file) {
-                durationAccumulator += file.duration;
-                this.queue.add(track.filehash, item.endAt, playlistId);
-              }
+          const scheduleDuration = item.endAt - item.startAt;
+          let durationAccumulator = 0;
+          while (durationAccumulator < scheduleDuration) {
+            if (durationAccumulator > scheduleDuration) {
+              return;
             }
-          });
+
+            const content = tracks[getRandomArbitrary(0, tracks.length)];
+            const track = content.content[content.index];
+
+            content.index += 1;
+
+            const file = await this.db.fSItem.findFirst({ where: { filehash: track.filehash } });
+            if (file) {
+              durationAccumulator += file.duration;
+              this.queue.add(track.filehash, item.endAt, content.playlistId);
+            }
+
+            if (content.content.length - 1 === content.index) {
+              content.content = shuffle(content.content);
+              content.index = 0;
+            }
+          }
         }
-      }, 250);
+      }, 1000);
 
       this.intervals.push(interval);
-    });
+    }
 
     this.processing = true;
   }
