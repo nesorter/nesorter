@@ -1,5 +1,6 @@
 import config from './config';
 import { Player } from './Player';
+import { Publisher } from './Publisher';
 import { StorageType } from './Storage';
 import { currentSecondsFromDayStart, sleep } from './utils';
 
@@ -20,7 +21,7 @@ export class Queue {
   private internalOrder = 0;
   public state: QueueState = 'stopped';
 
-  constructor(private db: StorageType, private player: Player) {
+  constructor(private db: StorageType, private player: Player, private publisher: Publisher) {
     this.runCleanupLoop();
   }
 
@@ -40,16 +41,20 @@ export class Queue {
     const item = this.items.find((_) => _.startAt <= currentSeconds && _.endAt >= currentSeconds);
 
     if (item && item?.order !== this.currentOrder) {
-      this.currentOrder = item.order;
-      this.currentPlaylistId = item.playlistId;
       const file = await this.db.fSItem.findFirst({ where: { filehash: item.fileHash } });
+
       if (file) {
+        this.currentOrder = item.order;
+        this.currentPlaylistId = item.playlistId;
         const endPosition = item.endAt - item.startAt;
         this.player.play(file, endPosition);
+
+        await sleep(250);
+        this.publisher.publish(file);
       }
     }
 
-    sleep(250);
+    await sleep(250);
 
     setTimeout(() => {
       this.runLoop();

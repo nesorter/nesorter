@@ -1,6 +1,10 @@
+import axios from 'axios';
 import Express from 'express';
+import { XMLParser } from 'fast-xml-parser';
 
+import config from '../../config';
 import { Logger } from '../../Logger';
+import { LogLevel, LogTags } from '../../Logger.types';
 import { Queue } from '../../Queue';
 import { Scanner } from '../../Scanner';
 import { Scheduler } from '../../Scheduler';
@@ -23,6 +27,21 @@ export const gen = (
       playlistData = await scheduler.getPlaylist(Number(queue.currentPlaylistId));
     }
 
+    let icecastData = {};
+    try {
+      const xml = await axios.get(`http://${config.SHOUT_HOST}:${config.SHOUT_PORT}/admin/stats`, {
+        auth: {
+          username: config.SHOUT_ADMIN_USER,
+          password: config.SHOUT_ADMIN_PASSWORD,
+        },
+      });
+      const parser = new XMLParser();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      icecastData = parser.parse(xml.data as string);
+    } catch (e) {
+      logger.log({ message: e?.toString() || '', tags: [LogTags.STREAMER], level: LogLevel.ERROR });
+    }
+
     res.json({
       scheduling: scheduler.processing,
       playing: queue.state === 'playing',
@@ -38,6 +57,8 @@ export const gen = (
       fileData,
       playlistData,
       currentPlaylistId: queue.currentPlaylistId,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      icecastData,
     });
   });
 };

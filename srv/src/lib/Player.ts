@@ -6,7 +6,6 @@ import kill from 'tree-kill';
 import config from './config';
 import { Logger } from './Logger';
 import { LogLevel, LogTags } from './Logger.types';
-import { Publisher } from './Publisher';
 import { asyncSpawn, makeSafePath, range } from './utils';
 
 export class Player {
@@ -14,7 +13,7 @@ export class Player {
   outputSocket?: Socket;
   needStop = false;
 
-  constructor(private logger: Logger, private publisher: Publisher) {
+  constructor(private logger: Logger) {
     const logMessage = config.PLAYING_MODE === 'socket' ? 'Init sockets' : 'Skip init socket';
     logger.log({ message: `PLAYING_MODE is '${config.PLAYING_MODE}'. ${logMessage}` });
 
@@ -111,8 +110,6 @@ export class Player {
     const childProc = spawn(config.MPV_PATH, args, { shell: true });
 
     childProc.addListener('spawn', () => {
-      this.publisher.publish(fsItem);
-
       if (config.PLAYING_MODE === 'socket') {
         if (omittedSocket !== -1) {
           this.unbindSocket(omittedSocket);

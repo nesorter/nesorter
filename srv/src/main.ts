@@ -18,8 +18,8 @@ const scanner = new Scanner(Storage, logger, classificator);
 const playlistsManager = new PlaylistsManager(Storage, logger);
 const streamer = new Streamer(logger, scanner);
 const publisher = new Publisher(logger);
-const player = new Player(logger, publisher);
-const queue = new Queue(Storage, player);
+const player = new Player(logger);
+const queue = new Queue(Storage, player, publisher);
 const scheduler = new Scheduler(Storage, logger, queue);
 const playHelper = new PlaylistsPlayHelper(Storage, queue);
 
