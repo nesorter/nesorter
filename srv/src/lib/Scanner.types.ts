@@ -18,6 +18,7 @@ export type Chain = Record<
   string,
   {
     type: 'file' | 'dir';
+    path?: string;
     key: string;
     parent: string | null;
     name: string;

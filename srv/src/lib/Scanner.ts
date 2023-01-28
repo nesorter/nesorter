@@ -75,6 +75,7 @@ export class Scanner {
 
         chain[chunk] = {
           type: 'dir',
+          path: path.join('/'),
           key: chunk,
           name: path[index],
           parent: index > 0 ? pathIndexed[index - 1] : null,

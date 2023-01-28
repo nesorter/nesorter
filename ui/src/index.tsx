@@ -15,6 +15,7 @@ import SchedulerPage from './pages/SchedulerPage';
 
 import theme from './theme';
 import { PageWrapper } from './components/PageWrapper';
+import UploadPage from './pages/UploadPage';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -44,6 +45,7 @@ const App = (): JSX.Element => {
             <Route path="/playlists" element={<PlaylistsPage/>}/>
             <Route path="/classify" element={<ClassifyPage/>}/>
             <Route path="/scheduler" element={<SchedulerPage/>}/>
+            <Route path="/upload" element={<UploadPage />}/>
           </Routes>
         </PageWrapper>
       </Router>

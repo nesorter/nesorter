@@ -62,5 +62,3 @@ export async function put<Response>(path: string, data: unknown, urlParams?: Rec
     body: JSON.stringify(data),
   }).then(_ => _.json() as unknown as Response);
 }
-
-// TODO: POST & PATCH

@@ -1,13 +1,60 @@
 import Express from 'express';
 import { writeFile } from 'fs/promises';
+import { copyFile, mkdir, rm } from 'fs/promises';
+import multer from 'multer';
 import NodeID3 from 'node-id3';
+import * as pth from 'path';
 
 import config from '../../config';
 import { Logger } from '../../Logger';
 import { Scanner } from '../../Scanner';
-import { getWaveformInfo, withAdminToken, withLogger } from '../../utils';
+import { getWaveformInfo, makeSafePath, withAdminToken, withLogger } from '../../utils';
+
+type MulterFile = {
+  fieldname: string; //'file_6',
+  originalname: string; //'8mb.video-W3O-9lzZ5YYu.mp4',
+  encoding: string; //'7bit',
+  mimetype: string; //'video/mp4',
+  destination: string; //'/tmp',
+  filename: string; //'0e5db6097f5a1179aac3eb057252d45a',
+  path: string; //'/tmp/0e5db6097f5a1179aac3eb057252d45a',
+  size: number; //7677220
+};
 
 export const gen = (logger: Logger, api: Express.Application, scanner: Scanner) => {
+  const upload = multer({ dest: '/tmp' });
+
+  api.post(
+    '/api/scanner/upload-files',
+    upload.any(),
+    withAdminToken(
+      withLogger(logger, async (req, res) => {
+        try {
+          const { path, newDir } = req.body as { path: string; newDir: string };
+
+          if (!path || !newDir) {
+            res.status(500).json({ error: 'some fields missed' });
+          }
+
+          if (!req.files) {
+            res.status(500).json({ error: 'files missed' });
+          }
+
+          await mkdir(`${path}${newDir}`, { recursive: true });
+
+          for (const file of req.files as MulterFile[]) {
+            await copyFile(file.path, `${path}${newDir}/${file.originalname}`);
+            await rm(file.path);
+          }
+
+          res.json({ status: 'done' });
+        } catch (e) {
+          res.status(500).json({ error: e });
+        }
+      }),
+    ),
+  );
+
   api.get(
     '/api/scanner/sync',
     withLogger(logger, (req, res) => {

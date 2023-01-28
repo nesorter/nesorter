@@ -34,6 +34,7 @@ export type FSItem = {
 
 export type ChainItem = {
   type: 'file' | 'dir';
+  path?: string;
   key: string;
   parent: string | null;
   name: string;
