@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ThemeProvider } from 'styled-components'
 import ReactDOM from 'react-dom/client';
 import {
@@ -20,20 +20,36 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-const App = (): JSX.Element => (
-  <ThemeProvider theme={theme}>
-    <Router>
-      <PageWrapper>
-        <Routes>
-          <Route path="/" element={<StatusPage />} />
-          <Route path="/playlists" element={<PlaylistsPage />} />
-          <Route path="/classify" element={<ClassifyPage />} />
-          <Route path="/scheduler" element={<SchedulerPage />} />
-        </Routes>
-      </PageWrapper>
-    </Router>
-  </ThemeProvider>
-);
+const App = (): JSX.Element => {
+  const [token, setToken] = useState(localStorage.getItem('nesorter-admin-token'));
+
+  if (!token) {
+    const newToken = prompt('Введи admin token, ибо его нет');
+    localStorage.setItem('nesorter-admin-token', newToken as string);
+    setToken(newToken);
+    // eslint-disable-next-line no-restricted-globals
+    location.reload();
+  }
+
+  if (!token) {
+    return <></>;
+  }
+
+  return (
+    <ThemeProvider theme={theme}>
+      <Router>
+        <PageWrapper>
+          <Routes>
+            <Route path="/" element={<StatusPage/>}/>
+            <Route path="/playlists" element={<PlaylistsPage/>}/>
+            <Route path="/classify" element={<ClassifyPage/>}/>
+            <Route path="/scheduler" element={<SchedulerPage/>}/>
+          </Routes>
+        </PageWrapper>
+      </Router>
+    </ThemeProvider>
+  );
+};
 
 root.render(<App />);
 

@@ -4,7 +4,7 @@ import { Classificator } from '../../Classificator';
 import { ClassificationCategory } from '../../Classificator.types';
 import { Logger } from '../../Logger';
 import { LogLevel, LogTags } from '../../Logger.types';
-import { withLogger } from '../../utils';
+import { withAdminToken, withLogger } from '../../utils';
 
 export const gen = (logger: Logger, api: Express.Application, classificator: Classificator) => {
   api
@@ -18,24 +18,28 @@ export const gen = (logger: Logger, api: Express.Application, classificator: Cla
       }),
     )
     .post(
-      withLogger(logger, (req, res) => {
-        const { name, values } = req.body as { name: string; values: string[] };
+      withAdminToken(
+        withLogger(logger, (req, res) => {
+          const { name, values } = req.body as { name: string; values: string[] };
 
-        classificator
-          .addCategory({ name, values })
-          .then((result) => res.json({ result }))
-          .catch((e) => res.status(500).json(e));
-      }),
+          classificator
+            .addCategory({ name, values })
+            .then((result) => res.json({ result }))
+            .catch((e) => res.status(500).json(e));
+        }),
+      ),
     )
     .put(
-      withLogger(logger, (req, res) => {
-        const { id, name, values } = req.body as { id: number; name: string; values: string[] };
+      withAdminToken(
+        withLogger(logger, (req, res) => {
+          const { id, name, values } = req.body as { id: number; name: string; values: string[] };
 
-        classificator
-          .updateCategory({ id, name, values })
-          .then((result) => res.json({ result }))
-          .catch((e) => res.status(500).json(e));
-      }),
+          classificator
+            .updateCategory({ id, name, values })
+            .then((result) => res.json({ result }))
+            .catch((e) => res.status(500).json(e));
+        }),
+      ),
     );
 
   api.get(
@@ -68,39 +72,43 @@ export const gen = (logger: Logger, api: Express.Application, classificator: Cla
       }),
     )
     .post(
-      withLogger(logger, (req, res) => {
-        classificator
-          .updateItem(
-            req.params.filehash,
-            (req.body as { categories: ClassificationCategory[] }).categories,
-          )
-          .then((result) => res.json({ result }))
-          .catch((e) => {
-            logger.log({
-              message: `Failed update track categories: ${e}`,
-              level: LogLevel.ERROR,
-              tags: [LogTags.API],
+      withAdminToken(
+        withLogger(logger, (req, res) => {
+          classificator
+            .updateItem(
+              req.params.filehash,
+              (req.body as { categories: ClassificationCategory[] }).categories,
+            )
+            .then((result) => res.json({ result }))
+            .catch((e) => {
+              logger.log({
+                message: `Failed update track categories: ${e}`,
+                level: LogLevel.ERROR,
+                tags: [LogTags.API],
+              });
+              res.status(500).json(e);
             });
-            res.status(500).json(e);
-          });
-      }),
+        }),
+      ),
     )
     .put(
-      withLogger(logger, (req, res) => {
-        classificator
-          .updateItem(
-            req.params.filehash,
-            (req.body as { categories: ClassificationCategory[] }).categories,
-          )
-          .then((result) => res.json({ result }))
-          .catch((e) => {
-            logger.log({
-              message: `Failed update track categories: ${e}`,
-              level: LogLevel.ERROR,
-              tags: [LogTags.API],
+      withAdminToken(
+        withLogger(logger, (req, res) => {
+          classificator
+            .updateItem(
+              req.params.filehash,
+              (req.body as { categories: ClassificationCategory[] }).categories,
+            )
+            .then((result) => res.json({ result }))
+            .catch((e) => {
+              logger.log({
+                message: `Failed update track categories: ${e}`,
+                level: LogLevel.ERROR,
+                tags: [LogTags.API],
+              });
+              res.status(500).json(e);
             });
-            res.status(500).json(e);
-          });
-      }),
+        }),
+      ),
     );
 };

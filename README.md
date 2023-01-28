@@ -90,6 +90,9 @@ PLAYING_MODE                  - socket или hardware; режим воспро�
 HARDWARE_PLAYER_FFMPEG_DRIVER - чем обращаться к девайсу (alsa/pulse/dshow) https://ffmpeg.org/ffmpeg-devices.html
 HARDWARE_PLAYER_FFMPEG_DEVICE - сам девайс (например hw:0,1; юзай `aplay -L` чоли) https://ffmpeg.org/ffmpeg-devices.html
 
+ADMIN_TOKEN           - токен для входа в админку
+TZ_HOURS_SHIFT        - смещение часового пояса
+
 API_LISTEN_PORT       - порт бекенда, его изменение не аффектит UI-часть, так что в изменении смысла нет
 
 MPV_PATH              - путь ИЛИ имя бинарника mpv

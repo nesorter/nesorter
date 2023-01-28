@@ -5,7 +5,7 @@ import NodeID3 from 'node-id3';
 import config from '../../config';
 import { Logger } from '../../Logger';
 import { Scanner } from '../../Scanner';
-import { getWaveformInfo, withLogger } from '../../utils';
+import { getWaveformInfo, withAdminToken, withLogger } from '../../utils';
 
 export const gen = (logger: Logger, api: Express.Application, scanner: Scanner) => {
   api.get(
@@ -56,13 +56,15 @@ export const gen = (logger: Logger, api: Express.Application, scanner: Scanner) 
 
   api.post(
     '/api/scanner/fsitem/trim/:filehash',
-    withLogger(logger, (req, res) => {
-      const { start, end } = req.body as { start: number; end: number };
-      scanner
-        .setTrim(req.params.filehash, start, end)
-        .then(() => res.json('ok!'))
-        .catch((e) => res.status(500).json(e));
-    }),
+    withAdminToken(
+      withLogger(logger, (req, res) => {
+        const { start, end } = req.body as { start: number; end: number };
+        scanner
+          .setTrim(req.params.filehash, start, end)
+          .then(() => res.json('ok!'))
+          .catch((e) => res.status(500).json(e));
+      }),
+    ),
   );
 
   api.get(
