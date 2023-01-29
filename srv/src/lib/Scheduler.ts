@@ -92,8 +92,6 @@ export class Scheduler {
             return;
           }
 
-          this.currentItem = item.id;
-          this.currentPlaylist = Number(item.playlistIds.split(',')[0]);
           this.logger.log({
             message: `Starting schedule item #${item.id} with PLs ${item.playlistIds}`,
             level: LogLevel.INFO,
@@ -101,8 +99,8 @@ export class Scheduler {
           });
 
           const playlists = item.playlistIds.split(',').map((_) => Number(_));
-
           const tracks: { playlistId: number; content: ManualPlaylistItem[]; index: number }[] = [];
+
           for (const playlistId of playlists) {
             tracks.push({
               playlistId,
@@ -111,22 +109,18 @@ export class Scheduler {
             });
           }
 
-          const scheduleDuration = item.endAt - item.startAt;
-          let durationAccumulator = 0;
-          while (durationAccumulator < scheduleDuration) {
-            if (durationAccumulator > scheduleDuration) {
-              return;
-            }
+          const content = tracks[getRandomArbitrary(0, tracks.length)];
+          this.currentItem = item.id;
+          this.currentPlaylist = content.playlistId;
 
-            const content = tracks[getRandomArbitrary(0, tracks.length)];
+          let shouldEnd = false;
+          while (!shouldEnd) {
             const track = content.content[content.index];
-
             content.index += 1;
 
             const file = await this.db.fSItem.findFirst({ where: { filehash: track.filehash } });
             if (file) {
-              durationAccumulator += file.duration;
-              this.queue.add(track.filehash, item.endAt, content.playlistId);
+              shouldEnd = await this.queue.add(track.filehash, item.endAt, content.playlistId);
             }
 
             if (content.content.length - 1 === content.index) {
