@@ -16,7 +16,7 @@ import { Streamer } from './lib/Streamer';
 const logger = new Logger();
 const classificator = new Classificator(Storage, logger);
 const scanner = new Scanner(Storage, logger, classificator, onScanned);
-const playlistsManager = new PlaylistsManager(Storage, logger);
+const playlistsManager = new PlaylistsManager(Storage, logger, scanner);
 const streamer = new Streamer(logger, scanner);
 const publisher = new Publisher(logger);
 const player = new Player(logger);

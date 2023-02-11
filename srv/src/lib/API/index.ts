@@ -55,6 +55,7 @@ export class API {
       this.playlistsManager,
       this.streamer,
       this.db,
+      this.scanner,
     );
     genScannerRoutes(this.logger, this.router, this.scanner);
     genSchedulerRoutes(this.logger, this.router, this.scheduler);

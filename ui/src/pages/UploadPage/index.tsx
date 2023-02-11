@@ -14,7 +14,6 @@ const UploadPage = () => {
   const [progress, setProgress] = useState(0);
 
   const handleUpload = () => {
-    console.log(files);
     const form = new FormData();
     form.append('path', path);
     form.append('newDir', newDir);

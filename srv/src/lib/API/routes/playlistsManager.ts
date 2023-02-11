@@ -3,7 +3,9 @@ import Express from 'express';
 import { Logger } from '../../Logger';
 import { LogLevel, LogTags } from '../../Logger.types';
 import { PlaylistsManager } from '../../PlaylistsManager';
+import { FSPlaylist } from '../../PlaylistsManager.FSPlaylist';
 import { ManualPlaylist } from '../../PlaylistsManager.ManualPlaylist';
+import { Scanner } from '../../Scanner';
 import { StorageType } from '../../Storage';
 import { Streamer } from '../../Streamer';
 import { withAdminToken, withLogger } from '../../utils';
@@ -14,6 +16,7 @@ export const gen = (
   playlistsManager: PlaylistsManager,
   streamer: Streamer,
   storage: StorageType,
+  scanner: Scanner,
 ) => {
   api
     .route('/api/playlistsManager/queues')
@@ -45,9 +48,9 @@ export const gen = (
     .route('/api/playlistsManager/queue/:queueId')
     .get(
       withLogger(logger, (req, res) => {
-        const queue = new ManualPlaylist(storage, Number(req.params.queueId));
-        queue
-          .getContent()
+        playlistsManager
+          .getQueueInstance(Number(req.params.queueId))
+          .then((playlist) => playlist.getContent())
           .then((result) => res.json(result))
           .catch((e) => res.status(500).json(e));
       }),

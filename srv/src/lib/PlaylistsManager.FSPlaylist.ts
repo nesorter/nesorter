@@ -18,9 +18,9 @@ export class FSPlaylist implements AbstractPlaylist {
   }
 
   async getContent(): Promise<ManualPlaylistItem[]> {
-    if (!this.cache.length) {
-      await this.initCache();
-    }
+    // if (!this.cache.length) {
+    await this.initCache();
+    // }
 
     return this.cache;
   }
@@ -40,7 +40,7 @@ export class FSPlaylist implements AbstractPlaylist {
 
     const chain = Object.values(this.scanner.getChain());
     const fsItems = chain.filter(
-      (item) => item.type === 'file' && item.path?.startsWith(fsItem.path),
+      (item) => item.fsItem?.type === 'file' && item.fsItem?.path?.startsWith(fsItem.path),
     );
 
     this.cache = fsItems.map((i, index) => ({
