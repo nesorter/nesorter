@@ -9,6 +9,7 @@ import { Queue } from '../../Queue';
 import { Scanner } from '../../Scanner';
 import { Scheduler } from '../../Scheduler';
 import { Streamer } from '../../Streamer';
+import { withAdminToken, withLogger } from '../../utils';
 
 export const gen = (
   api: Express.Application,
@@ -18,6 +19,16 @@ export const gen = (
   scheduler: Scheduler,
   queue: Queue,
 ) => {
+  api.post(
+    '/api/restart',
+    withAdminToken(
+      withLogger(logger, (_req, res) => {
+        res.status(200).json({ message: 'restart' });
+        process.exit(0);
+      }),
+    ),
+  );
+
   api.get('/api/status', async (_req, res) => {
     let fileData = null;
     let playlistData = null;

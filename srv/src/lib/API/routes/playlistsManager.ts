@@ -28,9 +28,13 @@ export const gen = (
     .post(
       withAdminToken(
         withLogger(logger, (req, res) => {
-          const { name, type } = req.body as { name: string; type: 'manual' | 'smart' };
+          const { name, type, filehash } = req.body as {
+            name: string;
+            type: 'manual' | 'fs';
+            filehash?: string;
+          };
           playlistsManager
-            .createQueue(name, type)
+            .createQueue(name, type, filehash)
             .then((result) => res.json({ result }))
             .catch((e) => res.status(500).json(e));
         }),

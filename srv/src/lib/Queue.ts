@@ -86,6 +86,7 @@ export class Queue {
     playlistId: number | undefined,
   ) {
     const file = await this.db.fSItem.findFirst({ where: { filehash: fileHash } });
+
     if (!file) {
       throw new Error('Wrong fileHash');
     }

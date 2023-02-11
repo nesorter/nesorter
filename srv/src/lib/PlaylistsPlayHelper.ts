@@ -16,6 +16,7 @@ export class PlaylistsPlayHelper {
   public async queueAllPlaylistsRandomly() {
     let playlistDuration = 0;
     const playlist = shuffle(await this.db.playlists.findMany())[0];
+
     if (!playlist) {
       return;
     }
@@ -23,6 +24,7 @@ export class PlaylistsPlayHelper {
     const items = shuffle(
       await this.db.manualPlaylistItem.findMany({ where: { playlistId: playlist.id } }),
     );
+
     for (const item of items) {
       await this.queue.add(item.filehash, undefined, playlist.id);
       const fsItem = await this.db.fSItem.findFirst({ where: { filehash: item.filehash } });

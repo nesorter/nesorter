@@ -39,7 +39,7 @@ export class Logger {
 
   log({ message, tags = [LogTags.APP], level = LogLevel.INFO, extraData = {} }: logParams): void {
     const data = {
-      msg: message,
+      msg: message.split('\n').join(' '),
       level,
       ...extraData,
     };

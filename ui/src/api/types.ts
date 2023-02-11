@@ -24,7 +24,7 @@ export type FSItem = {
   filehash: string
   path: string
   name: string
-  type: string
+  type: 'file' | 'dir';
   id3Artist: string
   id3Title: string
   duration: number
@@ -45,9 +45,10 @@ export type ChainItem = {
 export type Chain = Record<string, ChainItem>;
 
 export type Playlist = {
-  id: number
-  name: string
-  type: string
+  id: number;
+  name: string;
+  type: 'manual' | 'fs';
+  filehash?: string;
 }
 
 export type ManualPlaylistItem = {

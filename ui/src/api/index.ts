@@ -16,16 +16,13 @@ import {
 
 export const api = {
   logger: {
-    /**
-     * Возвращает логи. Пока не работает
-     */
-    getLogs() {
-      return get<never[]>('/api/logger');
-    },
-
     getStatus() {
       return get<Status>('/api/status');
     },
+
+    restart() {
+      return post('/api/restart', {});
+    }
   },
 
   scheduler: {
@@ -181,8 +178,8 @@ export const api = {
     /**
      * Создаёт плейлист
      */
-    createPlaylist(name: string, type: 'manual' | 'smart') {
-      return post('/api/playlistsManager/queues', { name, type });
+    createPlaylist(name: string, type: 'manual' | 'fs', filehash?: string) {
+      return post('/api/playlistsManager/queues', { name, type, filehash });
     },
 
     /**

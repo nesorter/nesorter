@@ -2,6 +2,10 @@ import { api } from "../../../api";
 import { Box, Button } from "../../../components"
 
 export const ActionBox = () => {
+  const handleRestart = () => {
+    api.logger.restart();
+  }
+
   const handleStopStream = () => {
     api.streamer.stopStream();
   }
@@ -29,7 +33,7 @@ export const ActionBox = () => {
   const handleStopQueue = () => {
     api.player.stop();
   }
-  
+
   const handleClearQueue = () => {
     api.player.clear();
   }
@@ -40,6 +44,7 @@ export const ActionBox = () => {
 
   return (
     <Box flexDirection="column" gap={7} width={256}>
+      <Button variant="secondary" size="small" onClick={handleRestart}>Halt server (restart)</Button>
       <Button variant="secondary" size="small" onClick={handleStartSync}>Start sync</Button>
       <br />
       <Button variant="secondary" size="small" onClick={handlePlayRandom}>Play all playlists (randomly)</Button>

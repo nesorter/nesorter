@@ -54,7 +54,7 @@ const Recursive = ({ rootKey, chain, step, selectedTrack, setSelectedTrack }: Re
 
   return (
     <>
-      {children.map(_ => (
+      {children.filter(_ => _.type === 'dir' || (_.type === 'file' && _.fsItem?.type !== 'dir')).map(_ => (
         <React.Fragment key={_.key}>
           <PaneItem
             isSelected={_.key === selectedTrack}

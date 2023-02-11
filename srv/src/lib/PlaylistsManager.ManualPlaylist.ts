@@ -1,11 +1,15 @@
 import { ManualPlaylistItem } from '@prisma/client';
 
+import {
+  AbstractPlaylist,
+  AbstractPlaylistUpdateItem,
+} from './API/PlaylistManager.AbstractPlaylist';
 import { StorageType } from './Storage';
 
-export class ManualPlaylist {
+export class ManualPlaylist implements AbstractPlaylist {
   constructor(private db: StorageType, private playlistId: number) {}
 
-  async update(items: { order: number; filehash: string }[]): Promise<void> {
+  async update(items: AbstractPlaylistUpdateItem[]): Promise<void> {
     const content = await this.getContent();
     const selectedForDelete = content.filter(
       (_) => items.find((__) => __.filehash === _.filehash) === undefined,

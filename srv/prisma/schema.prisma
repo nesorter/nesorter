@@ -27,9 +27,10 @@ model ClassificatedItem {
 }
 
 model Playlists {
-  id   Int @id @default(autoincrement())
-  name String
-  type String
+  id       Int @id @default(autoincrement())
+  name     String
+  type     String
+  filehash String @default("none")
 }
 
 model ManualPlaylistItem {
