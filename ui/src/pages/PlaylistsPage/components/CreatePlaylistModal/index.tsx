@@ -19,7 +19,7 @@ type FormType = {
 
 export const CreatePlaylistModal = ({ state, onCreate }: Props) => {
   const [chain, setChain] = useState<ChainItem[]>([]);
-  const { register, handleSubmit, reset } = useForm<FormType>();
+  const { register, handleSubmit, reset, setValue } = useForm<FormType>();
   const [selected, setSelected] = useState<Option[]>([]);
 
   useEffect(() => {
@@ -63,7 +63,15 @@ export const CreatePlaylistModal = ({ state, onCreate }: Props) => {
               className={styles.select}
               options={chain.map(_ => ({ value: _.fsItem?.filehash, label: `${_.fsItem?.name} (${_.fsItem?.path})` }))}
               value={selected}
-              onChange={setSelected}
+              onChange={(selected: Option[]) => {
+                const item = selected[0];
+                if (item) {
+                  setValue('type', 'fs');
+                  setValue('name', item.label);
+                }
+
+                setSelected(selected);
+              }}
               labelledBy="Select"
             />
           </Box>
