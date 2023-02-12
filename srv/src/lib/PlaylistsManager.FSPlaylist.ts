@@ -17,10 +17,15 @@ export class FSPlaylist implements AbstractPlaylist {
     await this.db.playlists.delete({ where: { id: this.playlistId } });
   }
 
+  invalidateCache(): Promise<void> {
+    this.cache = [];
+    return Promise.resolve();
+  }
+
   async getContent(): Promise<ManualPlaylistItem[]> {
-    // if (!this.cache.length) {
-    await this.initCache();
-    // }
+    if (!this.cache.length) {
+      await this.initCache();
+    }
 
     return this.cache;
   }

@@ -19,11 +19,11 @@ export class Scanner {
     private db: StorageType,
     private logger: Logger,
     private classificator: Classificator,
-    onScanned: (scanned: Chain) => void,
+    private onScanned: (scanned: Chain) => void,
   ) {
     this._getChain().then((_) => {
       this.chain = _;
-      onScanned(this.chain);
+      this.onScanned(this.chain);
     });
   }
 
@@ -89,6 +89,7 @@ export class Scanner {
       tags: [LogTags.SCANNER],
       level: LogLevel.DEBUG,
     });
+
     return chain;
   }
 
@@ -216,6 +217,7 @@ export class Scanner {
     this.scanInProgress = false;
     this._getChain().then((_) => {
       this.chain = _;
+      this.onScanned(this.chain);
     });
   }
 

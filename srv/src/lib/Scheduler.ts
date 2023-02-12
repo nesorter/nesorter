@@ -3,10 +3,8 @@ import { secondsInDay } from 'date-fns';
 
 import { Logger } from './Logger';
 import { LogLevel, LogTags } from './Logger.types';
-import { FSPlaylist } from './PlaylistsManager.FSPlaylist';
-import { ManualPlaylist } from './PlaylistsManager.ManualPlaylist';
+import { PlaylistsManager } from './PlaylistsManager';
 import { Queue } from './Queue';
-import { Scanner } from './Scanner';
 import { StorageType } from './Storage';
 import { currentSecondsFromDayStart, getRandomArbitrary, shuffle } from './utils';
 
@@ -20,7 +18,7 @@ export class Scheduler {
     private db: StorageType,
     private logger: Logger,
     private queue: Queue,
-    private scanner: Scanner,
+    private playlistsManager: PlaylistsManager,
   ) {}
 
   async getPlaylist(id: number) {
@@ -109,19 +107,13 @@ export class Scheduler {
           const tracks: { playlistId: number; content: ManualPlaylistItem[]; index: number }[] = [];
 
           for (const playlistId of playlists) {
-            const playlistRecord = await this.db.playlists.findFirst({ where: { id: playlistId } });
-            if (playlistRecord) {
-              const playlist =
-                playlistRecord.type === 'manual'
-                  ? new ManualPlaylist(this.db, playlistId)
-                  : new FSPlaylist(this.db, playlistId, this.scanner);
+            const playlist = await this.playlistsManager.getQueueInstance(playlistId);
 
-              tracks.push({
-                playlistId,
-                content: shuffle(await playlist.getContent()),
-                index: 0,
-              });
-            }
+            tracks.push({
+              playlistId,
+              content: shuffle(await playlist.getContent()),
+              index: 0,
+            });
           }
 
           const content = tracks[getRandomArbitrary(0, tracks.length - 1)];

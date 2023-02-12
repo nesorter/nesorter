@@ -9,6 +9,10 @@ import { StorageType } from './Storage';
 export class ManualPlaylist implements AbstractPlaylist {
   constructor(private db: StorageType, private playlistId: number) {}
 
+  invalidateCache(): Promise<void> {
+    return Promise.resolve();
+  }
+
   async update(items: AbstractPlaylistUpdateItem[]): Promise<void> {
     const content = await this.getContent();
     const selectedForDelete = content.filter(

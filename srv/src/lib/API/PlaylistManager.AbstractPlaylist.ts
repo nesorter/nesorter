@@ -8,5 +8,6 @@ export type AbstractPlaylistUpdateItem = {
 export interface AbstractPlaylist {
   update(items: AbstractPlaylistUpdateItem[]): Promise<void>;
   delete(): Promise<void>;
+  invalidateCache(): Promise<void>;
   getContent(): Promise<ManualPlaylistItem[]>;
 }
