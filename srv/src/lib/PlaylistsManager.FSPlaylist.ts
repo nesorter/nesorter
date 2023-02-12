@@ -32,7 +32,7 @@ export class FSPlaylist implements AbstractPlaylist {
     }
 
     const fsItem = await this.db.fSItem.findFirst({
-      where: { filehash: playlist.filehash as string },
+      where: { filehash: playlist.filehash },
     });
     if (!fsItem) {
       return;

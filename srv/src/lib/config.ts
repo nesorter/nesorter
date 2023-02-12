@@ -1,5 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-require('dotenv').config();
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 export default {
   API_LISTEN_PORT: Number(process.env.API_LISTEN_PORT) || 3001,
@@ -34,4 +34,5 @@ export default {
   FFMPEG_CONTENT_TYPE: process.env.FFMPEG_FORMAT === 'ogg' ? 'audio/ogg' : 'audio/mpeg',
 
   LOKI_HOST: process.env.LOKI_HOST,
+  SENTRY_DSN: process.env.SENTRY_DSN,
 };

@@ -1,7 +1,6 @@
 import { createHash } from 'crypto';
 import { readdir, readFile, stat } from 'fs/promises';
-import musicDuration from 'get-audio-duration';
-import NodeID3 from 'node-id3';
+import { parseBuffer } from 'music-metadata';
 
 import { Classificator } from './Classificator';
 import { Logger } from './Logger';
@@ -129,21 +128,22 @@ export class Scanner {
         scannedItem.duration = 0;
       } else {
         try {
+          const buffer = await readFile(scannedItem.path);
           const hashSum = createHash('sha256');
-          hashSum.update(await readFile(scannedItem.path));
+          hashSum.update(buffer);
           scannedItem.hash = hashSum.digest('hex');
 
-          const tags = await NodeID3.Promise.read(scannedItem.path);
-          scannedItem.id3 = {
-            artist: tags.artist || '_unknown',
-            title: tags.title || '_unnamed',
-          };
+          const parsedData = await parseBuffer(buffer, {
+            duration: true,
+            includeChapters: true,
+            skipCovers: true,
+          });
 
-          try {
-            scannedItem.duration = await musicDuration(scannedItem.path);
-          } catch {
-            scannedItem.duration = 0;
-          }
+          scannedItem.duration = parsedData.format.duration;
+          scannedItem.id3 = {
+            artist: parsedData.common.artist || 'unnamed',
+            title: parsedData.common.title || 'unnamed',
+          };
 
           const time = Date.now() - startTime;
           this.logger.log({

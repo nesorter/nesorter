@@ -1,3 +1,4 @@
+import Sentry from '@sentry/node';
 import { createLogger, format, Logger as WinstonLogger, transports } from 'winston';
 import LokiTransport from 'winston-loki';
 
@@ -38,6 +39,16 @@ export class Logger {
   }
 
   log({ message, tags = [LogTags.APP], level = LogLevel.INFO, extraData = {} }: logParams): void {
+    if (config.SENTRY_DSN) {
+      if (level === LogLevel.ERROR) {
+        Sentry.captureException(new Error(message), (scope) => {
+          scope.setExtras(extraData);
+          scope.setTags({ ctags: tags?.join(' > ') });
+          return scope;
+        });
+      }
+    }
+
     const data = {
       msg: message.split('\n').join(' '),
       level,

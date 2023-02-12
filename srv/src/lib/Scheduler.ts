@@ -124,7 +124,7 @@ export class Scheduler {
             }
           }
 
-          const content = tracks[getRandomArbitrary(0, tracks.length)];
+          const content = tracks[getRandomArbitrary(0, tracks.length - 1)];
           this.currentItem = item.id;
           this.currentPlaylist = content.playlistId;
 

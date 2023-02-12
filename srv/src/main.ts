@@ -1,5 +1,8 @@
+import Sentry from '@sentry/node';
+
 import { API } from './lib/API';
 import { Classificator } from './lib/Classificator';
+import config from './lib/config';
 import { Logger } from './lib/Logger';
 import { LogLevel, LogTags } from './lib/Logger.types';
 import { Player } from './lib/Player';
@@ -12,6 +15,11 @@ import { Scanner } from './lib/Scanner';
 import { Scheduler } from './lib/Scheduler';
 import { Storage } from './lib/Storage';
 import { Streamer } from './lib/Streamer';
+
+if (config.SENTRY_DSN) {
+  Sentry.init({ dsn: config.SENTRY_DSN });
+  Sentry.captureMessage('App started');
+}
 
 const logger = new Logger();
 const classificator = new Classificator(Storage, logger);
@@ -57,19 +65,3 @@ function onScanned() {
 
 // TODO: в аргументы запуска
 // scanner.syncStorage(CONFIG.CONTENT_ROOT_DIR_PATH, ({ name }) => /.*\.mp3/.test(name))
-
-process.on('uncaughtException', (error) => {
-  logger.log({
-    message: `UNHANDLED ERROR: ${error.message}`,
-    level: LogLevel.ERROR,
-    tags: [LogTags.APP],
-  });
-});
-
-process.on('unhandledRejection', (error) => {
-  logger.log({
-    message: `UNHANDLED REJECTION: ${error}`,
-    level: LogLevel.ERROR,
-    tags: [LogTags.APP],
-  });
-});

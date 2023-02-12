@@ -3,12 +3,16 @@ import { writeFile } from 'fs/promises';
 import { copyFile, mkdir, rm } from 'fs/promises';
 import multer from 'multer';
 import NodeID3 from 'node-id3';
-import * as pth from 'path';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import config from '../../config';
 import { Logger } from '../../Logger';
 import { Scanner } from '../../Scanner';
-import { getWaveformInfo, makeSafePath, withAdminToken, withLogger } from '../../utils';
+import { getWaveformInfo, withAdminToken, withLogger } from '../../utils';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 type MulterFile = {
   fieldname: string; //'file_6',
@@ -135,9 +139,9 @@ export const gen = (logger: Logger, api: Express.Application, scanner: Scanner) 
               writeFile(
                 `${__dirname}/assets/covers/${item?.filehash}.jpg`,
                 data.image?.imageBuffer || '',
-              ).then(() => {
-                res.sendFile(`${__dirname}/assets/covers/${item?.filehash}.jpg`);
-              });
+              )
+                .then(() => res.sendFile(`${__dirname}/assets/covers/${item?.filehash}.jpg`))
+                .catch(console.log);
             } else {
               res.sendFile(`${__dirname}/assets/covers/nocoverart.jpeg`);
             }

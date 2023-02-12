@@ -3,6 +3,7 @@ FROM --platform=x86_64 node:16-bullseye as deps
 RUN apt update && apt install -y ffmpeg mpv openssl alsa-utils pavucontrol htop && \
   apt-get clean autoclean && \
   apt-get autoremove --yes && \
+  npm install forever -g && \
   rm -rf /var/lib/{apt,dpkg,cache,log}/
 
 USER node
