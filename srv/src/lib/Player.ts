@@ -9,7 +9,7 @@ import { LogLevel, LogTags } from './Logger.types';
 import { asyncSpawn, makeSafePath, range } from './utils';
 
 export class Player {
-  socket: { id: number; instanse: Server; binded: boolean }[] = [];
+  socket: { id: number; instance: Server; isBind: boolean }[] = [];
   outputSocket?: Socket;
   needStop = false;
 
@@ -39,7 +39,8 @@ export class Player {
 
     this.socket = range(2).map((id) => ({
       id,
-      instanse: (() => {
+      isBind: false,
+      instance: (() => {
         const socket = createServer();
 
         socket.on('connection', (client) => {
@@ -49,7 +50,7 @@ export class Player {
             const self = this.socket.find((_) => _.id === id);
 
             // Не делаем роутинг в случае когда сокет не используется
-            if (!self?.binded) {
+            if (!self?.isBind) {
               return;
             }
 
@@ -69,18 +70,17 @@ export class Player {
 
         return socket;
       })(),
-      binded: false,
     }));
   }
 
   private bindSocket(id: number) {
     const index = this.socket.findIndex((_) => _.id === id);
-    this.socket[index].binded = true;
+    this.socket[index].isBind = true;
   }
 
   private unbindSocket(id: number) {
     const index = this.socket.findIndex((_) => _.id === id);
-    this.socket[index].binded = false;
+    this.socket[index].isBind = false;
   }
 
   public stopPlay() {
@@ -88,8 +88,8 @@ export class Player {
   }
 
   public async play(fsItem: FSItem, customEndPosition?: number): Promise<void> {
-    const omittedSocket = this.socket.findIndex((_) => _.binded === true);
-    const freeSocket = this.socket.findIndex((_) => _.binded === false);
+    const omittedSocket = this.socket.findIndex((_) => _.isBind);
+    const freeSocket = this.socket.findIndex((_) => !_.isBind);
 
     const startPosition = fsItem.trimStart;
     const endPosition = customEndPosition || fsItem.duration - fsItem.trimEnd;
@@ -174,7 +174,7 @@ export class Player {
 
       childProc.addListener('exit', (e) => {
         this.logger.log({
-          message: `Exitcode: ${e} for: ${filePath}`,
+          message: `Exit code: ${e} for: ${filePath}`,
           level: LogLevel.DEBUG,
           tags: [LogTags.STREAMER, LogTags.MPV],
         });

@@ -7,7 +7,7 @@ srv - бекенд часть, существует как отдельный no
 ui  - фронтенд часть, существует как отдельный nodejs-проект
 ```
 
-![Диаграмма классов](https://github.com/nesorter/nesorter/blob/main/readmeAssets/classDiagram.png?raw=true)
+![Диаграмма классов](https://github.com/nesorter/nesorter/blob/main/readmeAssets/classDiagram_v2.png?raw=true)
 
 ## Запуск в Docker: просто
 0. Смотрим в репо https://github.com/nesorter/nesorter-docker
