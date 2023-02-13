@@ -50,7 +50,10 @@ export const SchedulerPage = () => {
       <Box gap="8px">
         <Timeline />
 
-        <ScheduleItems items={items.sort((a, b) => a.startAt - b.startAt)} />
+        <ScheduleItems
+          onUpdate={init}
+          items={items.sort((a, b) => a.startAt - b.startAt)}
+        />
       </Box>
     </Box>
   );

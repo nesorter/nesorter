@@ -11,6 +11,7 @@ import { MultiSelect, Option } from "react-multi-select-component";
 
 type Props = {
   items: SchedulerItem[];
+  onUpdate: () => void;
 }
 
 const BASE_WIDTH = 72;
@@ -40,7 +41,7 @@ const StyledExtendedBlock = styled(Box)`
   z-index: 1;
 `;
 
-const ScheduleItem = ({ id, playlistIds, startAt, endAt, index }: SchedulerItem & { index: number }) => {
+const ScheduleItem = ({ id, playlistIds, startAt, endAt, index, onUpdate }: SchedulerItem & { index: number, onUpdate: () => void }) => {
   const [edit, setEdit] = useState(false);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [selected, setSelected] = useState<Option[]>([]);
@@ -69,7 +70,7 @@ const ScheduleItem = ({ id, playlistIds, startAt, endAt, index }: SchedulerItem 
       startAt: startTime,
       endAt: endTime,
       playlistIds: selected.map(_ => _.value as string).join(','),
-    }).catch(alert);
+    }).then(onUpdate).catch(alert);
   };
 
   const secs = getSecondsInDay();
@@ -166,7 +167,7 @@ const ScheduleItem = ({ id, playlistIds, startAt, endAt, index }: SchedulerItem 
   );
 }
 
-export const ScheduleItems = ({ items }: Props) => {
+export const ScheduleItems = ({ items, onUpdate }: Props) => {
   const times: string[] = [];
   for (let i = 0; i < 24 * 2; i++) {
     if (i === 24) {
@@ -192,6 +193,7 @@ export const ScheduleItems = ({ items }: Props) => {
           startAt={_.startAt}
           endAt={_.endAt}
           playlistIds={_.playlistIds}
+          onUpdate={onUpdate}
         />
       ))}
     </Box>
