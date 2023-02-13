@@ -62,14 +62,15 @@ export const gen = (logger: Logger, api: Express.Application, scheduler: Schedul
     '/api/scheduler',
     withAdminToken(
       withLogger(logger, (req, res) => {
-        const { start, end, playlistIds } = req.body as {
+        const { start, end, playlistIds, withMerging } = req.body as {
           start: number;
           end: number;
           playlistIds: string;
+          withMerging?: number;
         };
 
         scheduler
-          .createItem(start, end, playlistIds)
+          .createItem(start, end, playlistIds, withMerging)
           .then((_) => res.json(_))
           .catch((e) => res.status(500).json(e));
       }),

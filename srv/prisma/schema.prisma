@@ -9,10 +9,11 @@ datasource storage {
 }
 
 model ScheduleItem {
-  id      Int @id @default(autoincrement())
-  startAt Int
-  endAt   Int
+  id          Int @id @default(autoincrement())
+  startAt     Int
+  endAt       Int
   playlistIds String
+  withMerging Int @default(0)
 }
 
 model Classification {

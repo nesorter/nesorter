@@ -57,7 +57,7 @@ export const api = {
     /**
      * Обновляет айтем расписания
      */
-    updateItem(itemId: number | string, data: { startAt: number, endAt: number, playlistIds: string }) {
+    updateItem(itemId: number | string, data: { startAt: number, endAt: number, playlistIds: string, withMerging: number }) {
       return post(`/api/scheduler/${itemId}`, { id: itemId, data });
     },
 

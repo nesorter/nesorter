@@ -37,7 +37,7 @@ export class Scheduler {
     );
   }
 
-  async createItem(startAt: number, endAt: number, playlistIds: string) {
+  async createItem(startAt: number, endAt: number, playlistIds: string, withMerging?: number) {
     if (endAt < startAt) {
       if (endAt < 60) {
         return this.db.scheduleItem.create({
@@ -45,6 +45,7 @@ export class Scheduler {
             endAt: secondsInDay,
             startAt,
             playlistIds,
+            withMerging: withMerging || 0,
           },
         });
       } else {
@@ -57,6 +58,7 @@ export class Scheduler {
         endAt,
         startAt,
         playlistIds,
+        withMerging: withMerging || 0,
       },
     });
   }
@@ -116,7 +118,7 @@ export class Scheduler {
             });
           }
 
-          const content = tracks[getRandomArbitrary(0, tracks.length - 1)];
+          let content = tracks[getRandomArbitrary(0, tracks.length - 1)];
           this.currentItem = item.id;
           this.currentPlaylist = content.playlistId;
 
@@ -133,6 +135,10 @@ export class Scheduler {
             if (content.content.length - 1 === content.index) {
               content.content = shuffle(content.content);
               content.index = 0;
+            }
+
+            if (item.withMerging) {
+              content = tracks[getRandomArbitrary(0, tracks.length - 1)];
             }
           }
         }

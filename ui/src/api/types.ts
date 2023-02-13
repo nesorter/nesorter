@@ -89,4 +89,5 @@ export type SchedulerItem = {
   startAt: number;
   endAt: number;
   playlistIds: string;
+  withMerging: number;
 };

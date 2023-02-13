@@ -41,12 +41,13 @@ const StyledExtendedBlock = styled(Box)`
   z-index: 1;
 `;
 
-const ScheduleItem = ({ id, playlistIds, startAt, endAt, index, onUpdate }: SchedulerItem & { index: number, onUpdate: () => void }) => {
+const ScheduleItem = ({ id, playlistIds, startAt, endAt, index, withMerging, onUpdate }: SchedulerItem & { index: number, onUpdate: () => void }) => {
   const [edit, setEdit] = useState(false);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [selected, setSelected] = useState<Option[]>([]);
   const [startTime, setStartTime] = useState(startAt);
   const [endTime, setEndTime] = useState(endAt);
+  const [merging, setMerging] = useState(withMerging === 1);
 
   useEffect(() => {
     api.playlistsManager.getPlaylists()
@@ -70,6 +71,7 @@ const ScheduleItem = ({ id, playlistIds, startAt, endAt, index, onUpdate }: Sche
       startAt: startTime,
       endAt: endTime,
       playlistIds: selected.map(_ => _.value as string).join(','),
+      withMerging: merging ? 1 : 0,
     }).then(onUpdate).catch(alert);
   };
 
@@ -132,6 +134,17 @@ const ScheduleItem = ({ id, playlistIds, startAt, endAt, index, onUpdate }: Sche
 
             <div style={{ marginBottom: '4px' }} />
 
+            <Box gap={4}>
+              <Text>Merging-режим: </Text>
+              <input
+                type="checkbox"
+                checked={merging}
+                onChange={(ev) => setMerging(ev.target.checked)}
+              />
+            </Box>
+
+            <div style={{ marginBottom: '4px' }} />
+
             <Text
               fontSize="10px"
               onClick={() => {
@@ -154,7 +167,10 @@ const ScheduleItem = ({ id, playlistIds, startAt, endAt, index, onUpdate }: Sche
         </Text>
 
         <div style={{ marginBottom: '16px' }} />
-        <Text>{getTimeFormatted(startAt)} - {getTimeFormatted(endAt)}</Text>
+        <Text>
+          {getTimeFormatted(startAt)} - {getTimeFormatted(endAt)}
+          {Boolean(merging) ? ' (merging включен)' : ' (merging выключен)'}
+        </Text>
         <div style={{ marginBottom: '16px' }} />
 
         {plIds.map(plId => (
@@ -193,6 +209,7 @@ export const ScheduleItems = ({ items, onUpdate }: Props) => {
           startAt={_.startAt}
           endAt={_.endAt}
           playlistIds={_.playlistIds}
+          withMerging={_.withMerging}
           onUpdate={onUpdate}
         />
       ))}
