@@ -1,54 +1,140 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native"]
 }
 
 datasource storage {
   provider = "sqlite"
-  url = "file:./db/storage.db"
+  url      = "file:./db/storage.db"
+}
+
+model FileItem {
+  filehash String @id
+  path     String
+  name     String
+  type     String
+
+  metadata FileItemMetadata?
+  timings  FileItemTimings?
+
+  playlistItems      PlaylistItem[]
+  playlistFsMeta     PlaylistFsMeta?
+  classificatedItems ClassificatedItem[]
+}
+
+model FileItemMetadata {
+  id Int @id @default(autoincrement())
+
+  artist String @default("unknown")
+  title  String @default("unknown")
+
+  fileItem     FileItem @relation(fields: [fileItemHash], references: [filehash])
+  fileItemHash String   @unique
+}
+
+model FileItemTimings {
+  id Int @id @default(autoincrement())
+
+  duration  Float @default(0)
+  trimStart Float @default(0)
+  trimEnd   Float @default(0)
+
+  fileItem     FileItem @relation(fields: [fileItemHash], references: [filehash])
+  fileItemHash String   @unique
 }
 
 model ScheduleItem {
   id          Int @id @default(autoincrement())
-  startAt     Int
-  endAt       Int
-  playlistIds String
   withMerging Int @default(0)
+
+  startAt Int
+  endAt   Int
+
+  playlists PlaylistsOnScheduleItem[]
+}
+
+model Playlist {
+  id Int @id @default(autoincrement())
+
+  name String
+  type String
+
+  fsMeta     PlaylistFsMeta?
+  manualMeta PlaylistManualMeta?
+
+  scheduleItems PlaylistsOnScheduleItem[]
+}
+
+model PlaylistFsMeta {
+  id Int @id @default(autoincrement())
+
+  fileItem     FileItem? @relation(fields: [fileItemHash], references: [filehash])
+  fileItemHash String?   @unique
+
+  playlist   Playlist? @relation(fields: [playlistId], references: [id])
+  playlistId Int?      @unique
+}
+
+model PlaylistManualMeta {
+  id Int @id @default(autoincrement())
+
+  playlist   Playlist? @relation(fields: [playlistId], references: [id])
+  playlistId Int?      @unique
+
+  playlistItems PlaylistItem[]
+}
+
+model PlaylistsOnScheduleItem {
+  scheduleItem   ScheduleItem @relation(fields: [scheduleItemId], references: [id])
+  scheduleItemId Int
+
+  playlist   Playlist @relation(fields: [playlistId], references: [id])
+  playlistId Int
+
+  @@id([scheduleItemId, playlistId])
+}
+
+model PlaylistItem {
+  id    Int @id @default(autoincrement())
+  order Int
+
+  fileItem     FileItem? @relation(fields: [fileItemHash], references: [filehash])
+  fileItemHash String?
+
+  playlistManualMeta   PlaylistManualMeta? @relation(fields: [playlistManualMetaId], references: [id])
+  playlistManualMetaId Int?
+}
+
+model ClassificationsGroup {
+  id              Int              @id @default(autoincrement())
+  name            String
+  classifications Classification[]
 }
 
 model Classification {
-  id     Int @id @default(autoincrement())
-  name   String
-  values String
+  id    Int    @id @default(autoincrement())
+  value String @default("unknown")
+
+  classificationsGroup   ClassificationsGroup? @relation(fields: [classificationsGroupId], references: [id])
+  classificationsGroupId Int?
+
+  classificatedGroup   ClassificatedGroup? @relation(fields: [classificatedGroupId], references: [id])
+  classificatedGroupId Int?
 }
 
 model ClassificatedItem {
-  filehash String @id
-  json     String
+  id Int @id @default(autoincrement())
+
+  fileItem            FileItem             @relation(fields: [fileItemHash], references: [filehash])
+  fileItemHash        String
+  classificatedGroups ClassificatedGroup[]
 }
 
-model Playlists {
-  id       Int @id @default(autoincrement())
-  name     String
-  type     String
-  filehash String @default("none")
-}
+model ClassificatedGroup {
+  id Int @id @default(autoincrement())
 
-model ManualPlaylistItem {
-  id         Int @id @default(autoincrement())
-  playlistId Int
-  order      Int
-  filehash   String
-}
+  item                ClassificatedItem @relation(fields: [classificatedItemId], references: [id])
+  classificatedItemId Int
 
-model FSItem {
-  filehash   String @id
-  path       String
-  name       String
-  type       String
-  id3Artist  String @default("unknown")
-  id3Title   String @default("unknown")
-  duration   Float  @default(0)
-  trimStart  Float  @default(0)
-  trimEnd    Float  @default(0)
+  classifications Classification[]
 }
