@@ -57,7 +57,9 @@ export function makeSafePath(path: string): string {
     .replaceAll('｜', '\\｜')
     .replaceAll('⧸', '\\⧸')
     .replaceAll('|', '\\|')
-    .replaceAll('/', '\\/');
+    .replaceAll('/', '\\/')
+    .replaceAll('$', '\\$')
+    .replaceAll(',', '\\,');
 }
 
 export async function sleep(ms: number): Promise<void> {
