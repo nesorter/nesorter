@@ -32,10 +32,16 @@ export const gen = (
   api.get('/api/status', async (_req, res) => {
     let fileData = null;
     let playlistData = null;
+    let schedulingData = null;
 
     if (queue.state === 'playing') {
       fileData = await scanner.getFsItem(queue.currentFileHash || '');
       playlistData = await scheduler.getPlaylist(Number(queue.currentPlaylistId));
+
+      if (scheduler.currentItem !== -1) {
+        const schedulerItems = await scheduler.getItems();
+        schedulingData = schedulerItems.find(_ => _.id === scheduler.currentItem);
+      }
     }
 
     let icecastData = {};
@@ -66,6 +72,7 @@ export const gen = (
       },
       thumbnailPath: `/api/scanner/image/${queue.currentFileHash}`,
       fileData,
+      schedulingData,
       playlistData,
       currentPlaylistId: queue.currentPlaylistId,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
