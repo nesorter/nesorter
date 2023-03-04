@@ -48,7 +48,10 @@ export const gen = (logger: Logger, api: Express.Application, scheduler: Schedul
     '/api/scheduler/:id',
     withAdminToken(
       withLogger(logger, (req, res) => {
-        const { id, data } = req.body as { id: number; data: Omit<ScheduleItem, 'id'> };
+        const { id, data } = req.body as {
+          id: number;
+          data: { endAt: number; startAt: number; withMerging: number; playlistIds: string };
+        };
 
         scheduler
           .updateItem(id, data)

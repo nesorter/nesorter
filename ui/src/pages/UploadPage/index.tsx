@@ -14,6 +14,11 @@ const UploadPage = () => {
   const [progress, setProgress] = useState(0);
 
   const handleUpload = () => {
+    if (!/^([a-zA-Z]|\d|_)*$/.test(newDir)) {
+      alert('В названии новой директории допустимы только: латиница, цифры и "_"');
+      return;
+    }
+
     const form = new FormData();
     form.append('path', path);
     form.append('newDir', newDir);

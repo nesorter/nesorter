@@ -22,12 +22,12 @@ export const Library = ({ onAdd, onAddAll }: Props) => {
 
   useEffect(() => {
     chainFetch.setFetching();
-    catsFetch.setFetching();
+    // catsFetch.setFetching();
 
-    api.categories.get()
-      .then(setCategories)
-      .catch(alert)
-      .finally(catsFetch.setFetched);
+    // api.categories.get()
+    //   .then(setCategories)
+    //   .catch(alert)
+    //   .finally(catsFetch.setFetched);
 
     api.scanner.getChain()
       .then(setChain)
@@ -35,28 +35,28 @@ export const Library = ({ onAdd, onAddAll }: Props) => {
       .finally(chainFetch.setFetched);
   }, []);
 
-  useEffect(() => {
-    if (!chainValues.length) {
-      return;
-    }
-
-    /* eslint no-restricted-globals: 0 */
-    const url = new URL('/api/classificator/items', location.origin);
-    filters.forEach(({ name, values }) => {
-      values.forEach((value) => {
-        url.searchParams.append(`filters[${name}]`, value);
-      });
-    });
-
-    fetch(url.toString())
-      .then(r => r.json() as unknown as { filehash: string; categories: ClassificationCategory[]; }[])
-      .then(r => setFiles(
-        r.map(({ filehash }) => {
-          return chainValues.find(i => i.fsItem?.filehash === filehash)?.fsItem
-        }).filter(i => i !== undefined) as FSItem[]
-      ))
-      .catch(console.error);
-  }, [filters, chainValues]);
+  // useEffect(() => {
+  //   if (!chainValues.length) {
+  //     return;
+  //   }
+  //
+  //   /* eslint no-restricted-globals: 0 */
+  //   const url = new URL('/api/classificator/items', location.origin);
+  //   filters.forEach(({ name, values }) => {
+  //     values.forEach((value) => {
+  //       url.searchParams.append(`filters[${name}]`, value);
+  //     });
+  //   });
+  //
+  //   fetch(url.toString())
+  //     .then(r => r.json() as unknown as { filehash: string; categories: ClassificationCategory[]; }[])
+  //     .then(r => setFiles(
+  //       r.map(({ filehash }) => {
+  //         return chainValues.find(i => i.fsItem?.filehash === filehash)?.fsItem
+  //       }).filter(i => i !== undefined) as FSItem[]
+  //     ))
+  //     .catch(console.error);
+  // }, [filters, chainValues]);
 
   const handleToggle = (catId: number, catName: string, catValue: string) => {
     setFilters((prev) => {
@@ -122,7 +122,7 @@ export const Library = ({ onAdd, onAddAll }: Props) => {
             <Box key={item.filehash} alignItems="center" justifyContent="space-between">
               <Box flexDirection="column" maxWidth="calc(100% - 96px)">
                 <Text fontSize="desc" variant="oneline" color="textLight">
-                  {file?.fsItem?.id3Artist} - {file?.fsItem?.id3Title}
+                  {file?.fsItem?.metadata?.artist} - {file?.fsItem?.metadata?.title}
                 </Text>
 
                 <Text fontSize="sm" variant="oneline" color="#999">

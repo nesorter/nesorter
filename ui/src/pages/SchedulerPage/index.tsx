@@ -2,7 +2,7 @@ import { differenceInSeconds, endOfDay, parse, secondsInDay } from "date-fns";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { api } from "../../api";
-import { SchedulerItem } from "../../api/types";
+import { ScheduleItem } from "../../api/types";
 import { Box } from "../../components";
 import { Timeline } from './components/Timeline';
 import { ScheduleItems } from './components/ScheduleItems';
@@ -15,7 +15,7 @@ type Form = {
 
 export const SchedulerPage = () => {
   const createForm = useForm<Form>();
-  const [items, setItems] = useState<SchedulerItem[]>([]);
+  const [items, setItems] = useState<ScheduleItem[]>([]);
 
   const currentSecond = (data: string) => {
     const date = parse(data, 'HH:mm', new Date());

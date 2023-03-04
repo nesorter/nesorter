@@ -52,7 +52,7 @@ export const PlaylistBox = () => {
           {status.queue.items.map((track) => {
             const current = status.queue.currentOrder === track.order;
             const chainItem = chainValues.find(_ => _.fsItem?.filehash === track.fileHash);
-            const trackName = chainItem ? `${chainItem.fsItem?.id3Artist} - ${chainItem.fsItem?.id3Title}` : track.fileHash;
+            const trackName = chainItem ? `${chainItem.fsItem?.metadata?.artist} - ${chainItem.fsItem?.metadata?.title}` : track.fileHash;
 
             return (
               <tr key={track.fileHash}>

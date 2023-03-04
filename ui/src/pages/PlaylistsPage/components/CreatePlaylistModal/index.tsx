@@ -65,9 +65,11 @@ export const CreatePlaylistModal = ({ state, onCreate }: Props) => {
               value={selected}
               onChange={(selected: Option[]) => {
                 const item = selected[0];
+                const data = chain.find(_ => _.fsItem?.filehash === item.value);
+
                 if (item) {
                   setValue('type', 'fs');
-                  setValue('name', item.label);
+                  setValue('name', data?.name || item.label);
                 }
 
                 setSelected(selected);

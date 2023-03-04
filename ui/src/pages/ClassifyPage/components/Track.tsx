@@ -65,7 +65,7 @@ export const Track = ({ track, onTrackEdit, onHandleApplyAll }: Props): JSX.Elem
 
       <Box width="100%" maxWidth="550px" flexDirection="column" gap={7} justifyContent="space-between">
         <Box flexDirection="column">
-          <Text fontSize="body" color="textLight">{track?.fsItem?.id3Artist} - {track?.fsItem?.id3Title}</Text>
+          <Text fontSize="body" color="textLight">{track?.fsItem?.metadata?.artist} - {track?.fsItem?.metadata?.title}</Text>
           <Text fontSize="sm" color="#999" fontWeight="300">{track?.fsItem?.path}</Text>
         </Box>
 

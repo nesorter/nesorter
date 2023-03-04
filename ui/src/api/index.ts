@@ -8,7 +8,7 @@ import {
   GetClassifiedFiltersDTO,
   ManualPlaylistItem,
   Playlist,
-  SchedulerItem,
+  ScheduleItem,
   Status,
   UpdateCategoryDTO,
   UpdatePlaylistItemDto
@@ -44,7 +44,7 @@ export const api = {
      * Отдает расписание
      */
     getItems() {
-      return get<SchedulerItem[]>('/api/scheduler/items');
+      return get<ScheduleItem[]>('/api/scheduler/items');
     },
 
     /**

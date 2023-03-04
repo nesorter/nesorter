@@ -18,9 +18,9 @@ const ClassifyPage = () => {
   const editTrackModal = useModal(false);
 
   useEffect(() => {
-    api.scanner.getChain()
-      .then(setChain)
-      .catch(console.log);
+    // api.scanner.getChain()
+    //   .then(setChain)
+    //   .catch(console.log);
   }, []);
 
   const handleApplyAll = async (fileHash: string, categories: ClassificationCategory[]) => {
@@ -43,18 +43,24 @@ const ClassifyPage = () => {
   }
 
   return (
-    <Box gap={14} width="100%">
-      <Box width="100%" minWidth="292px" maxWidth="292px" flexDirection="column" gap={14}>
-        <Button variant="secondary" size="normal" onClick={() => editCatsModalState.setOpen(true)}>Open category editor</Button>
-        <TrackTree chain={chain} selectedTrack={selectedTrack} setSelectedTrack={setSelectedTrack} />
-      </Box>
-
-      <Box width="100%">{selectedAsChainItem ? <Track track={selectedAsChainItem} onHandleApplyAll={handleApplyAll} onTrackEdit={() => editTrackModal.setOpen(true)} /> : null}</Box>
-
-      <CatsEditModal modalState={editCatsModalState} />
-      <TrackEditModal modalState={editTrackModal} trackHash={selectedAsChainItem?.fsItem?.filehash || ''} />
+    <Box>
+      <span style={{ color: '#fff' }}><b>Сейчас выпилено :3</b></span>
     </Box>
-  );
+  )
+
+  // return (
+  //   <Box gap={14} width="100%">
+  //     <Box width="100%" minWidth="292px" maxWidth="292px" flexDirection="column" gap={14}>
+  //       <Button variant="secondary" size="normal" onClick={() => editCatsModalState.setOpen(true)}>Open category editor</Button>
+  //       <TrackTree chain={chain} selectedTrack={selectedTrack} setSelectedTrack={setSelectedTrack} />
+  //     </Box>
+  //
+  //     <Box width="100%">{selectedAsChainItem ? <Track track={selectedAsChainItem} onHandleApplyAll={handleApplyAll} onTrackEdit={() => editTrackModal.setOpen(true)} /> : null}</Box>
+  //
+  //     <CatsEditModal modalState={editCatsModalState} />
+  //     <TrackEditModal modalState={editTrackModal} trackHash={selectedAsChainItem?.fsItem?.filehash || ''} />
+  //   </Box>
+  // );
 }
 
 export default ClassifyPage;

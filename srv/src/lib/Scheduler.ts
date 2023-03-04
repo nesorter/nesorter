@@ -38,7 +38,7 @@ export class Scheduler {
   }
 
   async createItem(startAt: number, endAt: number, playlistIds: string, withMerging?: number) {
-    const scheduleItemId = Date.now();
+    const scheduleItemId = (await this.db.scheduleItem.count()) + 1;
     const aggregated = playlistIds
       .split(',')
       .map((_) => Number(_))
@@ -82,12 +82,39 @@ export class Scheduler {
     return this.db.scheduleItem.delete({ where: { id } });
   }
 
-  async updateItem(id: number, data: Omit<ScheduleItem, 'id'>) {
-    return this.db.scheduleItem.update({ data, where: { id } });
+  async updateItem(
+    id: number,
+    data: { endAt: number; startAt: number; withMerging: number; playlistIds: string },
+  ) {
+    return this.db.scheduleItem.update({
+      data: {
+        startAt: data.startAt,
+        withMerging: data.withMerging,
+        endAt: data.endAt,
+        playlists: {
+          connectOrCreate: data.playlistIds.split(',').map((_) => ({
+            where: {
+              scheduleItemId_playlistId: {
+                scheduleItemId: id,
+                playlistId: Number(_),
+              },
+            },
+            create: {
+              playlistId: Number(_),
+            },
+          })),
+        },
+      },
+      where: { id },
+    });
   }
 
   async getItems() {
-    return this.db.scheduleItem.findMany({ include: { playlists: true } });
+    return this.db.scheduleItem.findMany({
+      include: {
+        playlists: { include: { playlist: { include: { fsMeta: true, manualMeta: true } } } },
+      },
+    });
   }
 
   async start() {

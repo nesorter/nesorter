@@ -71,7 +71,7 @@ const Recursive = ({ rootKey, chain, step, selectedTrack, setSelectedTrack }: Re
 
               <Text fontSize="sm" color="textLight" variant="oneline">
                 {_.type === 'file'
-                  ? <>{_.fsItem?.id3Artist} - {_.fsItem?.id3Title}</>
+                  ? <>{_.fsItem?.metadata?.artist} - {_.fsItem?.metadata?.title}</>
                   : <>{_.name}</>
                 }
               </Text>

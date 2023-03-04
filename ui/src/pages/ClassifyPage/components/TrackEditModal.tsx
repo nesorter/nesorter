@@ -29,7 +29,7 @@ export const TrackEditModal = ({ modalState, trackHash }: { modalState: UseModal
       // api.scanner.getWaveform(trackHash).then(setWaveForm),
       api.scanner.getFsItem(trackHash).then(_ => {
         // setFsItem(_);
-        trimmerState.setState({ start: _.trimStart, end: _.duration - _.trimEnd, duration: _.duration });
+        trimmerState.setState({ start: _.timings?.trimStart, end: _.timings?.duration - _.timings?.trimEnd, duration: _.timings?.duration });
       }),
     ]).catch(alert).finally(setFetched);
   }, [trackHash]);

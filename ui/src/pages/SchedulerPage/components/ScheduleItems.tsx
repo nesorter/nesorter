@@ -1,4 +1,4 @@
-import { Playlist, SchedulerItem } from '../../../api/types';
+import { Playlist, ScheduleItem } from '../../../api/types';
 import { Box, Text } from '../../../components';
 import { BASE_HEIGHT } from '../constants';
 import { getSecondsInDay, getTimeFormatted } from '../utils';
@@ -10,7 +10,7 @@ import { api } from '../../../api';
 import { MultiSelect, Option } from "react-multi-select-component";
 
 type Props = {
-  items: SchedulerItem[];
+  items: ScheduleItem[];
   onUpdate: () => void;
 }
 
@@ -41,9 +41,9 @@ const StyledExtendedBlock = styled(Box)`
   z-index: 1;
 `;
 
-const ScheduleItem = ({ id, playlistIds, startAt, endAt, index, withMerging, onUpdate }: SchedulerItem & { index: number, onUpdate: () => void }) => {
+const ScheduleItemRendr = ({ id, playlists, startAt, endAt, index, withMerging, onUpdate }: ScheduleItem & { index: number, onUpdate: () => void }) => {
   const [edit, setEdit] = useState(false);
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [allPlaylists, setAllPlaylists] = useState<Playlist[]>([]);
   const [selected, setSelected] = useState<Option[]>([]);
   const [startTime, setStartTime] = useState(startAt);
   const [endTime, setEndTime] = useState(endAt);
@@ -52,14 +52,14 @@ const ScheduleItem = ({ id, playlistIds, startAt, endAt, index, withMerging, onU
   useEffect(() => {
     api.playlistsManager.getPlaylists()
       .then((res) => {
-        setPlaylists(res);
-        setSelected(playlistIds.split(',').map((_) => ({
+        setAllPlaylists(res);
+        setSelected(playlists.map(_ => _.playlistId).map((_) => ({
           value: Number(_),
           label: res.find(k => k.id === Number(_))?.name || '',
         } as Option)));
       })
       .catch(alert);
-  }, [playlistIds]);
+  }, [playlists]);
 
   const currentSecond = (data: string) => {
     const date = parse(data, 'HH:mm', new Date());
@@ -89,7 +89,7 @@ const ScheduleItem = ({ id, playlistIds, startAt, endAt, index, withMerging, onU
     width: `${width}px`,
   };
 
-  const plIds = playlistIds.split(',');
+  const plIds = playlists.map(_ => _.playlistId);
 
   return (
     <StyledScheduleItemCell
@@ -104,7 +104,7 @@ const ScheduleItem = ({ id, playlistIds, startAt, endAt, index, withMerging, onU
         {edit && (
           <div style={{ marginBottom: '48px' }}>
             <MultiSelect
-              options={playlists.map(_ => ({ value: _.id, label: _.name }))}
+              options={allPlaylists.map(_ => ({ value: _.id, label: _.name }))}
               value={selected}
               onChange={setSelected}
               labelledBy="Select"
@@ -175,7 +175,7 @@ const ScheduleItem = ({ id, playlistIds, startAt, endAt, index, withMerging, onU
 
         {plIds.map(plId => (
           <Text>
-            #{plId} - {playlists.find(_ => _.id === Number(plId))?.name}
+            #{plId} - {playlists.find(_ => _.playlistId === Number(plId))?.playlist.name}
           </Text>
         ))}
       </StyledExtendedBlock>
@@ -202,13 +202,13 @@ export const ScheduleItems = ({ items, onUpdate }: Props) => {
       ))}
 
       {items.map((_, index) => (
-        <ScheduleItem
+        <ScheduleItemRendr
           key={_.id}
           index={index}
           id={_.id}
           startAt={_.startAt}
           endAt={_.endAt}
-          playlistIds={_.playlistIds}
+          playlists={_.playlists}
           withMerging={_.withMerging}
           onUpdate={onUpdate}
         />

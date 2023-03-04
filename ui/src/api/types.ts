@@ -25,11 +25,15 @@ export type FSItem = {
   path: string
   name: string
   type: 'file' | 'dir';
-  id3Artist: string
-  id3Title: string
-  duration: number
-  trimStart: number
-  trimEnd: number
+  metadata: {
+    artist: string
+    title: string
+  }
+  timings: {
+    duration: number
+    trimStart: number
+    trimEnd: number
+  }
 }
 
 export type ChainItem = {
@@ -48,14 +52,13 @@ export type Playlist = {
   id: number;
   name: string;
   type: 'manual' | 'fs';
-  filehash?: string;
 }
 
 export type ManualPlaylistItem = {
   id: number;
   playlistId: number;
   order: number;
-  filehash: string;
+  fileItemHash: string;
 }
 
 export type UpdatePlaylistItemDto = {
@@ -84,10 +87,31 @@ export type QueueItem = {
   endAt: number;
 };
 
-export type SchedulerItem = {
-  id: number;
-  startAt: number;
-  endAt: number;
-  playlistIds: string;
+export type ScheduleItem = {
+  id:          number;
   withMerging: number;
-};
+  startAt:     number;
+  endAt:       number;
+  playlists:   PlaylistElement[];
+}
+
+export type PlaylistElement = {
+  scheduleItemId: number;
+  playlistId:     number;
+  playlist:       PlaylistPlaylist;
+}
+
+export type PlaylistPlaylist = {
+  id:         number;
+  name:       string;
+  type:       string;
+  fsMeta?:     FSMeta;
+  manualMeta?: null;
+}
+
+export type FSMeta = {
+  id:           number;
+  fileItemHash: string;
+  playlistId:   number;
+}
+
