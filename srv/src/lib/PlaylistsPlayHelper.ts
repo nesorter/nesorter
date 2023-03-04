@@ -1,34 +1,52 @@
 import config from './config';
+import { PlaylistsManager } from './PlaylistsManager';
 import { Queue } from './Queue';
 import { StorageType } from './Storage';
 import { shuffle } from './utils';
 
 export class PlaylistsPlayHelper {
-  constructor(private db: StorageType, private queue: Queue) {}
+  constructor(
+    private db: StorageType,
+    private queue: Queue,
+    private playlistsManager: PlaylistsManager,
+  ) {}
 
   public async queuePlaylist(playlistId: number) {
-    const items = await this.db.manualPlaylistItem.findMany({ where: { playlistId } });
+    const playlist = await this.playlistsManager.getQueueInstance(playlistId);
+    const items = await playlist.getContent();
+
     for (const item of items) {
-      await this.queue.add(item.filehash, undefined, playlistId);
+      await this.queue.add(item.fileItemHash || '', undefined, playlistId);
     }
   }
 
   public async queueAllPlaylistsRandomly() {
     let playlistDuration = 0;
-    const playlist = shuffle(await this.db.playlists.findMany())[0];
+    const playlistId = shuffle(await this.db.playlist.findMany())[0]?.id;
 
-    if (!playlist) {
+    if (!playlistId) {
       return;
     }
 
-    const items = shuffle(
-      await this.db.manualPlaylistItem.findMany({ where: { playlistId: playlist.id } }),
-    );
+    const playlist = await this.playlistsManager.getQueueInstance(playlistId);
+    const items = shuffle(await playlist.getContent());
 
     for (const item of items) {
-      await this.queue.add(item.filehash, undefined, playlist.id);
-      const fsItem = await this.db.fSItem.findFirst({ where: { filehash: item.filehash } });
-      playlistDuration += fsItem?.duration || 0;
+      if (item.fileItemHash === null) {
+        continue;
+      }
+
+      await this.queue.add(item.fileItemHash, undefined, playlistId);
+
+      const fileItem = await this.db.fileItem.findFirst({
+        where: { filehash: item.fileItemHash },
+        include: {
+          timings: true,
+          metadata: true,
+        },
+      });
+
+      playlistDuration += fileItem?.timings?.duration || 0;
     }
 
     setTimeout(() => {

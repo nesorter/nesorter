@@ -1,6 +1,5 @@
 import Express from 'express';
 
-import { Classificator } from '../Classificator';
 import config from '../config';
 import { Logger } from '../Logger';
 import { LogLevel, LogTags } from '../Logger.types';
@@ -14,7 +13,7 @@ import { Streamer } from '../Streamer';
 import { gen as genClassificatorRoutes } from './routes/classificator';
 import { gen as genLoggerRoutes } from './routes/logger';
 import { gen as getPlayerRoutes } from './routes/player';
-import { gen as genPLaylistsManagerRoutes } from './routes/playlistsManager';
+import { gen as genPlaylistsManagerRoutes } from './routes/playlistsManager';
 import { gen as genScannerRoutes } from './routes/scanner';
 import { gen as genSchedulerRoutes } from './routes/scheduler';
 
@@ -28,7 +27,6 @@ export class API {
     private db: StorageType,
     private logger: Logger,
     private scanner: Scanner,
-    private classificator: Classificator,
     private playlistsManager: PlaylistsManager,
     private streamer: Streamer,
     private scheduler: Scheduler,
@@ -48,14 +46,13 @@ export class API {
       this.scheduler,
       this.queue,
     );
-    genClassificatorRoutes(this.logger, this.router, this.classificator);
-    genPLaylistsManagerRoutes(
+    genClassificatorRoutes(this.logger, this.router);
+    genPlaylistsManagerRoutes(
       this.logger,
       this.router,
       this.playlistsManager,
       this.streamer,
       this.db,
-      this.scanner,
     );
     genScannerRoutes(this.logger, this.router, this.scanner);
     genSchedulerRoutes(this.logger, this.router, this.scheduler);

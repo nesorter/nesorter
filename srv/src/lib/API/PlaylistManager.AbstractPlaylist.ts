@@ -1,4 +1,4 @@
-import { ManualPlaylistItem } from '@prisma/client';
+import { PlaylistItem } from '@prisma/client';
 
 export type AbstractPlaylistUpdateItem = {
   order: number;
@@ -9,5 +9,5 @@ export interface AbstractPlaylist {
   update(items: AbstractPlaylistUpdateItem[]): Promise<void>;
   delete(): Promise<void>;
   invalidateCache(): Promise<void>;
-  getContent(): Promise<ManualPlaylistItem[]>;
+  getContent(): Promise<PlaylistItem[]>;
 }

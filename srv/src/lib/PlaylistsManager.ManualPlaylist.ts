@@ -1,4 +1,4 @@
-import { ManualPlaylistItem } from '@prisma/client';
+import { PlaylistItem } from '@prisma/client';
 
 import {
   AbstractPlaylist,
@@ -14,45 +14,46 @@ export class ManualPlaylist implements AbstractPlaylist {
   }
 
   async update(items: AbstractPlaylistUpdateItem[]): Promise<void> {
-    const content = await this.getContent();
-    const selectedForDelete = content.filter(
-      (_) => items.find((__) => __.filehash === _.filehash) === undefined,
-    );
+    await this.db.$transaction([
+      this.db.playlistManualMeta.delete({
+        where: { playlistId: this.playlistId },
+        include: {
+          playlistItems: true,
+        },
+      }),
 
-    for (const item of selectedForDelete) {
-      await this.db.manualPlaylistItem.delete({ where: { id: item.id } });
-    }
-
-    for (const item of items) {
-      // Беру тут айтем из БД потому что... какой-то странный ORM, даёт в блоке WHERE указать только Id
-      const dbitem = await this.db.manualPlaylistItem.findFirst({
-        where: {
-          filehash: item.filehash,
+      this.db.playlistManualMeta.create({
+        data: {
           playlistId: this.playlistId,
+          playlistItems: {
+            connectOrCreate: items.map((item) => ({
+              create: {
+                fileItemHash: item.filehash,
+                order: item.order,
+              },
+              where: {
+                id: this.playlistId,
+              },
+            })),
+          },
         },
-      });
-
-      await this.db.manualPlaylistItem.upsert({
-        create: {
-          filehash: item.filehash,
-          order: item.order,
-          playlistId: this.playlistId,
-        },
-        update: {
-          order: item.order,
-        },
-        where: {
-          id: dbitem?.id || 0,
-        },
-      });
-    }
+      }),
+    ]);
   }
 
   async delete() {
-    await this.db.playlists.delete({ where: { id: this.playlistId } });
+    await this.db.playlist.delete({
+      where: { id: this.playlistId },
+      include: { fsMeta: true, manualMeta: { include: { playlistItems: true } } },
+    });
   }
 
-  getContent(): Promise<ManualPlaylistItem[]> {
-    return this.db.manualPlaylistItem.findMany({ where: { playlistId: this.playlistId } });
+  async getContent(): Promise<PlaylistItem[]> {
+    const items = await this.db.playlistManualMeta.findFirstOrThrow({
+      where: { playlistId: this.playlistId },
+      include: { playlistItems: true },
+    });
+
+    return items.playlistItems;
   }
 }

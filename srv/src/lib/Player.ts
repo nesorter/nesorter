@@ -1,4 +1,3 @@
-import { FSItem } from '@prisma/client';
 import { spawn } from 'child_process';
 import { createServer, Server, Socket } from 'net';
 import kill from 'tree-kill';
@@ -6,6 +5,7 @@ import kill from 'tree-kill';
 import config from './config';
 import { Logger } from './Logger';
 import { LogLevel, LogTags } from './Logger.types';
+import { AggregatedFileItem } from './Scanner.types';
 import { asyncSpawn, makeSafePath, range } from './utils';
 
 export class Player {
@@ -87,12 +87,13 @@ export class Player {
     this.needStop = true;
   }
 
-  public async play(fsItem: FSItem, customEndPosition?: number): Promise<void> {
+  public async play(fsItem: AggregatedFileItem, customEndPosition?: number): Promise<void> {
     const omittedSocket = this.socket.findIndex((_) => _.isBind);
     const freeSocket = this.socket.findIndex((_) => !_.isBind);
 
-    const startPosition = fsItem.trimStart;
-    const endPosition = customEndPosition || fsItem.duration - fsItem.trimEnd;
+    const startPosition = Number(fsItem.timings?.trimStart);
+    const endPosition =
+      customEndPosition || Number(fsItem.timings?.duration) - Number(fsItem.timings?.trimEnd);
     const filePath = fsItem.path;
 
     const fadeDuration = config.MPV_FADE_TIME;

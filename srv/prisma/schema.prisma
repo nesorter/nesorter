@@ -19,7 +19,6 @@ model FileItem {
 
   playlistItems      PlaylistItem[]
   playlistFsMeta     PlaylistFsMeta?
-  classificatedItems ClassificatedItem[]
 }
 
 model FileItemMetadata {
@@ -103,38 +102,4 @@ model PlaylistItem {
 
   playlistManualMeta   PlaylistManualMeta? @relation(fields: [playlistManualMetaId], references: [id])
   playlistManualMetaId Int?
-}
-
-model ClassificationsGroup {
-  id              Int              @id @default(autoincrement())
-  name            String
-  classifications Classification[]
-}
-
-model Classification {
-  id    Int    @id @default(autoincrement())
-  value String @default("unknown")
-
-  classificationsGroup   ClassificationsGroup? @relation(fields: [classificationsGroupId], references: [id])
-  classificationsGroupId Int?
-
-  classificatedGroup   ClassificatedGroup? @relation(fields: [classificatedGroupId], references: [id])
-  classificatedGroupId Int?
-}
-
-model ClassificatedItem {
-  id Int @id @default(autoincrement())
-
-  fileItem            FileItem             @relation(fields: [fileItemHash], references: [filehash])
-  fileItemHash        String
-  classificatedGroups ClassificatedGroup[]
-}
-
-model ClassificatedGroup {
-  id Int @id @default(autoincrement())
-
-  item                ClassificatedItem @relation(fields: [classificatedItemId], references: [id])
-  classificatedItemId Int
-
-  classifications Classification[]
 }

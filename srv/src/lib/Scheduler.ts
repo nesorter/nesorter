@@ -1,4 +1,4 @@
-import { ManualPlaylistItem, ScheduleItem } from '@prisma/client';
+import { PlaylistItem, ScheduleItem } from '@prisma/client';
 import { secondsInDay } from 'date-fns';
 
 import { Logger } from './Logger';
@@ -22,7 +22,7 @@ export class Scheduler {
   ) {}
 
   async getPlaylist(id: number) {
-    return this.db.playlists.findFirst({ where: { id } });
+    return await this.db.playlist.findFirst({ where: { id } });
   }
 
   shouldEnd(item: ScheduleItem): boolean {
@@ -38,14 +38,26 @@ export class Scheduler {
   }
 
   async createItem(startAt: number, endAt: number, playlistIds: string, withMerging?: number) {
+    const scheduleItemId = Date.now();
+    const aggregated = playlistIds
+      .split(',')
+      .map((_) => Number(_))
+      .map((playlistId) => ({
+        create: { playlistId },
+        where: { scheduleItemId_playlistId: { playlistId, scheduleItemId } },
+      }));
+
     if (endAt < startAt) {
       if (endAt < 60) {
         return this.db.scheduleItem.create({
           data: {
+            id: scheduleItemId,
+            withMerging: withMerging || 0,
             endAt: secondsInDay,
             startAt,
-            playlistIds,
-            withMerging: withMerging || 0,
+            playlists: {
+              connectOrCreate: aggregated,
+            },
           },
         });
       } else {
@@ -55,10 +67,13 @@ export class Scheduler {
 
     return this.db.scheduleItem.create({
       data: {
+        id: scheduleItemId,
         endAt,
         startAt,
-        playlistIds,
         withMerging: withMerging || 0,
+        playlists: {
+          connectOrCreate: aggregated,
+        },
       },
     });
   }
@@ -72,7 +87,7 @@ export class Scheduler {
   }
 
   async getItems() {
-    return this.db.scheduleItem.findMany();
+    return this.db.scheduleItem.findMany({ include: { playlists: true } });
   }
 
   async start() {
@@ -99,20 +114,23 @@ export class Scheduler {
             return;
           }
 
+          const pls = item.playlists.map((_) => _.playlistId).join(',');
+
           this.logger.log({
-            message: `Starting schedule item #${item.id} with PLs ${item.playlistIds}`,
+            message: `Starting schedule item #${item.id} with PLs ${pls}`,
             level: LogLevel.INFO,
             tags: [LogTags.SCHEDULER],
           });
 
-          const playlists = item.playlistIds.split(',').map((_) => Number(_));
-          const tracks: { playlistId: number; content: ManualPlaylistItem[]; index: number }[] = [];
+          const tracks: { playlistId: number; content: PlaylistItem[]; index: number }[] = [];
 
-          for (const playlistId of playlists) {
-            const playlist = await this.playlistsManager.getQueueInstance(playlistId);
+          for (const playlistInstance of item.playlists) {
+            const playlist = await this.playlistsManager.getQueueInstance(
+              playlistInstance.playlistId,
+            );
 
             tracks.push({
-              playlistId,
+              playlistId: playlistInstance.playlistId,
               content: shuffle(await playlist.getContent()),
               index: 0,
             });
@@ -127,9 +145,12 @@ export class Scheduler {
             const track = content.content[content.index];
             content.index += 1;
 
-            const file = await this.db.fSItem.findFirst({ where: { filehash: track.filehash } });
+            const file = await this.db.fileItem.findFirst({
+              where: { filehash: track.fileItemHash || '' },
+            });
+
             if (file) {
-              shouldEnd = await this.queue.add(track.filehash, item.endAt, content.playlistId);
+              shouldEnd = await this.queue.add(file.filehash, item.endAt, content.playlistId);
             }
 
             if (content.content.length - 1 === content.index) {

@@ -41,7 +41,13 @@ export class Queue {
     const item = this.items.find((_) => _.startAt <= currentSeconds && _.endAt >= currentSeconds);
 
     if (item && item?.order !== this.currentOrder) {
-      const file = await this.db.fSItem.findFirst({ where: { filehash: item.fileHash } });
+      const file = await this.db.fileItem.findFirstOrThrow({
+        where: { filehash: item.fileHash },
+        include: {
+          timings: true,
+          metadata: true,
+        },
+      });
 
       if (file) {
         this.currentOrder = item.order;
@@ -85,7 +91,13 @@ export class Queue {
     hardEndAt: number | undefined,
     playlistId: number | undefined,
   ) {
-    const file = await this.db.fSItem.findFirst({ where: { filehash: fileHash } });
+    const file = await this.db.fileItem.findFirstOrThrow({
+      where: { filehash: fileHash },
+      include: {
+        timings: true,
+        metadata: true,
+      },
+    });
 
     if (!file) {
       throw new Error('Wrong fileHash');
@@ -94,11 +106,11 @@ export class Queue {
     const lastItem = this.items.at(-1);
     let stopAddSignal = false;
     let startAt = currentSecondsFromDayStart();
-    let endAt = startAt + file.duration;
+    let endAt = startAt + Number(file.timings?.duration);
 
     if (lastItem) {
       startAt = lastItem.endAt - config.MPV_FADE_TIME;
-      endAt = startAt + file.duration;
+      endAt = startAt + Number(file.timings?.duration);
     }
 
     if (hardEndAt) {

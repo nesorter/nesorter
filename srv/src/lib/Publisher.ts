@@ -1,18 +1,18 @@
-import { FSItem } from '@prisma/client';
 import axios from 'axios';
 
 import config from './config';
 import { Logger } from './Logger';
 import { LogLevel, LogTags } from './Logger.types';
+import { AggregatedFileItem } from './Scanner.types';
 
 export class Publisher {
   constructor(private logger: Logger) {}
 
-  public async publish(fsitem: FSItem): Promise<void> {
+  public async publish(fileItem: AggregatedFileItem): Promise<void> {
     try {
       await axios.get(`http://${config.SHOUT_HOST}:${config.SHOUT_PORT}/admin/metadata`, {
         params: {
-          song: `${fsitem.id3Artist} - ${fsitem.id3Title}`,
+          song: `${fileItem.metadata?.artist} - ${fileItem.metadata?.title}`,
           mount: `/${config.SHOUT_MOUNT}`,
           mode: 'updinfo',
         },
@@ -23,7 +23,7 @@ export class Publisher {
       });
     } catch {
       this.logger.log({
-        message: `Error at publishing metadata for '${fsitem.id3Artist} - ${fsitem.id3Title}' at '/${config.SHOUT_MOUNT}'`,
+        message: `Error at publishing metadata for '${fileItem.metadata?.artist} - ${fileItem.metadata?.title}' at '/${config.SHOUT_MOUNT}'`,
         tags: [LogTags.MPV],
         level: LogLevel.ERROR,
       });

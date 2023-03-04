@@ -2,7 +2,6 @@ import { createHash } from 'crypto';
 import { readdir, readFile, stat } from 'fs/promises';
 import { parseBuffer } from 'music-metadata';
 
-import { Classificator } from './Classificator';
 import { Logger } from './Logger';
 import { LogLevel, LogTags } from './Logger.types';
 import { Chain, ScannedItem } from './Scanner.types';
@@ -18,7 +17,6 @@ export class Scanner {
   constructor(
     private db: StorageType,
     private logger: Logger,
-    private classificator: Classificator,
     private onScanned: (scanned: Chain) => void,
   ) {
     this._getChain().then((_) => {
@@ -27,12 +25,23 @@ export class Scanner {
     });
   }
 
-  getFsItem(filehash: string) {
-    return this.db.fSItem.findFirst({ where: { filehash } });
+  async getFsItem(filehash: string) {
+    try {
+      return await this.db.fileItem.findFirstOrThrow({ where: { filehash } });
+    } catch (e) {
+      this.logger.log({ level: LogLevel.ERROR, tags: [LogTags.SCANNER], message: `${e}` });
+    }
   }
 
-  setTrim(filehash: string, trimStart: number, trimEnd: number) {
-    return this.db.fSItem.update({ where: { filehash }, data: { trimStart, trimEnd } });
+  async setTrim(filehash: string, trimStart: number, trimEnd: number) {
+    try {
+      await this.db.fileItemTimings.update({
+        where: { fileItemHash: filehash },
+        data: { trimStart, trimEnd },
+      });
+    } catch (e) {
+      this.logger.log({ level: LogLevel.ERROR, tags: [LogTags.SCANNER], message: `${e}` });
+    }
   }
 
   getChain(): Chain {
@@ -45,7 +54,7 @@ export class Scanner {
   async _getChain(): Promise<Chain> {
     let time = Date.now();
     const chain: Chain = {};
-    const items = await this.db.fSItem.findMany();
+    const items = await this.db.fileItem.findMany({ include: { timings: true, metadata: true } });
     this.logger.log({
       message: `Read track from DB took ${Date.now() - time}ms`,
       tags: [LogTags.SCANNER],
@@ -65,7 +74,7 @@ export class Scanner {
         key: fileIndexed,
         parent: pathIndexed.at(-1) || null,
         name: filename,
-        isClassified: (await this.classificator.getItem(item.filehash)).length !== 0,
+        isClassified: false,
         fsItem: item,
       };
 
@@ -165,49 +174,62 @@ export class Scanner {
       }
 
       try {
-        const item = await this.db.fSItem.findFirst({ where: { filehash: scannedItem.hash } });
+        this.logger.log({
+          message: `Upsert record for '${scannedItem.name}' [${scannedItem.hash}]`,
+          tags: [LogTags.SCANNER],
+          level: LogLevel.INFO,
+        });
 
-        if (item) {
-          this.logger.log({
-            message: `Update record for '${scannedItem.name}' [${scannedItem.hash}]`,
-            tags: [LogTags.SCANNER],
-            level: LogLevel.INFO,
-          });
-
-          await this.db.fSItem.update({
-            data: {
-              name: scannedItem.name,
-              path: scannedItem.path,
-              id3Artist: scannedItem.id3?.artist || 'nulled',
-              id3Title: scannedItem.id3?.title || 'nulled',
-              duration: scannedItem.duration || 0,
+        const metadata = {
+          connectOrCreate: {
+            create: {
+              artist: scannedItem.id3?.artist || 'unnamed',
+              title: scannedItem.id3?.title || 'unnamed',
             },
             where: {
-              filehash: scannedItem.hash,
+              fileItemHash: scannedItem.hash,
             },
-          });
-        } else {
-          this.logger.log({
-            message: `Create record for '${scannedItem.name}' [${scannedItem.hash}]`,
-            tags: [LogTags.SCANNER],
-            level: LogLevel.INFO,
-          });
+          },
+        };
 
-          await this.db.fSItem.create({
-            data: {
-              filehash: scannedItem.hash || 'nulled',
-              name: scannedItem.name,
-              path: scannedItem.path,
-              type: scannedItem.isDir ? 'dir' : 'file',
-              id3Artist: scannedItem.id3?.artist || 'nulled',
-              id3Title: scannedItem.id3?.title || 'nulled',
-              duration: scannedItem.duration || 0,
+        const timings = {
+          connectOrCreate: {
+            create: {
+              trimStart: 0,
+              trimEnd: 0,
+              duration: scannedItem.duration,
             },
-          });
-        }
+            where: {
+              fileItemHash: scannedItem.hash,
+            },
+          },
+        };
+
+        await this.db.fileItem.upsert({
+          where: {
+            filehash: scannedItem.hash,
+          },
+
+          create: {
+            filehash: scannedItem.hash,
+            name: scannedItem.name,
+            path: scannedItem.path,
+            type: scannedItem.isDir ? 'dir' : 'file',
+            metadata,
+            timings,
+          },
+
+          update: {
+            name: scannedItem.name,
+            path: scannedItem.path,
+            type: scannedItem.isDir ? 'dir' : 'file',
+            metadata,
+            timings,
+          },
+        });
       } catch (e) {
         this.logger.log({
-          message: `Failed process record for '${scannedItem.name}' [${scannedItem.hash}]`,
+          message: `Failed upsert record for '${scannedItem.name}' [${scannedItem.hash}], err: ${e}`,
           tags: [LogTags.SCANNER],
           level: LogLevel.ERROR,
         });
