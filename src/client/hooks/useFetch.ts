@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react';
 
 export const useFetch = () => {
   const [fetching, setFetching] = useState(false);
@@ -8,4 +8,4 @@ export const useFetch = () => {
     setFetching: () => setFetching(true),
     setFetched: () => setFetching(false),
   };
-}
+};

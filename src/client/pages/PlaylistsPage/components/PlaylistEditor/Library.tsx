@@ -1,13 +1,14 @@
-import { useEffect, useMemo, useState } from "react"
-import { api } from "../../../../api";
-import { Chain, FSItem } from "../../../../api/types";
-import { Box, Button, Text } from "../../../../components"
-import { useFetch } from "../../../../hooks/useFetch";
+import { useEffect, useMemo, useState } from 'react';
+
+import { api } from '../../../../api';
+import { Chain, FSItem } from '../../../../api/types';
+import { Box, Button, Text } from '../../../../components';
+import { useFetch } from '../../../../hooks/useFetch';
 
 type Props = {
   onAdd: (hash: string) => unknown;
   onAddAll: (hashes: string[]) => Promise<void>;
-}
+};
 
 export const Library = ({ onAdd, onAddAll }: Props) => {
   const chainFetch = useFetch();
@@ -27,10 +28,7 @@ export const Library = ({ onAdd, onAddAll }: Props) => {
     //   .catch(alert)
     //   .finally(catsFetch.setFetched);
 
-    api.scanner.getChain()
-      .then(setChain)
-      .catch(alert)
-      .finally(chainFetch.setFetched);
+    api.scanner.getChain().then(setChain).catch(alert).finally(chainFetch.setFetched);
   }, []);
 
   // useEffect(() => {
@@ -57,42 +55,60 @@ export const Library = ({ onAdd, onAddAll }: Props) => {
   // }, [filters, chainValues]);
 
   return (
-    <Box flexDirection="column" width="100%">
-      <Box width="100%" padding="10px" borderBottom="1px solid #5C5C5C" flexDirection="column">
-        {catsFetch.isFetching && <Text fontSize="desc" color="textLight">cats fetching</Text>}
+    <Box flexDirection='column' width='100%'>
+      <Box width='100%' padding='10px' borderBottom='1px solid #5C5C5C' flexDirection='column'>
+        {catsFetch.isFetching && (
+          <Text fontSize='desc' color='textLight'>
+            cats fetching
+          </Text>
+        )}
       </Box>
 
-      <Box width="100%" padding="10px" flexDirection="column" gap={10}>
-        {chainFetch.isFetching && <Text fontSize="desc" color="textLight">tracks fetching</Text>}
+      <Box width='100%' padding='10px' flexDirection='column' gap={10}>
+        {chainFetch.isFetching && (
+          <Text fontSize='desc' color='textLight'>
+            tracks fetching
+          </Text>
+        )}
 
         {Boolean(files.length) && (
-          <Button variant="primary" size="small" onClick={() => onAddAll(files.map(_ => _.filehash)).catch(e => alert(e.message))}>Add all</Button>
+          <Button
+            variant='primary'
+            size='small'
+            onClick={() => onAddAll(files.map((_) => _.filehash)).catch((e) => alert(e.message))}
+          >
+            Add all
+          </Button>
         )}
 
         {files.map((item) => {
-          const file = chainValues.find(i => i.fsItem?.filehash === item.filehash);
+          const file = chainValues.find((i) => i.fsItem?.filehash === item.filehash);
 
           return (
-            <Box key={item.filehash} alignItems="center" justifyContent="space-between">
-              <Box flexDirection="column" maxWidth="calc(100% - 96px)">
-                <Text fontSize="desc" variant="oneline" color="textLight">
+            <Box key={item.filehash} alignItems='center' justifyContent='space-between'>
+              <Box flexDirection='column' maxWidth='calc(100% - 96px)'>
+                <Text fontSize='desc' variant='oneline' color='textLight'>
                   {file?.fsItem?.metadata?.artist} - {file?.fsItem?.metadata?.title}
                 </Text>
 
-                <Text fontSize="sm" variant="oneline" color="#999">
+                <Text fontSize='sm' variant='oneline' color='#999'>
                   {file?.fsItem?.path}
                 </Text>
               </Box>
 
-              <Button onClick={() => onAdd(item.filehash)} variant="secondary" size="small">+</Button>
+              <Button onClick={() => onAdd(item.filehash)} variant='secondary' size='small'>
+                +
+              </Button>
             </Box>
           );
         })}
 
         {!Boolean(files.length) && (
-          <Text fontSize="desc" color="textLight">None found. Try add files to categories or another filters</Text>
+          <Text fontSize='desc' color='textLight'>
+            None found. Try add files to categories or another filters
+          </Text>
         )}
       </Box>
     </Box>
   );
-}
+};

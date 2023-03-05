@@ -17,8 +17,8 @@ export const getApi = () => {
   } else {
     return global['nestedApi'];
   }
-}
+};
 
 export const config = {
-  runtime: 'nodejs'
-}
+  runtime: 'nodejs',
+};

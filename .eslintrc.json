@@ -24,7 +24,7 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
-  "plugins": ["prettier", "simple-import-sort", "@typescript-eslint"],
+  "plugins": ["prettier", "simple-import-sort", "@typescript-eslint", "eslint-plugin-no-cyrillic-string"],
   "rules": {
     "react/jsx-newline": "warn",
     "prettier/prettier": "warn",

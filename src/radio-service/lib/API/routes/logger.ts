@@ -40,7 +40,7 @@ export const gen = (
 
       if (scheduler.currentItem !== -1) {
         const schedulerItems = await scheduler.getItems();
-        schedulingData = schedulerItems.find(_ => _.id === scheduler.currentItem);
+        schedulingData = schedulerItems.find((_) => _.id === scheduler.currentItem);
       }
     }
 

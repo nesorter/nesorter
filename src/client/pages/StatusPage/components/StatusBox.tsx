@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react"
-import { api } from "../../../api";
-import { Status } from "../../../api/types"
-import { Box, Text } from "../../../components";
+import { useEffect, useState } from 'react';
+
+import { api } from '../../../api';
+import { Status } from '../../../api/types';
+import { Box, Text } from '../../../components';
 
 export const StatusBox = () => {
   const [status, setStatus] = useState<Status>({
@@ -13,7 +14,7 @@ export const StatusBox = () => {
       currentOrder: null,
       items: [],
       state: 'stopped',
-    }
+    },
   });
 
   useEffect(() => {
@@ -25,11 +26,14 @@ export const StatusBox = () => {
   }, []);
 
   return (
-    <Box flexDirection="column">
-      <Text color="textLight">Playing: {status.playing ? '✓' : '✕'}</Text>
-      <Text color="textLight">Sync: {status.syncing ? '✓' : '✕'}</Text>
-      <Text color="textLight">Streaming: {status.streaming ? '✓' : '✕'}</Text>
-      <Text color="textLight">Scheduling: {status.scheduling ? '✓' : '✕'}</Text>
+    <Box flexDirection='column'>
+      <Text color='textLight'>Playing: {status.playing ? '✓' : '✕'}</Text>
+
+      <Text color='textLight'>Sync: {status.syncing ? '✓' : '✕'}</Text>
+
+      <Text color='textLight'>Streaming: {status.streaming ? '✓' : '✕'}</Text>
+
+      <Text color='textLight'>Scheduling: {status.scheduling ? '✓' : '✕'}</Text>
     </Box>
   );
-}
+};

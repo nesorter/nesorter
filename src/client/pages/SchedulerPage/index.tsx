@@ -1,11 +1,12 @@
-import { differenceInSeconds, endOfDay, parse, secondsInDay } from "date-fns";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { api } from "../../api";
-import { ScheduleItem } from "../../api/types";
-import { Box } from "../../components";
-import { Timeline } from './components/Timeline';
+import { differenceInSeconds, endOfDay, parse, secondsInDay } from 'date-fns';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+
+import { api } from '../../api';
+import { ScheduleItem } from '../../api/types';
+import { Box } from '../../components';
 import { ScheduleItems } from './components/ScheduleItems';
+import { Timeline } from './components/Timeline';
 
 type Form = {
   start: string;
@@ -27,7 +28,10 @@ export const SchedulerPage = () => {
   };
 
   const handleSubmit = (data: Form) => {
-    return api.scheduler.createItem(currentSecond(data.start), currentSecond(data.end), data.playlistIds).then(init).catch(alert);
+    return api.scheduler
+      .createItem(currentSecond(data.start), currentSecond(data.end), data.playlistIds)
+      .then(init)
+      .catch(alert);
   };
 
   useEffect(() => {
@@ -36,27 +40,30 @@ export const SchedulerPage = () => {
 
   return (
     <Box gap={20}>
-     <Box gap={14}>
-       <form onSubmit={createForm.handleSubmit(handleSubmit, console.log)}>
-         <Box flexDirection="column">
-           <input type="time" {...createForm.register('start')} placeholder="start time" />
-           <input type="time" {...createForm.register('end')} placeholder="end time" />
-           <input {...createForm.register('playlistIds')} placeholder="playlists id (use ',' as separator)" />
-           <input type="submit" value="create" />
-         </Box>
-       </form>
-     </Box>
+      <Box gap={14}>
+        <form onSubmit={createForm.handleSubmit(handleSubmit, console.log)}>
+          <Box flexDirection='column'>
+            <input type='time' {...createForm.register('start')} placeholder='start time' />
 
-      <Box gap="8px">
+            <input type='time' {...createForm.register('end')} placeholder='end time' />
+
+            <input
+              {...createForm.register('playlistIds')}
+              placeholder="playlists id (use ',' as separator)"
+            />
+
+            <input type='submit' value='create' />
+          </Box>
+        </form>
+      </Box>
+
+      <Box gap='8px'>
         <Timeline />
 
-        <ScheduleItems
-          onUpdate={init}
-          items={items.sort((a, b) => a.startAt - b.startAt)}
-        />
+        <ScheduleItems onUpdate={init} items={items.sort((a, b) => a.startAt - b.startAt)} />
       </Box>
     </Box>
   );
-}
+};
 
 export default SchedulerPage;

@@ -1,9 +1,10 @@
-import type { AppProps } from 'next/app'
-import { Head } from 'next/head'
-import { ThemeProvider } from 'styled-components'
+import type { AppProps } from 'next/app';
+import { Head } from 'next/head';
+import { useState } from 'react';
+import { ThemeProvider } from 'styled-components';
+
 import { PageWrapper } from '@/client/components/PageWrapper';
 import theme from '@/client/theme';
-import { useState } from 'react'
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const [token, setToken] = useState(localStorage.getItem('nesorter-admin-token'));
@@ -23,7 +24,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <link href="/fonts/iosevka-ss07.css" rel="stylesheet" />
+        <link href='/fonts/iosevka-ss07.css' rel='stylesheet' />
       </Head>
 
       <ThemeProvider theme={theme}>

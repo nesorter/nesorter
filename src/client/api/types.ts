@@ -6,7 +6,7 @@ export type DtoUpsertCategory = {
 
 export type DtoUpsertFileItem = {
   filehash: string;
-  classItemsIds: number[]
+  classItemsIds: number[];
 };
 
 export type DtoUpdatePlaylistItem = {
@@ -53,7 +53,7 @@ export type FSItem = {
     trimEnd: number;
   };
   classedItems?: AggregatedClassedItem[];
-}
+};
 
 export type ChainItem = {
   type: 'file' | 'dir';
@@ -91,7 +91,7 @@ export type Status = {
     items: QueueItem[];
     currentOrder: null | number;
     state: 'stopped' | 'playing';
-  }
+  };
 };
 
 export type QueueItem = {
@@ -102,29 +102,29 @@ export type QueueItem = {
 };
 
 export type ScheduleItem = {
-  id:          number;
+  id: number;
   withMerging: number;
-  startAt:     number;
-  endAt:       number;
-  playlists:   PlaylistElement[];
+  startAt: number;
+  endAt: number;
+  playlists: PlaylistElement[];
 };
 
 export type PlaylistElement = {
   scheduleItemId: number;
-  playlistId:     number;
-  playlist:       PlaylistPlaylist;
+  playlistId: number;
+  playlist: PlaylistPlaylist;
 };
 
 export type PlaylistPlaylist = {
-  id:         number;
-  name:       string;
-  type:       string;
-  fsMeta?:     FSMeta;
+  id: number;
+  name: string;
+  type: string;
+  fsMeta?: FSMeta;
   manualMeta?: null;
 };
 
 export type FSMeta = {
-  id:           number;
+  id: number;
   fileItemHash: string;
-  playlistId:   number;
+  playlistId: number;
 };

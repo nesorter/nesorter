@@ -1,13 +1,17 @@
-import { delete_, get, post, put } from "./methods";
+import { delete_, get, post, put } from './methods';
 import {
   Chain,
-  FSItem,
+  ClassCategory,
+  ClassedItem,
   DtoGetClassifiedFilters,
+  DtoUpdatePlaylistItem,
+  DtoUpsertCategory,
+  DtoUpsertFileItem,
+  FSItem,
   ManualPlaylistItem,
   Playlist,
   ScheduleItem,
   Status,
-  DtoUpdatePlaylistItem, DtoUpsertCategory, ClassCategory, ClassedItem, DtoUpsertFileItem,
 } from './types';
 
 export const api = {
@@ -18,7 +22,7 @@ export const api = {
 
     restart() {
       return post('/api/restart', {});
-    }
+    },
   },
 
   scheduler: {
@@ -53,7 +57,10 @@ export const api = {
     /**
      * Обновляет айтем расписания
      */
-    updateItem(itemId: number | string, data: { startAt: number, endAt: number, playlistIds: string, withMerging: number }) {
+    updateItem(
+      itemId: number | string,
+      data: { startAt: number; endAt: number; playlistIds: string; withMerging: number },
+    ) {
       return post(`/api/scheduler/${itemId}`, { id: itemId, data });
     },
 
@@ -85,7 +92,7 @@ export const api = {
      */
     update(data: DtoUpsertCategory) {
       return put('/api/classificator/categories', data);
-    }
+    },
   },
 
   classificator: {
@@ -109,7 +116,7 @@ export const api = {
      */
     setCategories({ filehash, classItemsIds }: DtoUpsertFileItem) {
       return post(`/api/classificator/item/${filehash}`, { filehash, classItemsIds });
-    }
+    },
   },
 
   scanner: {
@@ -213,7 +220,7 @@ export const api = {
      */
     startStream() {
       return post('/api/playlistsManager/streamStart', {});
-    }
+    },
   },
 
   player: {
@@ -251,5 +258,5 @@ export const api = {
     playPlaylist(id: number) {
       return post(`/api/player/helper/playlist/${id}`, {});
     },
-  }
+  },
 };

@@ -1,9 +1,10 @@
-import { Box, Text } from '../../components';
 import { useEffect, useState } from 'react';
-import { Chain } from '../../api/types';
+
 import { api } from '../../api';
-import { DirTree } from './components/DirTree';
 import sendMultipartFormData from '../../api/sendMultipartFormData';
+import { Chain } from '../../api/types';
+import { Box, Text } from '../../components';
+import { DirTree } from './components/DirTree';
 
 const UploadPage = () => {
   const [chain, setChain] = useState<Chain>({});
@@ -31,44 +32,65 @@ const UploadPage = () => {
       onUploadProgress: (v) => setProgress(v),
       form: form,
       url: '/api/scanner/upload-files',
-    }).then(() => alert('Done. Run SCAN at status page')).catch(() => alert('failed'));
-  }
+    })
+      .then(() => alert('Done. Run SCAN at status page'))
+      .catch(() => alert('failed'));
+  };
 
   useEffect(() => {
     setPath(chain[targetFolder]?.path || '');
   }, [targetFolder]);
 
   useEffect(() => {
-    api.scanner.getChain()
-      .then(setChain)
-      .catch(console.log);
+    api.scanner.getChain().then(setChain).catch(console.log);
   }, []);
 
   return (
-    <Box flexDirection='column' gap={10} alignItems="flex-start">
-      <Box width="320px" maxWidth="320px">
+    <Box flexDirection='column' gap={10} alignItems='flex-start'>
+      <Box width='320px' maxWidth='320px'>
         <DirTree chain={chain} selected={targetFolder} onSelect={(key) => setTargetFolder(key)} />
       </Box>
 
-      <Box gap={10} alignItems="center">
-        <Text color="#fff">Current working directory:</Text>
-        <input style={{ width: '480px' }} type="text" value={path} onInput={ev => setPath(ev.currentTarget.value)} />
+      <Box gap={10} alignItems='center'>
+        <Text color='#fff'>Current working directory:</Text>
+
+        <input
+          style={{ width: '480px' }}
+          type='text'
+          value={path}
+          onInput={(ev) => setPath(ev.currentTarget.value)}
+        />
       </Box>
 
-      <Box gap={10} alignItems="center">
-        <Text color="#fff">New directory name:</Text>
-        <input style={{ width: '240px' }} type="text" value={newDir} onInput={ev => setNewDir(ev.currentTarget.value)} />
+      <Box gap={10} alignItems='center'>
+        <Text color='#fff'>New directory name:</Text>
+
+        <input
+          style={{ width: '240px' }}
+          type='text'
+          value={newDir}
+          onInput={(ev) => setNewDir(ev.currentTarget.value)}
+        />
       </Box>
 
-      <Box gap={10} alignItems="center">
-        <Text color="#fff">Files (mp3):</Text>
-        <Text color="#fff"><input style={{ width: '240px' }} type="file" multiple onInput={ev => setFiles([...ev.currentTarget.files || []])} /></Text>
+      <Box gap={10} alignItems='center'>
+        <Text color='#fff'>Files (mp3):</Text>
+
+        <Text color='#fff'>
+          <input
+            style={{ width: '240px' }}
+            type='file'
+            multiple
+            onInput={(ev) => setFiles([...(ev.currentTarget.files || [])])}
+          />
+        </Text>
       </Box>
 
       <button onClick={handleUpload}>Upload</button>
-      <Text color="#fff">Upload Progress: {progress}%</Text>
+
+      <Text color='#fff'>Upload Progress: {progress}%</Text>
     </Box>
   );
-}
+};
 
 export default UploadPage;

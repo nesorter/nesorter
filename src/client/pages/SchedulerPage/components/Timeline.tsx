@@ -1,5 +1,6 @@
-import { Box, Text } from '../../../components';
 import { addHours, format, startOfDay } from 'date-fns';
+
+import { Box, Text } from '../../../components';
 import { StyledCell } from '../styles';
 
 export const Timeline = () => {
@@ -13,12 +14,12 @@ export const Timeline = () => {
   }
 
   return (
-    <Box flexDirection="column">
+    <Box flexDirection='column'>
       {times.map((item) => (
         <StyledCell key={item}>
           <Text>{item}</Text>
         </StyledCell>
       ))}
     </Box>
-  )
-}
+  );
+};

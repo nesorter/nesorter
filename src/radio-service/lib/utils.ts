@@ -1,4 +1,3 @@
-import { AudioAnalyzer } from '@lesjoursfr/audio-waveform';
 import { spawn } from 'child_process';
 import { differenceInSeconds, endOfDay, secondsInDay } from 'date-fns';
 import { RequestHandler } from 'express';
@@ -66,28 +65,14 @@ export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export async function getWaveformInfo(logger: Logger, filepath: string) {
-  try {
-    const audioAnalyzer = new AudioAnalyzer(filepath);
-    const data = await audioAnalyzer.waveform();
-    const buffer = data.waveform;
+  logger.log({
+    message: 'ERROR: unable to get waveform: ',
+    extraData: { err: JSON.stringify({}, null, 2) },
+  });
 
-    const results: number[] = [];
-    const step = Math.floor(buffer.length / wavesCount);
-
-    for (let i = 0; i < wavesCount; i++) {
-      const value = Math.abs(buffer[i * step]);
-      results.push(Math.floor(value * 100000) / 100000);
-    }
-
-    return results;
-  } catch (e) {
-    logger.log({
-      message: 'ERROR: unable to get waveform: ',
-      extraData: { err: JSON.stringify(e, null, 2) },
-    });
-    return [];
-  }
+  return [];
 }
 
 export function getRandomArbitrary(min: number, max: number) {

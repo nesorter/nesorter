@@ -1,5 +1,15 @@
-import styled from 'styled-components'
-import { variant, layout, typography, space, color, LayoutProps, TypographyProps, SpaceProps, ColorProps } from 'styled-system'
+import styled from 'styled-components';
+import {
+  color,
+  ColorProps,
+  layout,
+  LayoutProps,
+  space,
+  SpaceProps,
+  typography,
+  TypographyProps,
+  variant,
+} from 'styled-system';
 
 interface TextProps extends LayoutProps, TypographyProps, SpaceProps, ColorProps {
   children: React.ReactNode;
@@ -18,6 +28,6 @@ export const Text = styled.span<TextProps>`
         overflow: 'hidden',
         whiteSpace: 'nowrap',
       },
-    }
+    },
   })}
 `;

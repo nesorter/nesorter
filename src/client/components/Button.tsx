@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { space, variant } from "styled-system";
+import styled from 'styled-components';
+import { space, variant } from 'styled-system';
 
 interface StyledButtonProps {
   children: React.ReactNode | string;
@@ -18,13 +18,13 @@ export const Button = styled.button<StyledButtonProps>`
     variants: {
       primary: {
         backgroundColor: 'green100',
-        color: 'textLight'
+        color: 'textLight',
       },
       secondary: {
         backgroundColor: 'dark200',
-        color: 'textLight'
-      }
-    }
+        color: 'textLight',
+      },
+    },
   })}
   ${variant({
     prop: 'size',
@@ -32,21 +32,21 @@ export const Button = styled.button<StyledButtonProps>`
       normal: {
         padding: '2px 10px',
         height: '32px',
-        fontSize: '14px'
+        fontSize: '14px',
       },
       small: {
         padding: '2px 8px',
         height: '24px',
-        fontSize: '12px'
+        fontSize: '12px',
       },
-    }
+    },
   })}
 `;
 
-export const StatedButton = (props: { 
-  flag: boolean, 
-  onNextState: (nextFlag: boolean) => unknown, 
-  children: React.ReactNode | string,
+export const StatedButton = (props: {
+  flag: boolean;
+  onNextState: (nextFlag: boolean) => unknown;
+  children: React.ReactNode | string;
   size?: StyledButtonProps['size'];
 }) => {
   return (
@@ -58,4 +58,4 @@ export const StatedButton = (props: {
       {props.children}
     </Button>
   );
-}
+};

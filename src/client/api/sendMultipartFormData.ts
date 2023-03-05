@@ -10,7 +10,7 @@ export type SendMultipartFormDataResponse<T> = Promise<{
 }>;
 
 const sendMultipartFormData = <T = unknown>(
-  params: SendMultipartFormDataParams
+  params: SendMultipartFormDataParams,
 ): SendMultipartFormDataResponse<T> => {
   const { url, form, onUploadProgress } = params;
 
@@ -18,7 +18,7 @@ const sendMultipartFormData = <T = unknown>(
   const xhr = new XMLHttpRequest();
 
   // Сам трекинг прогресса аплоада
-  xhr.upload.addEventListener('progress', event => {
+  xhr.upload.addEventListener('progress', (event) => {
     if (event.lengthComputable && onUploadProgress) {
       onUploadProgress((event.loaded * 100) / event.total);
     } else if (onUploadProgress) {
@@ -26,7 +26,7 @@ const sendMultipartFormData = <T = unknown>(
     }
   });
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     xhr.addEventListener('loadend', () => {
       if (xhr.readyState !== 4) {
         return;
@@ -37,7 +37,7 @@ const sendMultipartFormData = <T = unknown>(
       const _ = typeHeader?.includes(jsonType) && JSON.parse(xhr.responseText);
       resolve({
         data: _ || xhr.responseText,
-        xhr
+        xhr,
       });
     });
 
