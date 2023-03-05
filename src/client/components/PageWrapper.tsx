@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 import { Box } from './Box';
 import { Text } from './Text';
@@ -14,7 +14,7 @@ export const PageWrapper = ({ children }: { children: React.ReactNode }) => {
           { to: '/scheduler', title: 'Scheduler' },
           { to: '/upload', title: 'Upload' },
         ].map((item) => (
-          <Link key={item.to} to={item.to}>
+          <Link key={item.to} href={item.to}>
             <Text color='textLight'>{item.title}</Text>
           </Link>
         ))}

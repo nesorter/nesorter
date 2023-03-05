@@ -1,24 +1,14 @@
-import { NestedApi } from '@/radio-service/NestedApi';
+import { createRadioServiceModule } from '@/radio-service/main';
 
-declare global {
-  var nestedApi: NestedApi;
-}
-
-export const getApi = () => {
+export const getInstance = () => {
   if (typeof window !== 'undefined') {
     return null;
   }
 
-  if (!global['nestedApi']) {
-    global['nestedApi'] = new NestedApi();
-    global['nestedApi'].bindRoutes();
-
-    return global['nestedApi'];
-  } else {
-    return global['nestedApi'];
+  if (!global['radioService']) {
+    global['radioService'] = createRadioServiceModule();
+    return global['radioService'];
   }
-};
 
-export const config = {
-  runtime: 'nodejs',
+  return global['radioService'];
 };

@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { getApi } from '@/radio-service';
+import { getInstance } from '@/radio-service';
 
 let started = false;
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (!started) {
-    getApi()?.listen(3001);
+    getInstance()?.init();
     started = true;
   }
 

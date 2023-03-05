@@ -1,4 +1,4 @@
-import Sentry from '@sentry/node';
+import * as Sentry from '@sentry/node';
 
 import { API } from './lib/API';
 import { Classificator } from './lib/Classificator';
@@ -15,53 +15,75 @@ import { Scheduler } from './lib/Scheduler';
 import { Storage } from './lib/Storage';
 import { Streamer } from './lib/Streamer';
 
-if (config.SENTRY_DSN) {
-  Sentry.init({ dsn: config.SENTRY_DSN });
-  Sentry.captureMessage('App started');
-}
+export type RadioServiceModule = ReturnType<typeof createRadioServiceModule>;
+export const createRadioServiceModule = () => {
+  const logger = new Logger();
+  const classificator = new Classificator(Storage);
+  const scanner = new Scanner(Storage, logger, onScanned);
+  const playlistsManager = new PlaylistsManager(Storage, logger, scanner);
+  const streamer = new Streamer(logger, scanner);
+  const publisher = new Publisher(logger);
+  const player = new Player(logger);
+  const queue = new Queue(Storage, player, publisher);
+  const scheduler = new Scheduler(Storage, logger, queue, playlistsManager);
+  const playHelper = new PlaylistsPlayHelper(Storage, queue, playlistsManager);
+  const api = new API(
+    Storage,
+    logger,
+    scanner,
+    playlistsManager,
+    streamer,
+    scheduler,
+    queue,
+    playHelper,
+    classificator,
+  );
 
-const logger = new Logger();
-const classificator = new Classificator(Storage);
-const scanner = new Scanner(Storage, logger, onScanned);
-const playlistsManager = new PlaylistsManager(Storage, logger, scanner);
-const streamer = new Streamer(logger, scanner);
-const publisher = new Publisher(logger);
-const player = new Player(logger);
-const queue = new Queue(Storage, player, publisher);
-const scheduler = new Scheduler(Storage, logger, queue, playlistsManager);
-const playHelper = new PlaylistsPlayHelper(Storage, queue, playlistsManager);
+  const init = () => {
+    api.bindRoutes().start();
 
-function onScanned() {
-  logger.log({
-    message: `Scan completed. Starting cache warming!`,
-    level: LogLevel.INFO,
-    tags: [LogTags.APP],
-  });
+    if (config.SENTRY_DSN) {
+      Sentry.init({ dsn: config.SENTRY_DSN });
+      Sentry.captureMessage('Radio service started');
+    }
+  };
 
-  playlistsManager.getQueues().then((playlists) => {
-    return (async () => {
-      for (const pl of playlists.filter((_) => _.type === 'fs')) {
-        const instance = await playlistsManager.getQueueInstance(pl.id);
-        await instance.invalidateCache();
-        await instance.getContent();
-      }
-    })();
-  });
-}
+  function onScanned() {
+    logger.log({
+      message: `Scan completed. Starting cache warming!`,
+      level: LogLevel.INFO,
+      tags: [LogTags.APP],
+    });
 
-// TODO: в аргументы запуска
-// scanner.syncStorage(CONFIG.CONTENT_ROOT_DIR_PATH, ({ name }) => /.*\.mp3/.test(name))
+    playlistsManager
+      .getQueues()
+      .then((playlists) => {
+        return (async () => {
+          for (const pl of playlists.filter((_) => _.type === 'fs')) {
+            const instance = await playlistsManager.getQueueInstance(pl.id);
+            await instance.invalidateCache();
+            await instance.getContent();
+          }
+        })();
+      })
+      .catch(Sentry.captureException);
+  }
 
-const api = new API(
-  Storage,
-  logger,
-  scanner,
-  playlistsManager,
-  streamer,
-  scheduler,
-  queue,
-  playHelper,
-  classificator,
-);
+  // TODO: в аргументы запуска
+  // scanner.syncStorage(CONFIG.CONTENT_ROOT_DIR_PATH, ({ name }) => /.*\.mp3/.test(name))
 
-api.bindRoutes().start();
+  return {
+    logger,
+    classificator,
+    scanner,
+    playlistsManager,
+    streamer,
+    publisher,
+    player,
+    queue,
+    scheduler,
+    playHelper,
+    api,
+    init,
+  };
+};
