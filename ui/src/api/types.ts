@@ -1,39 +1,58 @@
-export type ClassificationCategory = {
-  id: number;
+export type DtoUpsertCategory = {
+  id?: number;
   name: string;
-  values: string[];
-}
-
-export type CreateCategoryDTO = {
-  name: string;
-  values: string[];
-}
-
-export type UpdateCategoryDTO = CreateCategoryDTO & {
-  id: number;
-}
-
-export type ClassificatedItem = {
-  filehash: string;
-  categories: ClassificationCategory[];
+  values: { id?: number; value: string }[];
 };
 
-export type GetClassifiedFiltersDTO = Record<string, string | string[]>;
+export type DtoUpsertFileItem = {
+  filehash: string;
+  classItemsIds: number[]
+};
+
+export type DtoUpdatePlaylistItem = {
+  order: number;
+  filehash: string;
+}[];
+
+export type DtoGetClassifiedFilters = Record<string, string | string[]>;
+
+export type ClassedItem = {
+  id: number;
+  classItemId: number;
+  fileHash: string;
+};
+
+export type ClassItem = {
+  id: number;
+  value: string;
+  categoryId: number;
+};
+
+export type ClassCategory = {
+  id: number;
+  name: string;
+  items: ClassItem[];
+};
+
+export type AggregatedClassedItem = ClassedItem & {
+  classItem: ClassItem & { category: ClassCategory };
+};
 
 export type FSItem = {
-  filehash: string
-  path: string
-  name: string
+  filehash: string;
+  path: string;
+  name: string;
   type: 'file' | 'dir';
   metadata: {
-    artist: string
-    title: string
-  }
+    artist: string;
+    title: string;
+  };
   timings: {
-    duration: number
-    trimStart: number
-    trimEnd: number
-  }
+    duration: number;
+    trimStart: number;
+    trimEnd: number;
+  };
+  classedItems?: AggregatedClassedItem[];
 }
 
 export type ChainItem = {
@@ -52,19 +71,14 @@ export type Playlist = {
   id: number;
   name: string;
   type: 'manual' | 'fs';
-}
+};
 
 export type ManualPlaylistItem = {
   id: number;
   playlistId: number;
   order: number;
   fileItemHash: string;
-}
-
-export type UpdatePlaylistItemDto = {
-  order: number;
-  filehash: string;
-}[];
+};
 
 export type Status = {
   scheduling: boolean;
@@ -93,13 +107,13 @@ export type ScheduleItem = {
   startAt:     number;
   endAt:       number;
   playlists:   PlaylistElement[];
-}
+};
 
 export type PlaylistElement = {
   scheduleItemId: number;
   playlistId:     number;
   playlist:       PlaylistPlaylist;
-}
+};
 
 export type PlaylistPlaylist = {
   id:         number;
@@ -107,11 +121,10 @@ export type PlaylistPlaylist = {
   type:       string;
   fsMeta?:     FSMeta;
   manualMeta?: null;
-}
+};
 
 export type FSMeta = {
   id:           number;
   fileItemHash: string;
   playlistId:   number;
-}
-
+};

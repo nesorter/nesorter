@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../../api";
-import { Chain, ManualPlaylistItem, UpdatePlaylistItemDto } from "../../../../api/types";
+import { Chain, ManualPlaylistItem, DtoUpdatePlaylistItem } from "../../../../api/types";
 import { Box, Button, Pane, Text } from "../../../../components";
 import { useFetch } from "../../../../hooks/useFetch";
 import { Library } from "./Library";
@@ -35,7 +35,7 @@ export const PlaylistEditor = ({ id }: Props) => {
   }, [id]);
 
   const handleAdd = (filehash: string) => {
-    const items: UpdatePlaylistItemDto = tracks.map(_ => ({ order: _.order, filehash: _.fileItemHash }));
+    const items: DtoUpdatePlaylistItem = tracks.map(_ => ({ order: _.order, filehash: _.fileItemHash }));
     items.push({ order: Date.now(), filehash });
 
     return api.playlistsManager.updatePlaylist(id, items).then(() => {
@@ -47,7 +47,7 @@ export const PlaylistEditor = ({ id }: Props) => {
   };
 
   const handleDelete = (filehash: string) => {
-    const items: UpdatePlaylistItemDto = tracks
+    const items: DtoUpdatePlaylistItem = tracks
       .map(_ => ({ order: _.order, filehash: _.fileItemHash }))
       .filter(_ => _.filehash !== filehash);
 
@@ -64,7 +64,7 @@ export const PlaylistEditor = ({ id }: Props) => {
   };
 
   const handleAddAll = async (hashes: string[]) => {
-    const items: UpdatePlaylistItemDto = hashes.map((_, index) => ({ order: index, filehash: _ }));
+    const items: DtoUpdatePlaylistItem = hashes.map((_, index) => ({ order: index, filehash: _ }));
 
     return api.playlistsManager.updatePlaylist(id, items).then(() => {
       return api.playlistsManager.getPlaylist(id)

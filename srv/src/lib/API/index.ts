@@ -1,5 +1,6 @@
 import Express from 'express';
 
+import { Classificator } from '../Classificator';
 import config from '../config';
 import { Logger } from '../Logger';
 import { LogLevel, LogTags } from '../Logger.types';
@@ -32,6 +33,7 @@ export class API {
     private scheduler: Scheduler,
     private queue: Queue,
     private playHelper: PlaylistsPlayHelper,
+    private classificator: Classificator,
   ) {
     this.router = Express();
     this.router.use(Express.json());
@@ -46,7 +48,7 @@ export class API {
       this.scheduler,
       this.queue,
     );
-    genClassificatorRoutes(this.logger, this.router);
+    genClassificatorRoutes(this.logger, this.router, this.classificator);
     genPlaylistsManagerRoutes(
       this.logger,
       this.router,

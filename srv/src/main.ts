@@ -1,6 +1,7 @@
 import Sentry from '@sentry/node';
 
 import { API } from './lib/API';
+import { Classificator } from './lib/Classificator';
 import config from './lib/config';
 import { Logger } from './lib/Logger';
 import { LogLevel, LogTags } from './lib/Logger.types';
@@ -20,6 +21,7 @@ if (config.SENTRY_DSN) {
 }
 
 const logger = new Logger();
+const classificator = new Classificator(Storage);
 const scanner = new Scanner(Storage, logger, onScanned);
 const playlistsManager = new PlaylistsManager(Storage, logger, scanner);
 const streamer = new Streamer(logger, scanner);
@@ -59,6 +61,7 @@ const api = new API(
   scheduler,
   queue,
   playHelper,
+  classificator,
 );
 
 api.bindRoutes().start();

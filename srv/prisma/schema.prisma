@@ -8,6 +8,8 @@ datasource storage {
   url      = "file:./db/storage.db"
 }
 
+
+
 model FileItem {
   filehash String @id
   path     String
@@ -19,6 +21,8 @@ model FileItem {
 
   playlistItems      PlaylistItem[]
   playlistFsMeta     PlaylistFsMeta?
+
+  classedItems ClassedItem[]
 }
 
 model FileItemMetadata {
@@ -42,6 +46,8 @@ model FileItemTimings {
   fileItemHash String   @unique
 }
 
+
+
 model ScheduleItem {
   id          Int @id @default(autoincrement())
   withMerging Int @default(0)
@@ -51,6 +57,18 @@ model ScheduleItem {
 
   playlists PlaylistsOnScheduleItem[]
 }
+
+model PlaylistsOnScheduleItem {
+  scheduleItem   ScheduleItem @relation(fields: [scheduleItemId], references: [id])
+  scheduleItemId Int
+
+  playlist   Playlist @relation(fields: [playlistId], references: [id])
+  playlistId Int
+
+  @@id([scheduleItemId, playlistId])
+}
+
+
 
 model Playlist {
   id Int @id @default(autoincrement())
@@ -83,16 +101,6 @@ model PlaylistManualMeta {
   playlistItems PlaylistItem[]
 }
 
-model PlaylistsOnScheduleItem {
-  scheduleItem   ScheduleItem @relation(fields: [scheduleItemId], references: [id])
-  scheduleItemId Int
-
-  playlist   Playlist @relation(fields: [playlistId], references: [id])
-  playlistId Int
-
-  @@id([scheduleItemId, playlistId])
-}
-
 model PlaylistItem {
   id    Int @id @default(autoincrement())
   order Int
@@ -102,4 +110,32 @@ model PlaylistItem {
 
   playlistManualMeta   PlaylistManualMeta? @relation(fields: [playlistManualMetaId], references: [id])
   playlistManualMetaId Int?
+}
+
+
+
+model ClassCategory {
+  id    Int @id @default(autoincrement())
+  name  String
+  items ClassItem[]
+}
+
+model ClassItem {
+  id    Int @id @default(autoincrement())
+  value String
+  
+  category ClassCategory @relation(fields: [categoryId], references: [id])
+  categoryId Int
+
+  classedItems ClassedItem[]
+}
+
+model ClassedItem {
+  id    Int @id @default(autoincrement())
+
+  classItem ClassItem @relation(fields: [classItemId], references: [id])
+  classItemId Int
+
+  file FileItem @relation(fields: [fileHash], references: [filehash])
+  fileHash String
 }

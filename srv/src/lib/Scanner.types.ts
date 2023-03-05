@@ -1,4 +1,11 @@
-import { FileItem, FileItemMetadata, FileItemTimings } from '@prisma/client';
+import {
+  ClassCategory,
+  ClassedItem,
+  ClassItem,
+  FileItem,
+  FileItemMetadata,
+  FileItemTimings,
+} from '@prisma/client';
 
 export type ScannedItem = {
   path: string;
@@ -14,9 +21,13 @@ export type ScannedItem = {
   isFile: boolean;
 };
 
+export type AggregatedClassedItem = ClassedItem & {
+  classItem: ClassItem & { category: ClassCategory };
+};
+
 export type AggregatedFileItem = FileItem & { metadata: FileItemMetadata | null } & {
   timings: FileItemTimings | null;
-};
+} & { classedItems?: AggregatedClassedItem[] };
 
 export type Chain = Record<
   string,

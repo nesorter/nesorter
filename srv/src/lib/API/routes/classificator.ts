@@ -1,27 +1,42 @@
 import Express from 'express';
 
+import { Classificator, DtoUpsertCategory, DtoUpsertFileItem } from '../../Classificator';
 import { Logger } from '../../Logger';
 import { withAdminToken, withLogger } from '../../utils';
 
-export const gen = (logger: Logger, api: Express.Application) => {
+export const gen = (logger: Logger, api: Express.Application, classificator: Classificator) => {
   api
     .route('/api/classificator/categories')
     .get(
       withLogger(logger, (req, res) => {
-        res.status(500).json({ error: 'not implemented' });
+        classificator
+          .getCategories()
+          .then((result) => res.json(result))
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          .catch((err) => res.status(500).json({ error: err }));
       }),
     )
     .post(
       withAdminToken(
         withLogger(logger, (req, res) => {
-          res.status(500).json({ error: 'not implemented' });
+          const { id, name, values } = req.body as DtoUpsertCategory;
+          classificator
+            .upsertCategory({ id, name, values })
+            .then((result) => res.json(result))
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            .catch((err) => res.status(500).json({ error: err }));
         }),
       ),
     )
     .put(
       withAdminToken(
         withLogger(logger, (req, res) => {
-          res.status(500).json({ error: 'not implemented' });
+          const { id, name, values } = req.body as DtoUpsertCategory;
+          classificator
+            .upsertCategory({ id, name, values })
+            .then((result) => res.json(result))
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            .catch((err) => res.status(500).json({ error: err }));
         }),
       ),
     );
@@ -29,7 +44,11 @@ export const gen = (logger: Logger, api: Express.Application) => {
   api.get(
     '/api/classificator/items',
     withLogger(logger, (req, res) => {
-      res.status(500).json({ error: 'not implemented' });
+      classificator
+        .getFileItems()
+        .then((result) => res.json(result))
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        .catch((err) => res.status(500).json({ error: err }));
     }),
   );
 
@@ -37,20 +56,34 @@ export const gen = (logger: Logger, api: Express.Application) => {
     .route('/api/classificator/item/:filehash')
     .get(
       withLogger(logger, (req, res) => {
-        res.status(500).json({ error: 'not implemented' });
+        classificator
+          .getFileItem(req.params.filehash)
+          .then((result) => res.json(result))
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          .catch((err) => res.status(500).json({ error: err }));
       }),
     )
     .post(
       withAdminToken(
         withLogger(logger, (req, res) => {
-          res.status(500).json({ error: 'not implemented' });
+          const { filehash, classItemsIds } = req.body as DtoUpsertFileItem;
+          classificator
+            .upsertFileItem({ filehash, classItemsIds })
+            .then((result) => res.json(result))
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            .catch((err) => res.status(500).json({ error: err }));
         }),
       ),
     )
     .put(
       withAdminToken(
         withLogger(logger, (req, res) => {
-          res.status(500).json({ error: 'not implemented' });
+          const { filehash, classItemsIds } = req.body as DtoUpsertFileItem;
+          classificator
+            .upsertFileItem({ filehash, classItemsIds })
+            .then((result) => res.json(result))
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            .catch((err) => res.status(500).json({ error: err }));
         }),
       ),
     );

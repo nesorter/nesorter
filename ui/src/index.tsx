@@ -8,7 +8,6 @@ import {
 } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 
-import ClassifyPage from './pages/ClassifyPage';
 import PlaylistsPage from './pages/PlaylistsPage';
 import StatusPage from './pages/StatusPage';
 import SchedulerPage from './pages/SchedulerPage';
@@ -43,7 +42,7 @@ const App = (): JSX.Element => {
           <Routes>
             <Route path="/" element={<StatusPage/>}/>
             <Route path="/playlists" element={<PlaylistsPage/>}/>
-            <Route path="/classify" element={<ClassifyPage/>}/>
+            <Route path="/classify" element={<span>not implemented</span>}/>
             <Route path="/scheduler" element={<SchedulerPage/>}/>
             <Route path="/upload" element={<UploadPage />}/>
           </Routes>

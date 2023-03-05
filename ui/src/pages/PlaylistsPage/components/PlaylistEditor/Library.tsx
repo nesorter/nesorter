@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { api } from "../../../../api";
-import { Chain, ClassificationCategory, FSItem } from "../../../../api/types";
+import { Chain, FSItem } from "../../../../api/types";
 import { Box, Button, Text } from "../../../../components"
 import { useFetch } from "../../../../hooks/useFetch";
 
@@ -14,10 +14,8 @@ export const Library = ({ onAdd, onAddAll }: Props) => {
   const catsFetch = useFetch();
 
   const [chain, setChain] = useState<Chain>({});
-  const [categories, setCategories] = useState<ClassificationCategory[]>([]);
 
   const chainValues = useMemo(() => Object.values(chain), [chain]);
-  const [filters, setFilters] = useState<ClassificationCategory[]>([]);
   const [files, setFiles] = useState<FSItem[]>([]);
 
   useEffect(() => {
@@ -58,54 +56,10 @@ export const Library = ({ onAdd, onAddAll }: Props) => {
   //     .catch(console.error);
   // }, [filters, chainValues]);
 
-  const handleToggle = (catId: number, catName: string, catValue: string) => {
-    setFilters((prev) => {
-      let copy = [...prev];
-      const index = copy.findIndex((cat) => cat.id === catId);
-
-      if (index !== -1) {
-        if (copy[index].values.includes(catValue)) {
-          copy[index].values = copy[index].values.filter((value) => value !== catValue);
-
-          if (copy[index].values.length === 0) {
-            copy = copy.filter((_i, _index) => _index !== index);
-          }
-        } else {
-          copy[index].values = [...copy[index].values, catValue];
-        }
-      } else {
-        copy.push({ id: catId, name: catName, values: [catValue] });
-      }
-
-      return copy;
-    });
-  }
-
   return (
     <Box flexDirection="column" width="100%">
       <Box width="100%" padding="10px" borderBottom="1px solid #5C5C5C" flexDirection="column">
         {catsFetch.isFetching && <Text fontSize="desc" color="textLight">cats fetching</Text>}
-        {categories.map((category) => (
-          <Box key={category.name} gap={7} flexWrap="wrap" style={{ rowGap: '2px' }}>
-            <Text size="sm" width="86px" color="textLight">{category.name}:</Text>
-
-            {category.values.map((value) => {
-              const selected = filters.findIndex((cat) => cat.id === category.id && cat.values.includes(value)) !== -1;
-
-              return (
-                <Text
-                  key={value}
-                  fontWeight={selected ? 'bold' : 'initial'}
-                  color={selected ? 'textLight' : '#999'}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => handleToggle(category.id, category.name, value)}
-                >
-                  {value}
-                </Text>
-              );
-            })}
-          </Box>
-        ))}
       </Box>
 
       <Box width="100%" padding="10px" flexDirection="column" gap={10}>

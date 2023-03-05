@@ -1,18 +1,14 @@
 import { delete_, get, post, put } from "./methods";
 import {
   Chain,
-  ClassificatedItem,
-  ClassificationCategory,
-  CreateCategoryDTO,
   FSItem,
-  GetClassifiedFiltersDTO,
+  DtoGetClassifiedFilters,
   ManualPlaylistItem,
   Playlist,
   ScheduleItem,
   Status,
-  UpdateCategoryDTO,
-  UpdatePlaylistItemDto
-} from "./types";
+  DtoUpdatePlaylistItem, DtoUpsertCategory, ClassCategory, ClassedItem, DtoUpsertFileItem,
+} from './types';
 
 export const api = {
   logger: {
@@ -74,20 +70,20 @@ export const api = {
      * Возвращает категории
      */
     get() {
-      return get<ClassificationCategory[]>('/api/classificator/categories');
+      return get<ClassCategory[]>('/api/classificator/categories');
     },
 
     /**
      * Создает категорию
      */
-    create(data: CreateCategoryDTO) {
+    create(data: DtoUpsertCategory) {
       return post('/api/classificator/categories', data);
     },
 
     /**
      * Обновляет категорию
      */
-    update(data: UpdateCategoryDTO) {
+    update(data: DtoUpsertCategory) {
       return put('/api/classificator/categories', data);
     }
   },
@@ -97,22 +93,22 @@ export const api = {
      * Возвращает список всех отсортированных треков
      * @param filters - объект, где ключ -- это _имя_ категории, а значение это массив тегов в категории по которым будет производиться фильтрация
      */
-    getClassifiedList(filters?: GetClassifiedFiltersDTO) {
-      return get<ClassificatedItem[]>('/api/classificator/items', filters || {});
+    getClassifiedList(filters?: DtoGetClassifiedFilters) {
+      return get<ClassedItem[]>('/api/classificator/items', filters || {});
     },
 
     /**
      * Возвращает категории для трека
      */
     getClassifiedCategory(filehash: string) {
-      return get<ClassificationCategory[]>(`/api/classificator/item/${filehash}`);
+      return get<FSItem>(`/api/classificator/item/${filehash}`);
     },
 
     /**
      * Создает или обновляет категории у трека (перезаписывает)
      */
-    setCategories(filehash: string, categories: ClassificationCategory[]) {
-      return post(`/api/classificator/item/${filehash}`, { categories });
+    setCategories({ filehash, classItemsIds }: DtoUpsertFileItem) {
+      return post(`/api/classificator/item/${filehash}`, { filehash, classItemsIds });
     }
   },
 
@@ -192,7 +188,7 @@ export const api = {
     /**
      * Перезаписывает содержимое плейлиста
      */
-    updatePlaylist(id: string | number, items: UpdatePlaylistItemDto) {
+    updatePlaylist(id: string | number, items: DtoUpdatePlaylistItem) {
       return post(`/api/playlistsManager/queue/${id}`, items);
     },
 
