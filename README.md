@@ -1,114 +1,114 @@
 # nesorter
-### _Попытка отсортировать и стримить музыку в удобном виде_
+### _An attempt to sort and stream music in a convenient way_
 
-## Структура
+## Scruture
 ```
-srv - бекенд часть, существует как отдельный nodejs-проект
-ui  - фронтенд часть, существует как отдельный nodejs-проект
+srv - backend part, exists as a separate nodejs project
+ui  - frontend part, exists as a separate nodejs project
 ```
 
-![Диаграмма классов](https://github.com/nesorter/nesorter/blob/main/readmeAssets/classDiagram_v2.png?raw=true)
+![Class diagram](https://github.com/nesorter/nesorter/blob/main/readmeAssets/classDiagram_v2.png?raw=true)
 
-## Запуск в Docker: просто
-0. Смотрим в репо https://github.com/nesorter/nesorter-docker
+## Running in Docker: Easy
+0. Look at https://github.com/nesorter/nesorter-docker
 
-## Запуск в Docker: замороченно
-0. Скачиваем репо 
+## Running in Docker: confusing
+0. Download this repo 
 ```sh
 wget https://github.com/nesorter/nesorter/archive/refs/tags/v2.0.9.zip && \
 unzip v2.0.9.zip && \
 cd nesorter-2.0.9 && \
-chmod -R 777 dockerMisc/grafana # графана не запустится если файлы её БД будут доступны толко текущему юзеру/группе
+chmod -R 777 dockerMisc/grafana # grafana will not start if the files in the database are available only to the current user/group
 ```
-1. Поправить путь маунта с библиотекой треков, файл docker-compose.yml, строка `/Users/kugi/Music:/app/lib`
-2. Перед запуском нужно подготовить .env-файл с конфигурацией.
+1. Fix track library mount path, docker-compose.yml file, line `/Users/kugi/Music:/app/lib`
+2. Before starting, you need to prepare an .env file with a configuration.
 ```sh
 cp srv/.env.example srv/.env
 ```
-3. Конфиг icecast находится в `dockerMisc/icecast.xml`, внесенные изменения нужно соответсвенно изменить в `srv/.env` (смена пароля или имя маунта)
-4. Сборка образа nesorter
+3. The icecast config is located in `dockerMisc/icecast.xml`, the changes made must be changed accordingly in `srv/.env` (change password or mount name)
+4. Building a nesorter image
 ```sh
 docker-compose build api --no-cache --progress plain && \
 docker-compose build front --no-cache --progress plain
 ```
-5. Pulling остальных образов
+5. Pulling the rest of the images
 ```sh
 docker-compose pull
 ```
-6. Запуск (используй ключ -d для "демонизации")
+6. Startup (use the -d to "daemonize")
 ```sh
 docker-compose up
 ```
-7. После запуска будут доступны:
+7. After the launch will be available:
 - http://localhost:3000/ - nesorter UI
 - http://localhost:8000/ - icecast
-- http://localhost:4000/ - grafana (метрики и логи, логин/пароль admin/admin)
-8. Ссылка на мониторинг логов: http://localhost:4000/d/lZPFzNZVz/new-dashboard?orgId=1&refresh=5s&from=now-1h&to=now&kiosk
+- http://localhost:4000/ - grafana (metrics and logs, login/password admin/admin)
+8. Monitoring link: http://localhost:4000/d/lZPFzNZVz/new-dashboard?orgId=1&refresh=5s&from=now-1h&to=now&kiosk
 
-## system-wide зависимости [если запуск планируется не в Docker]
-Обе части написаны на TypeScript и работают в Node.JS. Перед установкой и запуском убедитесь, что у вас:
-- установлен `nodejs`
-- установлен `yarn`; его установка: `npm i -g yarn`
+## system-wide dependencies [if not planned to run in Docker]
+Both parts are written in TypeScript and run in Node.JS. Before installing and running, make sure you have:
+- installed `nodejs`
+- installed `yarn`; installing it: `npm i -g yarn`
 
-Работа вещания построена на `mpv` и `ffmpeg`. Перед использованием функционала проигрывания и вещания убедитесь, что у вас:
-- установлены `mpv` и `ffmpeg`
-- в случае когда `mpv` и `ffmpeg` недоступны в `$PATH`, следует прописать полный путь до бинарника в конфигурации `.env`
+Broadcast work is built on `mpv` and `ffmpeg`. Before using the playback and broadcast functionality, make sure you have:
+- installed `mpv` and `ffmpeg`
+- in the case when `mpv` and `ffmpeg` are not available in `$PATH`, you should specify the full path to the binary in the `.env` configuration
 
-## Установка [если запуск планируется не в Docker]
-1. Вызываем соответствующий скрипт 
+## Installation [if you are not planning to run in Docker]
+1. We call the corresponding script
 ```sh
 ./install.sh
 ```
 
-2. Перед запуском нужно подготовить .env-файл с конфигурацией.
+2. Before starting, you need to prepare an .env file with a configuration.
 ```sh
 cp srv/.env.example srv/.env
 ```
 
-3. После чего нужно отредактировать `srv/.env` прописав нужные параметры. За что отвечает каждый параметр смотреть в конец README.
+3. Then you need to edit `srv/.env` by adding the necessary parameters. What each parameter is responsible for look at the end of the README.
 
-4. Важно! Инициализация БД. Шаг необязательный, так как в postinstall скрипте оно уже должно было бы полностью заинититься.
+4. Important! Database initialization. The step is optional, since in the postinstall script it should already have been completely initialized.
 ```sh
 cd srv && yarn db:gen
 ```
 
-## Запуск [если запуск планируется не в Docker]
-Запускать `srv` и `ui` можно через скрипт:
+## Run [if not planned to run in Docker]
+You can start `srv` and `ui` via a script:
 ```sh
 ./run.sh
 ```
 
-Команды для ручного запуска вот такие:
+The commands for manual launch are as follows:
 ```
 cd srv && yarn service:start
 cd ui && yarn start
 ```
 
-## Описание .env [для запуска в Docker и если запуск планируется не в Docker]
+## Description of .env [to run in Docker and if not planned to run in Docker]
 ```
-PLAYING_MODE                  - socket или hardware; режим воспроизведения -- виртуальный или на звуковой карточке; более стабильная работа при воспроизведении на звуковой карточке
-HARDWARE_PLAYER_FFMPEG_DRIVER - чем обращаться к девайсу (alsa/pulse/dshow) https://ffmpeg.org/ffmpeg-devices.html
-HARDWARE_PLAYER_FFMPEG_DEVICE - сам девайс (например hw:0,1; юзай `aplay -L` чоли) https://ffmpeg.org/ffmpeg-devices.html
+PLAYING_MODE                  - socket or hardware; playback mode - virtual or on a sound card; more stable operation when playing on a sound card
+HARDWARE_PLAYER_FFMPEG_DRIVER - how to access the device (alsa/pulse/dshow) https://ffmpeg.org/ffmpeg-devices.html
+HARDWARE_PLAYER_FFMPEG_DEVICE - the device itself (e.g. hw:0,1; use `aplay -L` choli) https://ffmpeg.org/ffmpeg-devices.html
 
-ADMIN_TOKEN           - токен для входа в админку
-TZ_HOURS_SHIFT        - смещение часового пояса
+ADMIN_TOKEN    - token for admin login
+TZ_HOURS_SHIFT - time zone offset
 
-API_LISTEN_PORT       - порт бекенда, его изменение не аффектит UI-часть, так что в изменении смысла нет
+API_LISTEN_PORT - backend port, changing it does not affect the UI part, so there is no point in changing it
 
-MPV_PATH              - путь ИЛИ имя бинарника mpv
-MPV_FADE_TIME         - время (секунды) fade-in/out между треками [известен баг с нойзом между треками при значении больше 0]
+MPV_PATH      - path OR name of mpv binary
+MPV_FADE_TIME - fade-in/out time (seconds) between tracks [known bug with noise between tracks when value is greater than 0]
 
-CONTENT_ROOT_DIR_PATH - абсолютный путь до директории с музыкой, при запуске в Docker значение /app/lib
-LOG_PATH              - абсолютный путь до файла с логами
+CONTENT_ROOT_DIR_PATH - absolute path to the music directory, when running in Docker the value is /app/lib
+LOG_PATH              - absolute path to the log file
 
-SHOUT_HOST            - хост icecast, при запуске в Docker значение icecast2
-SHOUT_PORT            - порт icecast, при запуске в Docker значение оставлять как в .env.example
-SHOUT_USER            - имя юзера (например source), при запуске в Docker значение оставлять как в .env.example
-SHOUT_PASSWORD        - пароль от юзера, при запуске в Docker значение оставлять как в .env.example
-SHOUT_MOUNT           - имя маунта, при запуске в Docker значение оставлять как в .env.example
-SHOUT_URL             - урл стрима, эта инфа передается в icecast
-SHOUT_DESCRIPTION     - описание стрима, эта инфа передается в icecast
+SHOUT_HOST        - icecast host, set to icecast2 when run in Docker
+SHOUT_PORT        - icecast port, when running in Docker, leave the value as in .env.example
+SHOUT_USER        - user name (for example, source), when running in Docker, leave the value as in .env.example
+SHOUT_PASSWORD    - password from the user, when running in Docker, leave the value as in .env.example
+SHOUT_MOUNT       - mount name, when running in Docker, leave the value as in .env.example
+SHOUT_URL         - stream url, this info is sent to icecast
+SHOUT_DESCRIPTION - stream description, this info is sent to icecast
 
-FFMPEG_BITRATE        - битрейт потока
-FFMPEG_FORMAT         - формат (mp3/ogg) [вроде не работает ogg]
+FFMPEG_BITRATE - stream bitrate
+FFMPEG_FORMAT  - format (mp3/ogg) [doesn't seem to work with ogg]
 ```
