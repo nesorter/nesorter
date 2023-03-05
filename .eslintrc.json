@@ -10,8 +10,7 @@
     "warnOnUnsupportedTypeScriptVersion": true
   },
   "env": {
-    "browser": false,
-    "node": true
+    "browser": true
   },
   "settings": {
     "import/resolver": {
@@ -21,11 +20,13 @@
     }
   },
   "extends": [
+    "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
-  "plugins": ["prettier", "simple-import-sort", "@typescript-eslint", "no-cyrillic-string"],
+  "plugins": ["prettier", "simple-import-sort", "@typescript-eslint"],
   "rules": {
+    "react/jsx-newline": "warn",
     "prettier/prettier": "warn",
 
     "no-cyrillic-string/no-cyrillic-string": "warn",
@@ -40,9 +41,16 @@
 
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
-    "@typescript-eslint/no-misused-promises": "off",
-    "@typescript-eslint/no-floating-promises": "off",
-    "@typescript-eslint/no-for-in-array": "off",
-    "@typescript-eslint/no-var-requires": "off"
-  }
+    "@typescript-eslint/no-misused-promises": "off"
+  },
+
+  "overrides": [
+    {
+      "files": ["src/pages/api/**/*.ts", "src/radio-service/**/*.ts"],
+      "env": {
+        "browser": false,
+        "node": true
+      }
+    }
+  ]
 }
