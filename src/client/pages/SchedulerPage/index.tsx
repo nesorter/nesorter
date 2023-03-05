@@ -14,7 +14,7 @@ type Form = {
   playlistIds: string;
 };
 
-export const SchedulerPage = () => {
+const SchedulerPage = () => {
   const createForm = useForm<Form>();
   const [items, setItems] = useState<ScheduleItem[]>([]);
 

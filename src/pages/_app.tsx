@@ -35,6 +35,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <title>nesorter</title>
 
         <link href='/fonts/iosevka-ss07.css' rel='stylesheet' />
+
+        <style
+          dangerouslySetInnerHTML={{
+            __html: 'body{ margin: 0; padding: 0 } * { font-family: "Iosevka SS07 Web" }',
+          }}
+        />
       </Head>
 
       <ThemeProvider theme={theme}>
