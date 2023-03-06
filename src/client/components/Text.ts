@@ -24,7 +24,5 @@ export const Text = styled.span<TextProps>`
   white-space: ${(props) => (props.variant === 'oneline' ? 'nowrap' : undefined)};
   font-weight: ${(props) => props.fontWeight};
   font-size: ${(props) =>
-    props.fontSize
-      ? fontSizeMap[props.fontSize as keyof typeof fontSizeMap] || props.fontSize
-      : theme.fontSizes[0]};
+    fontSizeMap[props.fontSize as keyof typeof fontSizeMap] || props.fontSize};
 `;

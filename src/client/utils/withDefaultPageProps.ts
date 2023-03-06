@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 
-import { WithDefaultPageProps } from '@/types/DefaultPageProps';
+import { WithDefaultPageProps } from '@/client/types/DefaultPageProps';
 
 export const withDefaultPageProps =
   (wrappedGSSP?: GetServerSideProps): GetServerSideProps<WithDefaultPageProps> =>

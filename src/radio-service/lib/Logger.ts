@@ -1,4 +1,4 @@
-import Sentry from '@sentry/node';
+import * as Sentry from '@sentry/node';
 import { createLogger, format, Logger as WinstonLogger, transports } from 'winston';
 import LokiTransport from 'winston-loki';
 

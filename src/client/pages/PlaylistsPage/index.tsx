@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { withDefaultPageProps } from '@/utils/withDefaultPageProps';
+import { withDefaultPageProps } from '@/client/utils/withDefaultPageProps';
 
 import { api } from '../../api';
 import { Playlist } from '../../api/types';

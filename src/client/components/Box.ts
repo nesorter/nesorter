@@ -1,6 +1,8 @@
 import { CSSProperties } from 'react';
 import styled from 'styled-components';
 
+import theme from '@/client/theme';
+
 interface Props {
   display?: CSSProperties['display'];
 
@@ -56,7 +58,8 @@ export const Box = styled.div<Props>`
   min-height: ${(props) => props.minHeight};
   max-height: ${(props) => props.maxHeight};
 
-  background-color: ${(props) => props.backgroundColor};
+  background-color: ${(props) =>
+    theme.colors[props.backgroundColor as keyof typeof theme.colors] || undefined};
   border: ${(props) => props.border};
   border-radius: ${(props) => props.borderRadius};
 

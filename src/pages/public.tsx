@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react';
 
-import { withDefaultPageProps } from '@/utils/withDefaultPageProps';
+import { withDefaultPageProps } from '@/client/utils/withDefaultPageProps';
 
 const Page = () => {
   return <span>public page</span>;

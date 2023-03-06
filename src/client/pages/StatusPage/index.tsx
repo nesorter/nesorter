@@ -1,4 +1,4 @@
-import { withDefaultPageProps } from '@/utils/withDefaultPageProps';
+import { withDefaultPageProps } from '@/client/utils/withDefaultPageProps';
 
 import { Box, Text } from '../../components';
 import { ActionBox } from './components/ActionBox';
