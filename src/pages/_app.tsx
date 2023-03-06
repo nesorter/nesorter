@@ -1,31 +1,27 @@
-import type { AppProps } from 'next/app';
+import type { AppProps as NextAppProps } from 'next/app';
 import Head from 'next/head';
-import { useState } from 'react';
+import { ComponentType } from 'react';
 import { ThemeProvider } from 'styled-components';
 
 import { PageWrapper } from '@/client/components/PageWrapper';
 import theme from '@/client/theme';
+import { WithDefaultProps } from '@/utils/withDefaultProps';
 
-const getToken = () => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('nesorter-admin-token');
-  } else {
-    return 'serverui';
-  }
+type AppProps<P = Record<string, unknown>> = Omit<NextAppProps, 'Component' | 'pageProps'> & {
+  Component: ComponentType<WithDefaultProps<P>>;
+  pageProps: WithDefaultProps<P>;
 };
 
 export default function MyApp({ Component, pageProps }: AppProps) {
-  const [token, setToken] = useState(getToken());
+  if (!pageProps.clientAdminToken && typeof window !== 'undefined') {
+    const newToken = localStorage.getItem('nesorter-admin-token') || prompt('Input ADMIN_TOKEN 🤔');
 
-  if (!token && typeof window !== 'undefined') {
-    const newToken = prompt('Введи admin token, ибо его нет');
-
-    setToken(newToken);
     localStorage.setItem('nesorter-admin-token', newToken as string);
+    document.cookie = `nesorter-admin-token=${newToken}; path=/; max-age=${60 * 60 * 24 * 14};`;
     location.reload();
   }
 
-  if (!token) {
+  if (!pageProps.clientAdminToken) {
     return <></>;
   }
 

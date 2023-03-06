@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { withDefaultProps } from '@/utils/withDefaultProps';
+
 import { api } from '../../api';
 import { Playlist } from '../../api/types';
 import { Box, Button, Pane, PaneItem, Text } from '../../components';
@@ -101,3 +103,7 @@ const PlaylistsPage = () => {
 };
 
 export default PlaylistsPage;
+
+export const getServerSideProps = withDefaultProps(() =>
+  Promise.resolve({ props: { fromPage: 'asdasd' } }),
+);
