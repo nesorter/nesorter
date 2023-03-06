@@ -1,9 +1,11 @@
 import Link from 'next/link';
 
+import { Layout } from '@/types/Layout';
+
 import { Box } from './Box';
 import { Text } from './Text';
 
-export const PageWrapper = ({ children }: { children: React.ReactNode }) => {
+export const PageWrapper: Layout = ({ children }) => {
   return (
     <Box padding='lg' gap='lg' backgroundColor='dark100' flexDirection='column' minHeight='100vh'>
       <Box gap='lg'>

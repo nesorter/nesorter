@@ -5,25 +5,23 @@ import { ThemeProvider } from 'styled-components';
 
 import { PageWrapper } from '@/client/components/PageWrapper';
 import theme from '@/client/theme';
-import { WithDefaultProps } from '@/utils/withDefaultProps';
+import { WithDefaultPageProps } from '@/types/DefaultPageProps';
+import { WithLayout } from '@/types/Layout';
+import { handleAdminTokenInput } from '@/utils/handleAdminTokenInput';
 
-type AppProps<P = Record<string, unknown>> = Omit<NextAppProps, 'Component' | 'pageProps'> & {
-  Component: ComponentType<WithDefaultProps<P>>;
-  pageProps: WithDefaultProps<P>;
+type AppProps = Omit<NextAppProps, 'Component' | 'pageProps'> & {
+  Component: WithLayout<ComponentType<WithDefaultPageProps>>;
+  pageProps: WithDefaultPageProps;
 };
 
 export default function MyApp({ Component, pageProps }: AppProps) {
-  if (!pageProps.clientAdminToken && typeof window !== 'undefined') {
-    const newToken = localStorage.getItem('nesorter-admin-token') || prompt('Input ADMIN_TOKEN 🤔');
-
-    localStorage.setItem('nesorter-admin-token', newToken as string);
-    document.cookie = `nesorter-admin-token=${newToken}; path=/; max-age=${60 * 60 * 24 * 14};`;
-    location.reload();
+  if (pageProps.adminSide) {
+    if (!handleAdminTokenInput(pageProps.clientAdminToken)) {
+      return <></>;
+    }
   }
 
-  if (!pageProps.clientAdminToken) {
-    return <></>;
-  }
+  const Layout = Component.Layout || PageWrapper;
 
   return (
     <>
@@ -40,9 +38,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       </Head>
 
       <ThemeProvider theme={theme}>
-        <PageWrapper>
+        <Layout {...pageProps}>
           <Component {...pageProps} />
-        </PageWrapper>
+        </Layout>
       </ThemeProvider>
     </>
   );

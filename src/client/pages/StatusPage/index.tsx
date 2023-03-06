@@ -1,3 +1,5 @@
+import { withDefaultPageProps } from '@/utils/withDefaultPageProps';
+
 import { Box, Text } from '../../components';
 import { ActionBox } from './components/ActionBox';
 import { PlaylistBox } from './components/PlaylistBox';
@@ -32,3 +34,4 @@ const StatusPage = () => {
 };
 
 export default StatusPage;
+export const getServerSideProps = withDefaultPageProps(() => Promise.resolve({ props: {} }));

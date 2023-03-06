@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { withDefaultPageProps } from '@/utils/withDefaultPageProps';
+
 import { api } from '../../api';
 import sendMultipartFormData from '../../api/sendMultipartFormData';
 import { Chain } from '../../api/types';
@@ -94,3 +96,4 @@ const UploadPage = () => {
 };
 
 export default UploadPage;
+export const getServerSideProps = withDefaultPageProps(() => Promise.resolve({ props: {} }));

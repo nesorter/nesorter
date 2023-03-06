@@ -2,6 +2,8 @@ import { differenceInSeconds, endOfDay, parse, secondsInDay } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { withDefaultPageProps } from '@/utils/withDefaultPageProps';
+
 import { api } from '../../api';
 import { ScheduleItem } from '../../api/types';
 import { Box } from '../../components';
@@ -67,3 +69,4 @@ const SchedulerPage = () => {
 };
 
 export default SchedulerPage;
+export const getServerSideProps = withDefaultPageProps(() => Promise.resolve({ props: {} }));

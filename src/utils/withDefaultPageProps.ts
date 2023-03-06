@@ -1,18 +1,17 @@
 import { GetServerSideProps } from 'next';
 
-export type WithDefaultProps<T = Record<string, unknown>> = {
-  clientAdminToken: string | null;
-} & T;
+import { WithDefaultPageProps } from '@/types/DefaultPageProps';
 
-export const withDefaultProps =
-  (wrappedGSSP?: GetServerSideProps): GetServerSideProps<WithDefaultProps> =>
+export const withDefaultPageProps =
+  (wrappedGSSP?: GetServerSideProps): GetServerSideProps<WithDefaultPageProps> =>
   async (ctx) => {
     const wrappedSSP = (wrappedGSSP ? await wrappedGSSP(ctx) : { props: {} }) as {
       props: Record<string, unknown>;
     };
 
     const clientAdminToken: string | null = ctx.req.cookies['nesorter-admin-token'] || null;
-    const props: WithDefaultProps = {
+    const props: WithDefaultPageProps = {
+      adminSide: true,
       clientAdminToken,
     };
 
