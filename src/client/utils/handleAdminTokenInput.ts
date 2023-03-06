@@ -1,12 +1,11 @@
 export const handleAdminTokenInput = (token: string | null) => {
   if (!token && typeof window !== 'undefined') {
-    const newToken = localStorage.getItem('nesorter-admin-token') || prompt('Input ADMIN_TOKEN 🤔');
+    const newToken = localStorage.getItem('nesorter-admin-token');
 
-    if (newToken === 'null' || newToken === null) {
-      location.reload();
+    if (newToken === null) {
+      return false;
     }
 
-    localStorage.setItem('nesorter-admin-token', newToken as string);
     document.cookie = `nesorter-admin-token=${newToken}; path=/; max-age=${60 * 60 * 24 * 14};`;
     location.reload();
   }

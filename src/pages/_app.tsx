@@ -4,6 +4,7 @@ import { ConfigProvider } from 'antd';
 import type { AppProps as NextAppProps } from 'next/app';
 import { JetBrains_Mono } from 'next/font/google';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { ComponentType } from 'react';
 import { ThemeProvider } from 'styled-components';
 
@@ -26,8 +27,14 @@ const font = JetBrains_Mono({
 });
 
 export default function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+
   if (pageProps.adminSide) {
     if (!handleAdminTokenInput(pageProps.clientAdminToken)) {
+      if (typeof window !== 'undefined') {
+        router.push('/admin/login').catch(console.error);
+      }
+
       return <></>;
     }
   }
