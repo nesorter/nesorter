@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { AdminLayout } from '@/client/layouts/AdminLayout';
 import { withDefaultPageProps } from '@/client/utils/withDefaultPageProps';
 
 import { api } from '../../api';
@@ -102,5 +103,6 @@ const PlaylistsPage = () => {
   );
 };
 
+PlaylistsPage.Layout = AdminLayout;
 export default PlaylistsPage;
 export const getServerSideProps = withDefaultPageProps(() => Promise.resolve({ props: {} }));

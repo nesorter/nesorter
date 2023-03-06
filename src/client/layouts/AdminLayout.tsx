@@ -3,8 +3,8 @@ import Link from 'next/link';
 
 import { Layout } from '@/client/types/Layout';
 
-import { Box } from './Box';
-import { Text } from './Text';
+import { Box } from '../components/Box';
+import { Text } from '../components/Text';
 
 const font = JetBrains_Mono({
   weight: ['400', '600'],
@@ -13,7 +13,7 @@ const font = JetBrains_Mono({
   variable: '--font-name',
 });
 
-export const PageWrapper: Layout = ({ children }) => {
+export const AdminLayout: Layout = ({ children }) => {
   return (
     <Box
       className={font.className}
@@ -25,11 +25,11 @@ export const PageWrapper: Layout = ({ children }) => {
     >
       <Box gap='lg'>
         {[
-          { to: '/', title: 'Status' },
-          { to: '/classify', title: 'Classify' },
-          { to: '/playlists', title: 'Playlists' },
-          { to: '/scheduler', title: 'Scheduler' },
-          { to: '/upload', title: 'Upload' },
+          { to: '/admin/status', title: 'Status' },
+          { to: '/admin/classify', title: 'Classify' },
+          { to: '/admin/playlists', title: 'Playlists' },
+          { to: '/admin/scheduler', title: 'Scheduler' },
+          { to: '/admin/upload', title: 'Upload' },
         ].map((item) => (
           <Link key={item.to} href={item.to}>
             <Text color='textLight'>{item.title}</Text>

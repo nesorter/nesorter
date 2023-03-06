@@ -1,3 +1,4 @@
+import { AdminLayout } from '@/client/layouts/AdminLayout';
 import { withDefaultPageProps } from '@/client/utils/withDefaultPageProps';
 
 import { Box, Text } from '../../components';
@@ -33,5 +34,6 @@ const StatusPage = () => {
   );
 };
 
+StatusPage.Layout = AdminLayout;
 export default StatusPage;
 export const getServerSideProps = withDefaultPageProps(() => Promise.resolve({ props: {} }));

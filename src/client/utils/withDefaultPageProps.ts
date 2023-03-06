@@ -13,6 +13,7 @@ export const withDefaultPageProps =
     const props: WithDefaultPageProps = {
       adminSide: true,
       clientAdminToken,
+      version: process.env.npm_package_version || 'unknown',
     };
 
     return {

@@ -2,6 +2,7 @@ import { differenceInSeconds, endOfDay, parse, secondsInDay } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { AdminLayout } from '@/client/layouts/AdminLayout';
 import { withDefaultPageProps } from '@/client/utils/withDefaultPageProps';
 
 import { api } from '../../api';
@@ -68,5 +69,6 @@ const SchedulerPage = () => {
   );
 };
 
+SchedulerPage.Layout = AdminLayout;
 export default SchedulerPage;
 export const getServerSideProps = withDefaultPageProps(() => Promise.resolve({ props: {} }));
