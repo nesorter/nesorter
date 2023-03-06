@@ -1,7 +1,0 @@
-FROM pltnk/icecast2
-
-COPY ./dockerMisc/run_icecast.sh /etc/icecast2/run.sh
-COPY ./dockerMisc/icecast.xml /etc/icecast2/icecast.xml
-
-EXPOSE 8000
-CMD ["bash", "/etc/icecast2/run.sh"]
