@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/node';
+
 import config from './config';
 import { PlaylistsManager } from './PlaylistsManager';
 import { Queue } from './Queue';
@@ -50,7 +52,7 @@ export class PlaylistsPlayHelper {
     }
 
     setTimeout(() => {
-      this.queueAllPlaylistsRandomly();
+      this.queueAllPlaylistsRandomly().catch(Sentry.captureException);
     }, (playlistDuration - config.MPV_FADE_TIME) * 1000);
   }
 }

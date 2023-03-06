@@ -1,6 +1,6 @@
+import * as Sentry from '@sentry/node';
 import Express from 'express';
-import { writeFile } from 'fs/promises';
-import { copyFile, mkdir, rm } from 'fs/promises';
+import { copyFile, mkdir, rm, writeFile } from 'fs/promises';
 import multer from 'multer';
 import NodeID3 from 'node-id3';
 import path from 'path';
@@ -134,18 +134,20 @@ export const gen = (logger: Logger, api: Express.Application, scanner: Scanner) 
       scanner
         .getFsItem(req.params.filehash)
         .then((item) => {
-          NodeID3.Promise.read(item?.path || '').then((data) => {
-            if (typeof data.image !== 'string' && typeof data.image !== 'undefined') {
-              writeFile(
-                `${__dirname}/assets/covers/${item?.filehash}.jpg`,
-                data.image?.imageBuffer || '',
-              )
-                .then(() => res.sendFile(`${__dirname}/assets/covers/${item?.filehash}.jpg`))
-                .catch(console.log);
-            } else {
-              res.sendFile(`${__dirname}/assets/covers/nocoverart.jpeg`);
-            }
-          });
+          NodeID3.Promise.read(item?.path || '')
+            .then((data) => {
+              if (typeof data.image !== 'string' && typeof data.image !== 'undefined') {
+                writeFile(
+                  `${__dirname}/assets/covers/${item?.filehash}.jpg`,
+                  data.image?.imageBuffer || '',
+                )
+                  .then(() => res.sendFile(`${__dirname}/assets/covers/${item?.filehash}.jpg`))
+                  .catch(console.log);
+              } else {
+                res.sendFile(`${__dirname}/assets/covers/nocoverart.jpeg`);
+              }
+            })
+            .catch(Sentry.captureException);
         })
         .catch((e) => res.status(500).json(e));
     }),

@@ -1,10 +1,11 @@
+import { PropsWithChildren } from 'react';
+
 import { UseModalReturn } from '../hooks/useModal';
 import { Box } from './Box';
 
-type Props = {
+type Props = PropsWithChildren<{
   state: UseModalReturn;
-  children: React.ReactChild;
-};
+}>;
 
 export const Modal = ({ state, children }: Props): JSX.Element | null => {
   if (!state.open) {

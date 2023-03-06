@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import { createHash } from 'crypto';
 import { readdir, readFile, stat } from 'fs/promises';
 import { parseBuffer } from 'music-metadata';
@@ -19,10 +20,12 @@ export class Scanner {
     private logger: Logger,
     private onScanned: (scanned: Chain) => void,
   ) {
-    this._getChain().then((_) => {
-      this.chain = _;
-      this.onScanned(this.chain);
-    });
+    this._getChain()
+      .then((_) => {
+        this.chain = _;
+        this.onScanned(this.chain);
+      })
+      .catch(Sentry.captureException);
   }
 
   async getFsItem(filehash: string) {
@@ -115,6 +118,7 @@ export class Scanner {
     this.scanInProgress = true;
     const scannedItems = await this.scan(dir, filter);
 
+    // eslint-disable-next-line @typescript-eslint/no-for-in-array
     for (const index in scannedItems) {
       const scannedItem = scannedItems[index];
       const startTime = Date.now();
@@ -237,10 +241,12 @@ export class Scanner {
     }
 
     this.scanInProgress = false;
-    this._getChain().then((_) => {
-      this.chain = _;
-      this.onScanned(this.chain);
-    });
+    this._getChain()
+      .then((_) => {
+        this.chain = _;
+        this.onScanned(this.chain);
+      })
+      .catch(Sentry.captureException);
   }
 
   /**

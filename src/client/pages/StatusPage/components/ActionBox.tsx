@@ -3,43 +3,43 @@ import { Box, Button } from '../../../components';
 
 export const ActionBox = () => {
   const handleRestart = () => {
-    api.logger.restart();
+    api.logger.restart().catch(alert);
   };
 
   const handleStopStream = () => {
-    api.streamer.stopStream();
+    api.streamer.stopStream().catch(alert);
   };
 
   const handleStartStream = () => {
-    api.streamer.startStream();
+    api.streamer.startStream().catch(alert);
   };
 
   const handleStartSync = () => {
-    api.scanner.startSync();
+    api.scanner.startSync().catch(alert);
   };
 
   const handleStopScheduling = () => {
-    api.scheduler.stop();
+    api.scheduler.stop().catch(alert);
   };
 
   const handleStartScheduling = () => {
-    api.scheduler.start();
+    api.scheduler.start().catch(alert);
   };
 
   const handleStartQueue = () => {
-    api.player.play();
+    api.player.play().catch(alert);
   };
 
   const handleStopQueue = () => {
-    api.player.stop();
+    api.player.stop().catch(alert);
   };
 
   const handleClearQueue = () => {
-    api.player.clear();
+    api.player.clear().catch(alert);
   };
 
   const handlePlayRandom = () => {
-    api.player.playRandom();
+    api.player.playRandom().catch(alert);
   };
 
   return (

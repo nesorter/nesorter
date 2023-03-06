@@ -34,9 +34,9 @@ const sendMultipartFormData = <T = unknown>(
 
       const jsonType = 'application/json';
       const typeHeader = xhr.getResponseHeader('Content-Type');
-      const _ = typeHeader?.includes(jsonType) && JSON.parse(xhr.responseText);
+      const parsedJson = (typeHeader?.includes(jsonType) && JSON.parse(xhr.responseText)) as T;
       resolve({
-        data: _ || xhr.responseText,
+        data: parsedJson || xhr.responseText,
         xhr,
       });
     });

@@ -1,10 +1,11 @@
 import styled from 'styled-components';
-import { space, variant } from 'styled-system';
+
+import theme from '@/client/theme';
 
 interface StyledButtonProps {
   children: React.ReactNode | string;
-  variant: 'primary' | 'secondary';
-  size: 'normal' | 'small';
+  variant?: 'primary' | 'secondary';
+  size?: 'normal' | 'small';
 }
 
 export const Button = styled.button<StyledButtonProps>`
@@ -12,35 +13,12 @@ export const Button = styled.button<StyledButtonProps>`
   border-radius: 4px;
   cursor: pointer;
   min-width: 46px;
-
-  ${space}
-  ${variant({
-    variants: {
-      primary: {
-        backgroundColor: 'green100',
-        color: 'textLight',
-      },
-      secondary: {
-        backgroundColor: 'dark200',
-        color: 'textLight',
-      },
-    },
-  })}
-  ${variant({
-    prop: 'size',
-    variants: {
-      normal: {
-        padding: '2px 10px',
-        height: '32px',
-        fontSize: '14px',
-      },
-      small: {
-        padding: '2px 8px',
-        height: '24px',
-        fontSize: '12px',
-      },
-    },
-  })}
+  background-color: ${(props) =>
+    props.variant === 'primary' ? theme.colors.green100 : theme.colors.dark200};
+  color: ${theme.colors.textLight}
+  height: ${(props) => (props.size === 'normal' ? '32px' : '24px')}
+  padding: ${(props) => (props.size === 'normal' ? '2px 10px' : '2px 8px')}
+  font-size: ${(props) => (props.size === 'normal' ? '14px' : '12px')}
 `;
 
 export const StatedButton = (props: {

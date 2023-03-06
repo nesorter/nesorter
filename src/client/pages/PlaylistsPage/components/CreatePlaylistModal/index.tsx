@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { MultiSelect, Option } from 'react-multi-select-component';
 
-import { api } from '../../../../api';
-import { ChainItem } from '../../../../api/types';
-import { Box, Modal, Text } from '../../../../components';
-import { UseModalReturn } from '../../../../hooks/useModal';
+import { api } from '@/client/api';
+import { ChainItem } from '@/client/api/types';
+import { Box, Modal, Text } from '@/client/components';
+import { UseModalReturn } from '@/client/hooks/useModal';
+
 import styles from './styles.module.css';
 
 type Props = {
@@ -35,7 +36,7 @@ export const CreatePlaylistModal = ({ state, onCreate }: Props) => {
 
   const handleCreate = (values: FormType) => {
     api.playlistsManager
-      .createPlaylist(values.name, values.type, selected[0]?.value)
+      .createPlaylist(values.name, values.type, (selected[0]?.value as string) || '')
       .then(() => {
         reset();
         state.setOpen(false);

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { api } from '../../../../api';
-import { Chain, DtoUpdatePlaylistItem, ManualPlaylistItem } from '../../../../api/types';
-import { Box, Button, Pane, Text } from '../../../../components';
-import { useFetch } from '../../../../hooks/useFetch';
+import { api } from '@/client/api';
+import { Chain, DtoUpdatePlaylistItem, ManualPlaylistItem } from '@/client/api/types';
+import { Box, Button, Pane, Text } from '@/client/components';
+import { useFetch } from '@/client/hooks/useFetch';
+
 import { Library } from './Library';
 
 type Props = {
@@ -52,7 +53,7 @@ export const PlaylistEditor = ({ id }: Props) => {
   };
 
   const handlePlay = () => {
-    api.player.playPlaylist(id);
+    return api.player.playPlaylist(id);
   };
 
   const handleAddAll = async (hashes: string[]) => {

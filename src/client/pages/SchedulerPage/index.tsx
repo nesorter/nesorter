@@ -37,7 +37,7 @@ const SchedulerPage = () => {
   };
 
   useEffect(() => {
-    init();
+    init().catch(alert);
   }, []);
 
   return (

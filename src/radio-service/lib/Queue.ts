@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/node';
+
 import config from './config';
 import { Player } from './Player';
 import { Publisher } from './Publisher';
@@ -53,17 +55,17 @@ export class Queue {
         this.currentOrder = item.order;
         this.currentPlaylistId = item.playlistId;
         const endPosition = item.endAt - item.startAt;
-        this.player.play(file, endPosition);
+        this.player.play(file, endPosition).catch(Sentry.captureException);
 
         await sleep(250);
-        this.publisher.publish(file);
+        this.publisher.publish(file).catch(Sentry.captureException);
       }
     }
 
     await sleep(250);
 
     setTimeout(() => {
-      this.runLoop();
+      this.runLoop().catch(Sentry.captureException);
     }, 250);
   }
 
@@ -77,7 +79,7 @@ export class Queue {
 
   public play() {
     this.state = 'playing';
-    this.runLoop();
+    this.runLoop().catch(Sentry.captureException);
   }
 
   public stop() {

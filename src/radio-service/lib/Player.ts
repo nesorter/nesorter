@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import { spawn } from 'child_process';
 import { createServer, Server, Socket } from 'net';
 import kill from 'tree-kill';
@@ -18,7 +19,7 @@ export class Player {
     logger.log({ message: `PLAYING_MODE is '${config.PLAYING_MODE}'. ${logMessage}` });
 
     if (config.PLAYING_MODE === 'socket') {
-      this.initSockets();
+      this.initSockets().catch(Sentry.captureException);
     }
   }
 

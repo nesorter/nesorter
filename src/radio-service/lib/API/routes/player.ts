@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import Express from 'express';
 
 import { Logger } from '../../Logger';
@@ -58,7 +59,7 @@ export const gen = (
     withAdminToken(
       withLogger(logger, (_req, res) => {
         try {
-          playHelper.queueAllPlaylistsRandomly();
+          playHelper.queueAllPlaylistsRandomly().catch(Sentry.captureException);
           res.status(200).json({ message: 'queued' });
         } catch (e) {
           res.status(500).json(e);
@@ -73,7 +74,7 @@ export const gen = (
       withLogger(logger, (req, res) => {
         try {
           const { id } = req.params as { id: string };
-          playHelper.queuePlaylist(Number(id));
+          playHelper.queuePlaylist(Number(id)).catch(Sentry.captureException);
           res.status(200).json({ message: 'queued' });
         } catch (e) {
           res.status(500).json(e);

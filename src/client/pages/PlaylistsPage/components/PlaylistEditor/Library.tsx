@@ -75,7 +75,7 @@ export const Library = ({ onAdd, onAddAll }: Props) => {
           <Button
             variant='primary'
             size='small'
-            onClick={() => onAddAll(files.map((_) => _.filehash)).catch((e) => alert(e.message))}
+            onClick={() => onAddAll(files.map((_) => _.filehash)).catch((e) => alert(e))}
           >
             Add all
           </Button>

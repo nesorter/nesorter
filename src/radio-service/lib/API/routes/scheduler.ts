@@ -1,4 +1,3 @@
-import { ScheduleItem } from '@prisma/client';
 import Express from 'express';
 
 import { Logger } from '../../Logger';

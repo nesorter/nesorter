@@ -217,7 +217,7 @@ const ScheduleItemRendr = ({
         <div style={{ marginBottom: '16px' }} />
 
         {plIds.map((plId) => (
-          <Text>
+          <Text key={plId}>
             #{plId} - {playlists.find((_) => _.playlistId === Number(plId))?.playlist.name}
           </Text>
         ))}
