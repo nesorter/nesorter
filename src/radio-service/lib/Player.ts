@@ -3,10 +3,10 @@ import { spawn } from 'child_process';
 import { createServer, Server, Socket } from 'net';
 import kill from 'tree-kill';
 
+import { AggregatedFileItem } from '../types/Scanner';
 import config from './config';
 import { Logger } from './Logger';
 import { LogLevel, LogTags } from './Logger.types';
-import { AggregatedFileItem } from './Scanner.types';
 import { asyncSpawn, makeSafePath, range } from './utils';
 
 export class Player {

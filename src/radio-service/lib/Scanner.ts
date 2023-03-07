@@ -3,9 +3,9 @@ import { createHash } from 'crypto';
 import { readdir, readFile, stat } from 'fs/promises';
 import { parseBuffer } from 'music-metadata';
 
+import { Chain, ScannedItem } from '../types/Scanner';
 import { Logger } from './Logger';
 import { LogLevel, LogTags } from './Logger.types';
-import { Chain, ScannedItem } from './Scanner.types';
 import { StorageType } from './Storage';
 import { sleep } from './utils';
 
@@ -30,7 +30,10 @@ export class Scanner {
 
   async getFsItem(filehash: string) {
     try {
-      return await this.db.fileItem.findFirstOrThrow({ where: { filehash } });
+      return await this.db.fileItem.findFirstOrThrow({
+        where: { filehash },
+        include: { timings: true, metadata: true },
+      });
     } catch (e) {
       this.logger.log({ level: LogLevel.ERROR, tags: [LogTags.SCANNER], message: `${e}` });
     }

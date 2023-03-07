@@ -29,15 +29,14 @@ export type AggregatedFileItem = FileItem & { metadata: FileItemMetadata | null 
   timings: FileItemTimings | null;
 } & { classedItems?: AggregatedClassedItem[] };
 
-export type Chain = Record<
-  string,
-  {
-    type: 'file' | 'dir';
-    path?: string;
-    key: string;
-    parent: string | null;
-    name: string;
-    fsItem?: AggregatedFileItem;
-    isClassified?: boolean;
-  }
->;
+export type ChainItem = {
+  type: 'file' | 'dir';
+  path?: string;
+  key: string;
+  parent: string | null;
+  name: string;
+  fsItem?: AggregatedFileItem;
+  isClassified?: boolean;
+};
+
+export type Chain = Record<string, ChainItem>;

@@ -2,6 +2,9 @@ import axios from 'axios';
 import Express from 'express';
 import { XMLParser } from 'fast-xml-parser';
 
+import { IcecastStatus } from '@/radio-service/types/Icecast';
+import { ServiceStatus } from '@/radio-service/types/ServiceStatus';
+
 import config from '../../config';
 import { Logger } from '../../Logger';
 import { LogLevel, LogTags } from '../../Logger.types';
@@ -53,13 +56,12 @@ export const gen = (
         },
       });
       const parser = new XMLParser();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      icecastData = parser.parse(xml.data as string);
+      icecastData = parser.parse(xml.data as string) as IcecastStatus;
     } catch (e) {
       logger.log({ message: e?.toString() || '', tags: [LogTags.STREAMER], level: LogLevel.ERROR });
     }
 
-    res.json({
+    const status: ServiceStatus = {
       scheduling: scheduler.processing,
       playing: queue.state === 'playing',
       syncing: scanner.scanInProgress,
@@ -67,16 +69,17 @@ export const gen = (
       currentFile: queue.currentFileHash,
       queue: {
         items: queue.items,
-        currentOrder: queue.currentOrder,
+        currentOrder: queue.currentOrder || undefined,
         state: queue.state,
       },
       thumbnailPath: `/api/scanner/image/${queue.currentFileHash}`,
-      fileData,
-      schedulingData,
-      playlistData,
+      fileData: fileData || undefined,
+      schedulingData: schedulingData || undefined,
+      playlistData: playlistData || undefined,
       currentPlaylistId: queue.currentPlaylistId,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       icecastData,
-    });
+    };
+
+    res.json(status);
   });
 };

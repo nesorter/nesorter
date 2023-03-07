@@ -1,9 +1,11 @@
+import { PlaylistItem } from '@prisma/client';
 import { useEffect, useState } from 'react';
 
 import { api } from '@/client/api';
-import { Chain, DtoUpdatePlaylistItem, ManualPlaylistItem } from '@/client/api/types';
 import { Box, Button, Pane, Text } from '@/client/components';
 import { useFetch } from '@/client/hooks/useFetch';
+import type { DtoUpdatePlaylistItem } from '@/radio-service/types/ApisDtos';
+import type { Chain } from '@/radio-service/types/Scanner';
 
 import { Library } from './Library';
 
@@ -18,37 +20,53 @@ export const PlaylistEditor = ({ id }: Props) => {
   useEffect(() => {
     chainFetch.setFetching();
 
-    api.scanner.getChain().then(setChain).catch(alert).finally(chainFetch.setFetched);
+    api.scanner
+      .getChain()
+      .then((chain) => setChain(chain.data))
+      .catch(alert)
+      .finally(chainFetch.setFetched);
   }, [id]);
 
   const { isFetching, setFetched, setFetching } = useFetch();
-  const [tracks, setTracks] = useState<ManualPlaylistItem[]>([]);
+  const [tracks, setTracks] = useState<PlaylistItem[]>([]);
 
   useEffect(() => {
     setFetching();
 
-    api.playlistsManager.getPlaylist(id).then(setTracks).catch(alert).finally(setFetched);
+    api.playlistsManager
+      .getPlaylist(id)
+      .then((playlist) => setTracks(playlist.data))
+      .catch(alert)
+      .finally(setFetched);
   }, [id]);
 
   const handleAdd = (filehash: string) => {
     const items: DtoUpdatePlaylistItem = tracks.map((_) => ({
       order: _.order,
-      filehash: _.fileItemHash,
+      filehash: _.fileItemHash || '',
     }));
     items.push({ order: Date.now(), filehash });
 
     return api.playlistsManager.updatePlaylist(id, items).then(() => {
-      return api.playlistsManager.getPlaylist(id).then(setTracks).catch(alert).finally(setFetched);
+      return api.playlistsManager
+        .getPlaylist(id)
+        .then((playlist) => setTracks(playlist.data))
+        .catch(alert)
+        .finally(setFetched);
     });
   };
 
   const handleDelete = (filehash: string) => {
     const items: DtoUpdatePlaylistItem = tracks
-      .map((_) => ({ order: _.order, filehash: _.fileItemHash }))
+      .map((_) => ({ order: _.order, filehash: _.fileItemHash || '' }))
       .filter((_) => _.filehash !== filehash);
 
     return api.playlistsManager.updatePlaylist(id, items).then(() => {
-      return api.playlistsManager.getPlaylist(id).then(setTracks).catch(alert).finally(setFetched);
+      return api.playlistsManager
+        .getPlaylist(id)
+        .then((playlist) => setTracks(playlist.data))
+        .catch(alert)
+        .finally(setFetched);
     });
   };
 
@@ -60,7 +78,11 @@ export const PlaylistEditor = ({ id }: Props) => {
     const items: DtoUpdatePlaylistItem = hashes.map((_, index) => ({ order: index, filehash: _ }));
 
     return api.playlistsManager.updatePlaylist(id, items).then(() => {
-      return api.playlistsManager.getPlaylist(id).then(setTracks).catch(alert).finally(setFetched);
+      return api.playlistsManager
+        .getPlaylist(id)
+        .then((playlist) => setTracks(playlist.data))
+        .catch(alert)
+        .finally(setFetched);
     });
   };
 
@@ -92,7 +114,7 @@ export const PlaylistEditor = ({ id }: Props) => {
               </Box>
 
               <Button
-                onClick={() => handleDelete(item.fileItemHash)}
+                onClick={() => handleDelete(item.fileItemHash || '')}
                 variant='secondary'
                 size='small'
               >

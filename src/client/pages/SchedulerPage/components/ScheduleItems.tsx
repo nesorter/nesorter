@@ -12,15 +12,17 @@ import React, { useEffect, useState } from 'react';
 import { MultiSelect, Option } from 'react-multi-select-component';
 import styled from 'styled-components';
 
+import type { AggregatedPlaylistItem } from '@/radio-service/types/Playlist';
+import type { AggregatedScheduleItem } from '@/radio-service/types/Scheduler';
+
 import { api } from '../../../api';
-import { Playlist, ScheduleItem } from '../../../api/types';
 import { Box, Text } from '../../../components';
 import { BASE_HEIGHT } from '../constants';
 import { StyledLine } from '../styles';
 import { getSecondsInDay, getTimeFormatted } from '../utils';
 
 type Props = {
-  items: ScheduleItem[];
+  items: AggregatedScheduleItem[];
   onUpdate: () => void;
 };
 
@@ -59,9 +61,9 @@ const ScheduleItemRendr = ({
   index,
   withMerging,
   onUpdate,
-}: ScheduleItem & { index: number; onUpdate: () => void }) => {
+}: AggregatedScheduleItem & { index: number; onUpdate: () => void }) => {
   const [edit, setEdit] = useState(false);
-  const [allPlaylists, setAllPlaylists] = useState<Playlist[]>([]);
+  const [allPlaylists, setAllPlaylists] = useState<AggregatedPlaylistItem[]>([]);
   const [selected, setSelected] = useState<Option[]>([]);
   const [startTime, setStartTime] = useState(startAt);
   const [endTime, setEndTime] = useState(endAt);
@@ -71,7 +73,7 @@ const ScheduleItemRendr = ({
     api.playlistsManager
       .getPlaylists()
       .then((res) => {
-        setAllPlaylists(res);
+        setAllPlaylists(res.data);
         setSelected(
           playlists
             .map((_) => _.playlistId)
@@ -79,7 +81,7 @@ const ScheduleItemRendr = ({
               (_) =>
                 ({
                   value: Number(_),
-                  label: res.find((k) => k.id === Number(_))?.name || '',
+                  label: res.data.find((k) => k.id === Number(_))?.name || '',
                 } as Option),
             ),
         );

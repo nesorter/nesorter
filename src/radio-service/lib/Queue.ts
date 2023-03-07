@@ -1,20 +1,12 @@
 import * as Sentry from '@sentry/node';
 
+import { QueueItem, QueueState } from '@/radio-service/types/Queue';
+
 import config from './config';
 import { Player } from './Player';
 import { Publisher } from './Publisher';
 import { StorageType } from './Storage';
 import { currentSecondsFromDayStart, sleep } from './utils';
-
-export type QueueItem = {
-  order: number;
-  fileHash: string;
-  playlistId?: number;
-  startAt: number;
-  endAt: number;
-};
-
-export type QueueState = 'stopped' | 'playing';
 
 export class Queue {
   public items: QueueItem[] = [];

@@ -1,27 +1,29 @@
-import { delete_, get, post, put } from './methods';
-import {
-  Chain,
-  ClassCategory,
-  ClassedItem,
-  DtoGetClassifiedFilters,
-  DtoUpdatePlaylistItem,
-  DtoUpsertCategory,
-  DtoUpsertFileItem,
-  FSItem,
-  ManualPlaylistItem,
-  Playlist,
-  ScheduleItem,
-  Status,
-} from './types';
+import { PlaylistItem } from '@prisma/client';
+import axios from 'axios';
+
+// import config from '@/radio-service/lib/config';
+import type { DtoUpdatePlaylistItem, DtoUpsertCategory } from '@/radio-service/types/ApisDtos';
+import type { AggregatedClassCategory } from '@/radio-service/types/Classificator';
+import type { AggregatedPlaylistItem } from '@/radio-service/types/Playlist';
+import type { AggregatedFileItem, Chain } from '@/radio-service/types/Scanner';
+import type { AggregatedScheduleItem } from '@/radio-service/types/Scheduler';
+import type { ServiceStatus } from '@/radio-service/types/ServiceStatus';
+
+const request = axios.create({
+  baseURL: typeof window === 'undefined' ? 'http://localhost:3001' : '/api',
+  headers: {
+    token: typeof window === 'undefined' ? '' : localStorage.getItem('nesorter-admin-token') || '',
+  },
+});
 
 export const api = {
   logger: {
     getStatus() {
-      return get<Status>('/api/status');
+      return request.get<ServiceStatus>('/api/status');
     },
 
     restart() {
-      return post('/api/restart', {});
+      return request.post('/api/restart', {});
     },
   },
 
@@ -30,28 +32,28 @@ export const api = {
      * Запускает шедулер
      */
     start() {
-      return get('/api/scheduler/start');
+      return request.get('/api/scheduler/start');
     },
 
     /**
      * Останавливает шедулер
      */
     stop() {
-      return get('/api/scheduler/stop');
+      return request.get('/api/scheduler/stop');
     },
 
     /**
      * Отдает расписание
      */
     getItems() {
-      return get<ScheduleItem[]>('/api/scheduler/items');
+      return request.get<AggregatedScheduleItem[]>('/api/scheduler/items');
     },
 
     /**
      * Создает айтем в расписании
      */
     createItem(start: number, end: number, playlistIds: string) {
-      return post('/api/scheduler', { start, end, playlistIds });
+      return request.post('/api/scheduler', { start, end, playlistIds });
     },
 
     /**
@@ -61,14 +63,14 @@ export const api = {
       itemId: number | string,
       data: { startAt: number; endAt: number; playlistIds: string; withMerging: number },
     ) {
-      return post(`/api/scheduler/${itemId}`, { id: itemId, data });
+      return request.post(`/api/scheduler/${itemId}`, { id: itemId, data });
     },
 
     /**
      * Удаляет айтем в расписании
      */
     deleteItem(itemId: number | string) {
-      return delete_(`/api/scheduler/${itemId}`);
+      return request.delete(`/api/scheduler/${itemId}`);
     },
   },
 
@@ -77,45 +79,21 @@ export const api = {
      * Возвращает категории
      */
     get() {
-      return get<ClassCategory[]>('/api/classificator/categories');
+      return request.get<AggregatedClassCategory[]>('/api/classificator/categories');
     },
 
     /**
      * Создает категорию
      */
     create(data: DtoUpsertCategory) {
-      return post('/api/classificator/categories', data);
+      return request.post('/api/classificator/categories', data);
     },
 
     /**
      * Обновляет категорию
      */
     update(data: DtoUpsertCategory) {
-      return put('/api/classificator/categories', data);
-    },
-  },
-
-  classificator: {
-    /**
-     * Возвращает список всех отсортированных треков
-     * @param filters - объект, где ключ -- это _имя_ категории, а значение это массив тегов в категории по которым будет производиться фильтрация
-     */
-    getClassifiedList(filters?: DtoGetClassifiedFilters) {
-      return get<ClassedItem[]>('/api/classificator/items', filters || {});
-    },
-
-    /**
-     * Возвращает категории для трека
-     */
-    getClassifiedCategory(filehash: string) {
-      return get<FSItem>(`/api/classificator/item/${filehash}`);
-    },
-
-    /**
-     * Создает или обновляет категории у трека (перезаписывает)
-     */
-    setCategories({ filehash, classItemsIds }: DtoUpsertFileItem) {
-      return post(`/api/classificator/item/${filehash}`, { filehash, classItemsIds });
+      return request.put('/api/classificator/categories', data);
     },
   },
 
@@ -124,35 +102,35 @@ export const api = {
      * Запускает синхронизацию файликов в БД
      */
     startSync() {
-      return get<string>('/api/scanner/sync');
+      return request.get<string>('/api/scanner/sync');
     },
 
     /**
      * Возвращает связный список файлов и директорий
      */
     getChain() {
-      return get<Chain>('/api/scanner/chain');
+      return request.get<Chain>('/api/scanner/chain');
     },
 
     /**
      * Возвращает данные трека
      */
     getFsItem(filehash: string) {
-      return get<FSItem>(`/api/scanner/fsitem/${filehash}`);
+      return request.get<AggregatedFileItem>(`/api/scanner/fsitem/${filehash}`);
     },
 
     /**
      * Задает тримминг трека (срезка начальных и конечных моментов трека)
      */
     setTrim(filehash: string, start: number, end: number) {
-      return post(`/api/scanner/fsitem/trim/${filehash}`, { start, end });
+      return request.post(`/api/scanner/fsitem/trim/${filehash}`, { start, end });
     },
 
     /**
      * Возвращает waveform трека
      */
     getWaveform(filehash: string) {
-      return get<number[]>(`/api/scanner/waveform/${filehash}`);
+      return request.get<number[]>(`/api/scanner/waveform/${filehash}`);
     },
 
     /**
@@ -163,7 +141,7 @@ export const api = {
     },
 
     /**
-     * Возвращает путь до файла-картинки
+     * Возвращает строку-путь до файла-картинки
      */
     getFileImageAsPath(filehash: string) {
       return `/api/scanner/image/${filehash}`;
@@ -172,38 +150,38 @@ export const api = {
 
   playlistsManager: {
     /**
-     * Возвращает список плейлистов (без их данных)
+     * Возвращает список плейлистов
      */
     getPlaylists() {
-      return get<Playlist[]>('/api/playlistsManager/queues');
+      return request.get<AggregatedPlaylistItem[]>('/api/playlistsManager/queues');
     },
 
     /**
      * Создаёт плейлист
      */
     createPlaylist(name: string, type: 'manual' | 'fs', filehash?: string) {
-      return post('/api/playlistsManager/queues', { name, type, filehash });
+      return request.post('/api/playlistsManager/queues', { name, type, filehash });
     },
 
     /**
      * Возвращает плейлист
      */
     getPlaylist(id: string | number) {
-      return get<ManualPlaylistItem[]>(`/api/playlistsManager/queue/${id}`);
+      return request.get<PlaylistItem[]>(`/api/playlistsManager/queue/${id}`);
     },
 
     /**
      * Перезаписывает содержимое плейлиста
      */
     updatePlaylist(id: string | number, items: DtoUpdatePlaylistItem) {
-      return post(`/api/playlistsManager/queue/${id}`, items);
+      return request.post(`/api/playlistsManager/queue/${id}`, items);
     },
 
     /**
      * Удаляет плейлист
      */
     deletePlaylist(id: string | number) {
-      return delete_(`/api/playlistsManager/queue/${id}`);
+      return request.delete(`/api/playlistsManager/queue/${id}`);
     },
   },
 
@@ -212,14 +190,14 @@ export const api = {
      * Останавливает ffmpeg-стрим на icecast
      */
     stopStream() {
-      return post('/api/playlistsManager/streamStop', {});
+      return request.post('/api/playlistsManager/streamStop', {});
     },
 
     /**
      * Запускает ffmpeg-стрим на icecast
      */
     startStream() {
-      return post('/api/playlistsManager/streamStart', {});
+      return request.post('/api/playlistsManager/streamStart', {});
     },
   },
 
@@ -228,35 +206,35 @@ export const api = {
      * Запускает queue
      */
     play() {
-      return post('/api/player/play', {});
+      return request.post('/api/player/play', {});
     },
 
     /**
      * Стопит queue
      */
     stop() {
-      return post('/api/player/stop', {});
+      return request.post('/api/player/stop', {});
     },
 
     /**
      * Очищает queue
      */
     clear() {
-      return post('/api/player/clear', {});
+      return request.post('/api/player/clear', {});
     },
 
     /**
      * Включает режим рандомных плейлистов в queue
      */
     playRandom() {
-      return post('/api/player/helper/random', {});
+      return request.post('/api/player/helper/random', {});
     },
 
     /**
      * Включает плейлист в queue
      */
     playPlaylist(id: number) {
-      return post(`/api/player/helper/playlist/${id}`, {});
+      return request.post(`/api/player/helper/playlist/${id}`, {});
     },
   },
 };

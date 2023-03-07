@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 
 import { AdminLayout } from '@/client/layouts/AdminLayout';
 import { withDefaultPageProps } from '@/client/utils/withDefaultPageProps';
+import type { Chain } from '@/radio-service/types/Scanner';
 
 import { api } from '../../api';
 import sendMultipartFormData from '../../api/sendMultipartFormData';
-import { Chain } from '../../api/types';
 import { Box, Text } from '../../components';
 import { DirTree } from './components/DirTree';
 
@@ -45,7 +45,10 @@ const UploadPage = () => {
   }, [targetFolder]);
 
   useEffect(() => {
-    api.scanner.getChain().then(setChain).catch(console.log);
+    api.scanner
+      .getChain()
+      .then((chain) => setChain(chain.data))
+      .catch(console.log);
   }, []);
 
   return (

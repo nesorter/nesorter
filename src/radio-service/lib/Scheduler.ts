@@ -22,7 +22,10 @@ export class Scheduler {
   ) {}
 
   async getPlaylist(id: number) {
-    return await this.db.playlist.findFirst({ where: { id } });
+    return await this.db.playlist.findFirst({
+      where: { id },
+      include: { fsMeta: true, manualMeta: true },
+    });
   }
 
   shouldEnd(item: ScheduleItem): boolean {

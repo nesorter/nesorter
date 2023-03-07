@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { api } from '../../../../api';
-import { Chain, FSItem } from '../../../../api/types';
-import { Box, Button, Text } from '../../../../components';
-import { useFetch } from '../../../../hooks/useFetch';
+import { api } from '@/client/api';
+import { Box, Button, Text } from '@/client/components';
+import { useFetch } from '@/client/hooks/useFetch';
+import type { AggregatedFileItem, Chain } from '@/radio-service/types/Scanner';
 
 type Props = {
   onAdd: (hash: string) => unknown;
@@ -17,7 +17,7 @@ export const Library = ({ onAdd, onAddAll }: Props) => {
   const [chain, setChain] = useState<Chain>({});
 
   const chainValues = useMemo(() => Object.values(chain), [chain]);
-  const [files, setFiles] = useState<FSItem[]>([]);
+  const [files, setFiles] = useState<AggregatedFileItem[]>([]);
 
   useEffect(() => {
     chainFetch.setFetching();
@@ -28,7 +28,11 @@ export const Library = ({ onAdd, onAddAll }: Props) => {
     //   .catch(alert)
     //   .finally(catsFetch.setFetched);
 
-    api.scanner.getChain().then(setChain).catch(alert).finally(chainFetch.setFetched);
+    api.scanner
+      .getChain()
+      .then((chain) => setChain(chain.data))
+      .catch(alert)
+      .finally(chainFetch.setFetched);
   }, []);
 
   // useEffect(() => {

@@ -58,8 +58,10 @@ export const AdminLayout: LayoutType = ({ children, version }) => {
   return (
     <Layout style={rootLayoutStyles}>
       <Layout.Header>
-        <Space align='center' style={{ gap: '24px' }}>
-          <Typography.Text style={{ color: blue[0], fontSize: '24px' }}>nesorter</Typography.Text>
+        <Space align='center'>
+          <Typography.Text style={{ color: blue[0], fontSize: '24px', marginRight: '38px' }}>
+            nesorter
+          </Typography.Text>
 
           <Menu
             theme='dark'

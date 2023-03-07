@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 
-import { Chain, ChainItem } from '../../../api/types';
+import type { Chain, ChainItem } from '@/radio-service/types/Scanner';
+
 import { Box, Pane, PaneItem, Text } from '../../../components';
 import { Icon } from '../../../components/Icon';
 

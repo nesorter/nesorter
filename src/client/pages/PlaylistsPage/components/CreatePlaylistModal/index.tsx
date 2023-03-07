@@ -3,9 +3,9 @@ import { useForm } from 'react-hook-form';
 import { MultiSelect, Option } from 'react-multi-select-component';
 
 import { api } from '@/client/api';
-import { ChainItem } from '@/client/api/types';
 import { Box, Modal, Text } from '@/client/components';
 import { UseModalReturn } from '@/client/hooks/useModal';
+import type { ChainItem } from '@/radio-service/types/Scanner';
 
 import styles from './styles.module.css';
 
@@ -28,7 +28,7 @@ export const CreatePlaylistModal = ({ state, onCreate }: Props) => {
     api.scanner
       .getChain()
       .then((chain) => {
-        const values = Object.values(chain);
+        const values = Object.values(chain.data);
         setChain(values.filter((_) => _.type === 'file' && _.fsItem?.type === 'dir'));
       })
       .catch(console.log);

@@ -1,13 +1,7 @@
-import { AggregatedClassedItem, AggregatedFileItem } from './Scanner.types';
+import { DtoUpsertCategory, DtoUpsertFileItem } from '@/radio-service/types/ApisDtos';
+
+import { AggregatedClassedItem, AggregatedFileItem } from '../types/Scanner';
 import { StorageType } from './Storage';
-
-export type DtoUpsertCategory = {
-  id?: number;
-  name: string;
-  values: { id?: number; value: string }[];
-};
-
-export type DtoUpsertFileItem = { filehash: string; classItemsIds: number[] };
 
 export class Classificator {
   constructor(private db: StorageType) {}

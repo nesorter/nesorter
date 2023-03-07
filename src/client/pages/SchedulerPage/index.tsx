@@ -4,9 +4,9 @@ import { useForm } from 'react-hook-form';
 
 import { AdminLayout } from '@/client/layouts/AdminLayout';
 import { withDefaultPageProps } from '@/client/utils/withDefaultPageProps';
+import type { AggregatedScheduleItem } from '@/radio-service/types/Scheduler';
 
 import { api } from '../../api';
-import { ScheduleItem } from '../../api/types';
 import { Box } from '../../components';
 import { ScheduleItems } from './components/ScheduleItems';
 import { Timeline } from './components/Timeline';
@@ -19,7 +19,7 @@ type Form = {
 
 const SchedulerPage = () => {
   const createForm = useForm<Form>();
-  const [items, setItems] = useState<ScheduleItem[]>([]);
+  const [items, setItems] = useState<AggregatedScheduleItem[]>([]);
 
   const currentSecond = (data: string) => {
     const date = parse(data, 'HH:mm', new Date());
@@ -27,7 +27,10 @@ const SchedulerPage = () => {
   };
 
   const init = () => {
-    return api.scheduler.getItems().then(setItems).catch(alert);
+    return api.scheduler
+      .getItems()
+      .then((items) => setItems(items.data))
+      .catch(alert);
   };
 
   const handleSubmit = (data: Form) => {

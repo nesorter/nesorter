@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 
 import { AdminLayout } from '@/client/layouts/AdminLayout';
 import { withDefaultPageProps } from '@/client/utils/withDefaultPageProps';
+import type { AggregatedPlaylistItem } from '@/radio-service/types/Playlist';
 
 import { api } from '../../api';
-import { Playlist } from '../../api/types';
 import { Box, Button, Pane, PaneItem, Text } from '../../components';
 import { Icon } from '../../components/Icon';
 import { useFetch } from '../../hooks/useFetch';
@@ -15,13 +15,17 @@ import { PlaylistEditor } from './components/PlaylistEditor';
 const PlaylistsPage = () => {
   const createPlModalState = useModal();
   const { isFetching, setFetched, setFetching } = useFetch();
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [playlists, setPlaylists] = useState<AggregatedPlaylistItem[]>([]);
   const [selected, setSelected] = useState<number | undefined>();
 
   useEffect(() => {
     setFetching();
 
-    api.playlistsManager.getPlaylists().then(setPlaylists).catch(alert).finally(setFetched);
+    api.playlistsManager
+      .getPlaylists()
+      .then((items) => setPlaylists(items.data))
+      .catch(alert)
+      .finally(setFetched);
   }, []);
 
   if (isFetching) {
@@ -96,7 +100,11 @@ const PlaylistsPage = () => {
         onCreate={() => {
           setFetching();
 
-          api.playlistsManager.getPlaylists().then(setPlaylists).catch(alert).finally(setFetched);
+          api.playlistsManager
+            .getPlaylists()
+            .then((items) => setPlaylists(items.data))
+            .catch(alert)
+            .finally(setFetched);
         }}
       />
     </Box>

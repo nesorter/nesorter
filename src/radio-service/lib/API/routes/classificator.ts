@@ -1,6 +1,8 @@
 import Express from 'express';
 
-import { Classificator, DtoUpsertCategory, DtoUpsertFileItem } from '../../Classificator';
+import { DtoUpsertCategory, DtoUpsertFileItem } from '@/radio-service/types/ApisDtos';
+
+import { Classificator } from '../../Classificator';
 import { Logger } from '../../Logger';
 import { withAdminToken, withLogger } from '../../utils';
 

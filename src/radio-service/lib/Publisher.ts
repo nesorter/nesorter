@@ -1,9 +1,9 @@
 import axios from 'axios';
 
+import { AggregatedFileItem } from '../types/Scanner';
 import config from './config';
 import { Logger } from './Logger';
 import { LogLevel, LogTags } from './Logger.types';
-import { AggregatedFileItem } from './Scanner.types';
 
 export class Publisher {
   constructor(private logger: Logger) {}
