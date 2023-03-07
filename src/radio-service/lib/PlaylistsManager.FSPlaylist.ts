@@ -12,15 +12,27 @@ export class FSPlaylist implements AbstractPlaylist {
   constructor(private db: StorageType, private playlistId: number, private scanner: Scanner) {}
 
   async update({ playlistData }: DtoUpdatePlaylist): Promise<void> {
+    const allFsMetas = await this.db.playlistFsMeta.findMany({
+      where: { playlistId: this.playlistId },
+    });
+
     await this.db.$transaction([
       this.db.playlist.update({
         where: { id: this.playlistId },
         data: { name: playlistData.name },
       }),
 
-      this.db.playlistFsMeta.update({
-        where: { playlistId: this.playlistId },
-        data: { fileItemHash: playlistData.baseDirectory },
+      ...allFsMetas.map((fsMeta) =>
+        this.db.playlistFsMeta.delete({
+          where: { id: Number(fsMeta.playlistId) },
+        }),
+      ),
+
+      this.db.playlistFsMeta.create({
+        data: {
+          fileItemHash: playlistData.baseDirectory,
+          playlistId: this.playlistId,
+        },
       }),
     ]);
   }
@@ -52,11 +64,21 @@ export class FSPlaylist implements AbstractPlaylist {
       return;
     }
 
-    if (!playlistRecord.fsMeta?.fileItem) {
+    if (!playlistRecord.fsMeta) {
       return;
     }
 
-    const { fileItem } = playlistRecord.fsMeta;
+    const fsMetaData = playlistRecord.fsMeta[0];
+
+    if (!fsMetaData?.fileItem) {
+      return;
+    }
+
+    const { fileItem } = fsMetaData;
+
+    if (!fileItem) {
+      return;
+    }
 
     const chain = Object.values(this.scanner.getChain());
     const fileItems = chain.filter(

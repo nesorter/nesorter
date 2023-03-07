@@ -57,19 +57,22 @@ export const gen = (
     .post(
       withAdminToken(
         withLogger(logger, (req, res) => {
-          const queue = new ManualPlaylist(storage, Number(req.params.queueId));
-
-          queue
-            .update(req.body as DtoUpdatePlaylist)
-            .then((result) => res.json({ result }))
-            .catch((e) => {
-              logger.log({
-                message: `Failed update queue ${req.params.queueId}, ${e}`,
-                level: LogLevel.ERROR,
-                tags: [LogTags.API],
-              });
-              res.status(500).json(e);
-            });
+          playlistsManager
+            .getQueueInstance(Number(req.params.queueId))
+            .then((queue) => {
+              queue
+                .update(req.body as DtoUpdatePlaylist)
+                .then((result) => res.json({ result }))
+                .catch((e) => {
+                  logger.log({
+                    message: `Failed update queue ${req.params.queueId}, ${e}`,
+                    level: LogLevel.ERROR,
+                    tags: [LogTags.API],
+                  });
+                  res.status(500).json(e);
+                });
+            })
+            .catch((e) => res.status(500).json(e));
         }),
       ),
     )

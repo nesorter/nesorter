@@ -13,31 +13,29 @@ export class ManualPlaylist implements AbstractPlaylist {
   }
 
   async update({ items, playlistData }: DtoUpdatePlaylist): Promise<void> {
+    const allManualMetas = await this.db.playlistManualMeta.findMany({
+      where: { playlistId: this.playlistId },
+    });
+
     await this.db.$transaction([
       this.db.playlist.update({
         where: { id: this.playlistId },
         data: { name: playlistData.name },
       }),
 
-      this.db.playlistManualMeta.delete({
-        where: { playlistId: this.playlistId },
-        include: {
-          playlistItems: true,
-        },
-      }),
+      ...allManualMetas.map((manualMeta) =>
+        this.db.playlistManualMeta.delete({
+          where: { id: Number(manualMeta.id) },
+        }),
+      ),
 
       this.db.playlistManualMeta.create({
         data: {
           playlistId: this.playlistId,
           playlistItems: {
-            connectOrCreate: items.map((item) => ({
-              create: {
-                fileItemHash: item.filehash,
-                order: item.order,
-              },
-              where: {
-                id: this.playlistId,
-              },
+            create: items.map((item) => ({
+              fileItemHash: item.filehash,
+              order: item.order,
             })),
           },
         },
@@ -53,11 +51,11 @@ export class ManualPlaylist implements AbstractPlaylist {
   }
 
   async getContent(): Promise<PlaylistItem[]> {
-    const items = await this.db.playlistManualMeta.findFirstOrThrow({
+    const items = await this.db.playlistManualMeta.findFirst({
       where: { playlistId: this.playlistId },
       include: { playlistItems: true },
     });
 
-    return items.playlistItems;
+    return items?.playlistItems || [];
   }
 }

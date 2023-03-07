@@ -20,7 +20,7 @@ model FileItem {
   timings  FileItemTimings?
 
   playlistItems      PlaylistItem[]
-  playlistFsMeta     PlaylistFsMeta?
+  playlistFsMeta     PlaylistFsMeta[]
 
   classedItems ClassedItem[]
 }
@@ -76,7 +76,7 @@ model Playlist {
   name String
   type String
 
-  fsMeta     PlaylistFsMeta?
+  fsMeta     PlaylistFsMeta[]
   manualMeta PlaylistManualMeta?
 
   scheduleItems PlaylistsOnScheduleItem[]
@@ -86,10 +86,10 @@ model PlaylistFsMeta {
   id Int @id @default(autoincrement())
 
   fileItem     FileItem? @relation(fields: [fileItemHash], references: [filehash])
-  fileItemHash String?   @unique
+  fileItemHash String?
 
   playlist   Playlist? @relation(fields: [playlistId], references: [id])
-  playlistId Int?      @unique
+  playlistId Int?
 }
 
 model PlaylistManualMeta {
@@ -123,7 +123,7 @@ model ClassCategory {
 model ClassItem {
   id    Int @id @default(autoincrement())
   value String
-  
+
   category ClassCategory @relation(fields: [categoryId], references: [id])
   categoryId Int
 

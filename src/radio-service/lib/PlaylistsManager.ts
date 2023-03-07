@@ -15,13 +15,8 @@ export class PlaylistsManager {
           name,
           type,
           fsMeta: {
-            connectOrCreate: {
-              create: {
-                fileItemHash: filehash,
-              },
-              where: {
-                fileItemHash: filehash,
-              },
+            create: {
+              fileItemHash: filehash,
             },
           },
         },

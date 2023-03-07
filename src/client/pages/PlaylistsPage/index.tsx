@@ -16,7 +16,7 @@ import {
   Typography,
 } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { api } from '@/client/api';
 import { usePlaylistItems, usePlaylists } from '@/client/hooks/queries/usePlaylists';
@@ -93,11 +93,21 @@ const PlaylistsPage = ({
   const [isCreatingInProgress, setIsCreatingInProgress] = useState(false);
   const [currentEditingPlaylist, setCurrentEditingPlaylist] = useState(-1);
   const [isEditingInProgress, setIsEditingInProgress] = useState(false);
+  const [transferSelected, setTransferSelected] = useState<string[]>([]);
 
   const query = usePlaylists(playlists);
   const queryItems = usePlaylistItems(currentEditingPlaylist);
 
   const currentPlaylist = query.data?.find((_) => _.id === currentEditingPlaylist);
+
+  useEffect(() => {
+    setTransferSelected(
+      queryItems.data?.map((item) => {
+        const fromChain = chain.find((_) => _.fsItem?.filehash === item.fileItemHash);
+        return fromChain?.key || '';
+      }) || [],
+    );
+  }, [queryItems.data]);
 
   const directoriesTree = useMemo(
     () =>
@@ -119,7 +129,6 @@ const PlaylistsPage = ({
     while (key === '' && step < chain.length) {
       for (const item of extracted) {
         if (item.children.length > 1) {
-          console.log(item);
           key = item.key;
         } else {
           extracted = item.children;
@@ -142,8 +151,6 @@ const PlaylistsPage = ({
     [chain],
   );
 
-  const [transferSelected, setTransferSelected] = useState<string[]>([]);
-
   const handleEditPlaylist = (id: number) => {
     setCurrentEditingPlaylist(id);
 
@@ -153,7 +160,7 @@ const PlaylistsPage = ({
     editForm.setFieldValue('type', playlist?.type);
     editForm.setFieldValue(
       'directory',
-      getDirKeyByFilehash(chain, playlist?.fsMeta?.fileItemHash || '')?.key,
+      getDirKeyByFilehash(chain, (playlist?.fsMeta || [])[0]?.fileItemHash || '')?.key,
     );
   };
   const handleCancelEditing = () => {
@@ -186,8 +193,6 @@ const PlaylistsPage = ({
         filehash: chain.find((_) => _.key === tsItem)?.fsItem?.filehash || '',
       }));
     }
-
-    console.log(data, dto);
 
     api.playlistsManager
       .updatePlaylist(currentPlaylist.id, dto)
@@ -242,7 +247,9 @@ const PlaylistsPage = ({
       (query.data || []).map((item) => {
         let locatedAt = '';
         if (item.fsMeta) {
-          const fileItem = chain.find((_) => _?.fsItem?.filehash === item.fsMeta?.fileItemHash);
+          const fileItem = chain.find(
+            (_) => _?.fsItem?.filehash === (item.fsMeta || [])[0]?.fileItemHash,
+          );
           locatedAt = fileItem?.fsItem?.path || '';
         }
 
