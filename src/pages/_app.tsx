@@ -5,11 +5,10 @@ import type { AppProps as NextAppProps } from 'next/app';
 import { JetBrains_Mono } from 'next/font/google';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { ComponentType } from 'react';
-import { ThemeProvider } from 'styled-components';
+import { ComponentType, useState } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { PublicLayout } from '@/client/layouts/PublicLayout';
-import theme from '@/client/theme';
 import { WithDefaultPageProps } from '@/client/types/DefaultPageProps';
 import { WithLayout } from '@/client/types/Layout';
 import { handleAdminTokenInput } from '@/client/utils/handleAdminTokenInput';
@@ -28,6 +27,16 @@ const font = JetBrains_Mono({
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false,
+          },
+        },
+      }),
+  );
 
   if (pageProps.adminSide) {
     if (!handleAdminTokenInput(pageProps.clientAdminToken)) {
@@ -42,22 +51,22 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   const Layout = Component.Layout || PublicLayout;
 
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          fontFamily: font.style.fontFamily,
-        },
-      }}
-    >
-      <Head>
-        <title>nesorter</title>
-      </Head>
+    <QueryClientProvider client={queryClient}>
+      <ConfigProvider
+        theme={{
+          token: {
+            fontFamily: font.style.fontFamily,
+          },
+        }}
+      >
+        <Head>
+          <title>nesorter</title>
+        </Head>
 
-      <ThemeProvider theme={theme}>
         <Layout {...pageProps}>
           <Component {...pageProps} />
         </Layout>
-      </ThemeProvider>
-    </ConfigProvider>
+      </ConfigProvider>
+    </QueryClientProvider>
   );
 }

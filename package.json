@@ -37,6 +37,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.4",
     "react-multi-select-component": "^4.3.4",
+    "react-query": "^3.39.3",
     "styled-components": "^5.3.8",
     "tree-kill": "^1.2.2",
     "winston": "^3.8.2",

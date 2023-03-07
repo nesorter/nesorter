@@ -4,6 +4,10 @@ const nextConfig = {
     appDir: false
   },
 
+  compiler: {
+    styledComponents: true,
+  },
+
   async rewrites() {
     return [{
       source: '/api/:path*',
