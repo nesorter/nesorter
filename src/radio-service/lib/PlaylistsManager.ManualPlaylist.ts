@@ -1,9 +1,8 @@
 import { PlaylistItem } from '@prisma/client';
 
-import {
-  AbstractPlaylist,
-  AbstractPlaylistUpdateItem,
-} from './API/PlaylistManager.AbstractPlaylist';
+import { DtoUpdatePlaylist } from '@/radio-service/types/Playlist';
+
+import { AbstractPlaylist } from './API/PlaylistManager.AbstractPlaylist';
 import { StorageType } from './Storage';
 
 export class ManualPlaylist implements AbstractPlaylist {
@@ -13,8 +12,13 @@ export class ManualPlaylist implements AbstractPlaylist {
     return Promise.resolve();
   }
 
-  async update(items: AbstractPlaylistUpdateItem[]): Promise<void> {
+  async update({ items, playlistData }: DtoUpdatePlaylist): Promise<void> {
     await this.db.$transaction([
+      this.db.playlist.update({
+        where: { id: this.playlistId },
+        data: { name: playlistData.name },
+      }),
+
       this.db.playlistManualMeta.delete({
         where: { playlistId: this.playlistId },
         include: {

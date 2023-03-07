@@ -1,5 +1,7 @@
 import Express from 'express';
 
+import { DtoUpdatePlaylist } from '@/radio-service/types/Playlist';
+
 import { Logger } from '../../Logger';
 import { LogLevel, LogTags } from '../../Logger.types';
 import { PlaylistsManager } from '../../PlaylistsManager';
@@ -56,8 +58,9 @@ export const gen = (
       withAdminToken(
         withLogger(logger, (req, res) => {
           const queue = new ManualPlaylist(storage, Number(req.params.queueId));
+
           queue
-            .update(req.body as { order: number; filehash: string }[])
+            .update(req.body as DtoUpdatePlaylist)
             .then((result) => res.json({ result }))
             .catch((e) => {
               logger.log({

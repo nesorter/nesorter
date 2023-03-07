@@ -1,5 +1,7 @@
 import { PlaylistItem } from '@prisma/client';
 
+import { DtoUpdatePlaylist } from '@/radio-service/types/Playlist';
+
 import { AbstractPlaylist } from './API/PlaylistManager.AbstractPlaylist';
 import { Scanner } from './Scanner';
 import { StorageType } from './Storage';
@@ -9,8 +11,18 @@ export class FSPlaylist implements AbstractPlaylist {
 
   constructor(private db: StorageType, private playlistId: number, private scanner: Scanner) {}
 
-  async update(): Promise<void> {
-    return Promise.reject(new Error('Not implemented. You dont need update items in fs playlist'));
+  async update({ playlistData }: DtoUpdatePlaylist): Promise<void> {
+    await this.db.$transaction([
+      this.db.playlist.update({
+        where: { id: this.playlistId },
+        data: { name: playlistData.name },
+      }),
+
+      this.db.playlistFsMeta.update({
+        where: { playlistId: this.playlistId },
+        data: { fileItemHash: playlistData.baseDirectory },
+      }),
+    ]);
   }
 
   async delete() {

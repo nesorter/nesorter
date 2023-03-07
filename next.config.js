@@ -19,6 +19,8 @@ const nextConfig = {
 var firstRun = false;
 
 module.exports = async (phase) => {
+  console.log('phase: ', phase);
+
   if (!firstRun && (phase === 'phase-production-server' || phase === 'phase-development-server')) {
     const SLEEP_TIME = 10000;
 

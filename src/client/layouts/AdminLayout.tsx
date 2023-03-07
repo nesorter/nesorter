@@ -76,7 +76,12 @@ export const AdminLayout: LayoutType = ({ children, version }) => {
 
       <Layout>
         <Layout.Content>
-          <Space style={{ padding: '24px' }}>{children}</Space>
+          <Space
+            direction='vertical'
+            style={{ padding: '24px', width: '100%', justifyContent: 'stretch' }}
+          >
+            {children}
+          </Space>
         </Layout.Content>
       </Layout>
 

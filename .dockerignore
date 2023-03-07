@@ -19,3 +19,5 @@ push2hub.sh
 
 .env
 .env.example
+
+src/radio-service/lib/API/routes/assets/covers/*.jpg
