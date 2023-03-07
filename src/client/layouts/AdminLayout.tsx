@@ -1,45 +1,96 @@
-import { JetBrains_Mono } from 'next/font/google';
-import Link from 'next/link';
+import { blue } from '@ant-design/colors';
+import {
+  ApartmentOutlined,
+  CloudUploadOutlined,
+  FieldTimeOutlined,
+  InfoCircleOutlined,
+  OrderedListOutlined,
+} from '@ant-design/icons';
+import { Layout, Menu, MenuProps, Space, Typography } from 'antd';
+import { useRouter } from 'next/router';
+import { CSSProperties, useState } from 'react';
 
-import { Layout } from '@/client/types/Layout';
+import { Layout as LayoutType } from '@/client/types/Layout';
 
-import { Box } from '../components/Box';
-import { Text } from '../components/Text';
+const rootLayoutStyles: CSSProperties = {
+  minHeight: '100%',
+};
 
-const font = JetBrains_Mono({
-  weight: ['400', '600'],
-  subsets: ['cyrillic'],
-  display: 'auto',
-  variable: '--font-name',
-});
+const footerStyles: CSSProperties = { textAlign: 'center' };
 
-export const AdminLayout: Layout = ({ children }) => {
+const items: MenuProps['items'] = [
+  {
+    label: 'Status',
+    key: '/admin/status',
+    icon: <InfoCircleOutlined />,
+  },
+  {
+    label: 'Classificator',
+    key: '/admin/classificator',
+    icon: <ApartmentOutlined />,
+  },
+  {
+    label: 'Playlists',
+    key: '/admin/playlists',
+    icon: <OrderedListOutlined />,
+  },
+  {
+    label: 'Scheduler',
+    key: '/admin/scheduler',
+    icon: <FieldTimeOutlined />,
+  },
+  {
+    label: 'Upload',
+    key: '/admin/upload',
+    icon: <CloudUploadOutlined />,
+  },
+];
+
+export const AdminLayout: LayoutType = ({ children, version }) => {
+  const router = useRouter();
+  const [current, setCurrent] = useState(router.pathname);
+
+  const handleNavigate: MenuProps['onClick'] = (e) => {
+    router.push(e.key).catch(console.error);
+    setCurrent(e.key);
+  };
+
   return (
-    <Box
-      className={font.className}
-      padding='lg'
-      gap='lg'
-      backgroundColor='dark100'
-      flexDirection='column'
-      minHeight='100vh'
-    >
-      <Box gap='lg'>
-        {[
-          { to: '/admin/status', title: 'Status' },
-          { to: '/admin/classify', title: 'Classify' },
-          { to: '/admin/playlists', title: 'Playlists' },
-          { to: '/admin/scheduler', title: 'Scheduler' },
-          { to: '/admin/upload', title: 'Upload' },
-        ].map((item) => (
-          <Link key={item.to} href={item.to}>
-            <Text color='textLight'>{item.title}</Text>
-          </Link>
-        ))}
-      </Box>
+    <Layout style={rootLayoutStyles}>
+      <Layout.Header>
+        <Space align='center' style={{ gap: '24px' }}>
+          <Typography.Text style={{ color: blue[0], fontSize: '24px' }}>nesorter</Typography.Text>
 
-      <Box height='100%' maxHeight='calc(100% - 42px)'>
-        {children}
-      </Box>
-    </Box>
+          <Menu
+            theme='dark'
+            onClick={handleNavigate}
+            selectedKeys={[current]}
+            mode='horizontal'
+            items={items}
+            disabledOverflow
+          />
+        </Space>
+      </Layout.Header>
+
+      <Layout>
+        <Layout.Content>
+          <Space style={{ padding: '24px' }}>{children}</Space>
+        </Layout.Content>
+      </Layout>
+
+      <Layout.Footer style={footerStyles}>
+        <Space>
+          <Typography.Text strong>nesorter v{version}</Typography.Text>
+
+          <Typography.Text>
+            {'created by '}
+
+            <Typography.Link href='https://kugi.club/' target='_blank'>
+              Andrew Goncharov
+            </Typography.Link>
+          </Typography.Text>
+        </Space>
+      </Layout.Footer>
+    </Layout>
   );
 };

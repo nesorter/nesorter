@@ -8,7 +8,9 @@ const rootLayoutStyles: CSSProperties = {
   minHeight: '100%',
 };
 
-export const LoginLayout: LayoutType = ({ children }) => {
+const footerStyles: CSSProperties = { textAlign: 'center' };
+
+export const LoginLayout: LayoutType = ({ children, version }) => {
   return (
     <Layout style={rootLayoutStyles}>
       <Layout.Header>
@@ -18,6 +20,20 @@ export const LoginLayout: LayoutType = ({ children }) => {
       </Layout.Header>
 
       <Layout style={{ justifyContent: 'center', alignItems: 'center' }}>{children}</Layout>
+
+      <Layout.Footer style={footerStyles}>
+        <Space>
+          <Typography.Text strong>nesorter v{version}</Typography.Text>
+
+          <Typography.Text>
+            {'created by '}
+
+            <Typography.Link href='https://kugi.club/' target='_blank'>
+              Andrew Goncharov
+            </Typography.Link>
+          </Typography.Text>
+        </Space>
+      </Layout.Footer>
     </Layout>
   );
 };
