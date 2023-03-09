@@ -55,8 +55,8 @@ export const api = {
     /**
      * Создает айтем в расписании
      */
-    createItem(start: number, end: number, playlistIds: string) {
-      return request.post('/api/scheduler', { start, end, playlistIds });
+    createItem(name: string, start: number, end: number, playlistIds: string) {
+      return request.post('/api/scheduler', { name, start, end, playlistIds });
     },
 
     /**
@@ -64,7 +64,13 @@ export const api = {
      */
     updateItem(
       itemId: number | string,
-      data: { startAt: number; endAt: number; playlistIds: string; withMerging: number },
+      data: {
+        startAt: number;
+        endAt: number;
+        playlistIds: string;
+        withMerging: number;
+        name: string;
+      },
     ) {
       return request.post(`/api/scheduler/${itemId}`, { id: itemId, data });
     },

@@ -1,12 +1,15 @@
 import { Button, Card, Space, Switch, Table, Typography } from 'antd';
-import { addSeconds, format } from 'date-fns';
+import { addSeconds, format, startOfDay } from 'date-fns';
 import { useMemo } from 'react';
 
 import { api } from '@/client/api';
 import { useServiceStatus } from '@/client/hooks/queries/useServiceStatus';
 import { AdminLayout } from '@/client/layouts/AdminLayout';
 import { WithDefaultPageProps } from '@/client/types/DefaultPageProps';
+import { formatTime } from '@/client/utils/formatTime';
 import { withDefaultPageProps } from '@/client/utils/withDefaultPageProps';
+
+const day = startOfDay(new Date());
 
 const StatusPage = ({ radioStatus, chain }: WithDefaultPageProps) => {
   const { data, refetch } = useServiceStatus(radioStatus);
@@ -147,8 +150,8 @@ const StatusPage = ({ radioStatus, chain }: WithDefaultPageProps) => {
           state: data?.currentFile === item.fileHash ? '-' : '',
           order: item.order,
           name: `${fileItem?.metadata?.artist} - ${fileItem?.metadata?.title}`,
-          start: format(addSeconds(new Date(), item.startAt), 'HH:mm'),
-          end: format(addSeconds(new Date(), item.endAt), 'HH:mm'),
+          start: formatTime(item.startAt),
+          end: formatTime(item.endAt),
         };
       }),
     [data?.queue?.items || []],

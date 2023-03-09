@@ -40,7 +40,13 @@ export class Scheduler {
     );
   }
 
-  async createItem(startAt: number, endAt: number, playlistIds: string, withMerging?: number) {
+  async createItem(
+    name: string,
+    startAt: number,
+    endAt: number,
+    playlistIds: string,
+    withMerging?: number,
+  ) {
     const scheduleItemId = (await this.db.scheduleItem.count()) + 1;
     const aggregated = playlistIds
       .split(',')
@@ -55,6 +61,7 @@ export class Scheduler {
         return this.db.scheduleItem.create({
           data: {
             id: scheduleItemId,
+            name,
             withMerging: withMerging || 0,
             endAt: secondsInDay,
             startAt,
@@ -71,9 +78,10 @@ export class Scheduler {
     return this.db.scheduleItem.create({
       data: {
         id: scheduleItemId,
+        name,
+        withMerging: withMerging || 0,
         endAt,
         startAt,
-        withMerging: withMerging || 0,
         playlists: {
           connectOrCreate: aggregated,
         },
@@ -87,13 +95,20 @@ export class Scheduler {
 
   async updateItem(
     id: number,
-    data: { endAt: number; startAt: number; withMerging: number; playlistIds: string },
+    data: {
+      name: string;
+      endAt: number;
+      startAt: number;
+      withMerging: number;
+      playlistIds: string;
+    },
   ) {
     return this.db.scheduleItem.update({
       data: {
         startAt: data.startAt,
         withMerging: data.withMerging,
         endAt: data.endAt,
+        name: data.name,
         playlists: {
           connectOrCreate: data.playlistIds.split(',').map((_) => ({
             where: {

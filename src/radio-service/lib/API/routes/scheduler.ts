@@ -49,7 +49,13 @@ export const gen = (logger: Logger, api: Express.Application, scheduler: Schedul
       withLogger(logger, (req, res) => {
         const { id, data } = req.body as {
           id: number;
-          data: { endAt: number; startAt: number; withMerging: number; playlistIds: string };
+          data: {
+            name: string;
+            endAt: number;
+            startAt: number;
+            withMerging: number;
+            playlistIds: string;
+          };
         };
 
         scheduler
@@ -64,7 +70,8 @@ export const gen = (logger: Logger, api: Express.Application, scheduler: Schedul
     '/api/scheduler',
     withAdminToken(
       withLogger(logger, (req, res) => {
-        const { start, end, playlistIds, withMerging } = req.body as {
+        const { name, start, end, playlistIds, withMerging } = req.body as {
+          name: string;
           start: number;
           end: number;
           playlistIds: string;
@@ -72,7 +79,7 @@ export const gen = (logger: Logger, api: Express.Application, scheduler: Schedul
         };
 
         scheduler
-          .createItem(start, end, playlistIds, withMerging)
+          .createItem(name, start, end, playlistIds, withMerging)
           .then((_) => res.json(_))
           .catch((e) => res.status(500).json(e));
       }),

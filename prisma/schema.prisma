@@ -52,6 +52,7 @@ model ScheduleItem {
   id          Int @id @default(autoincrement())
   withMerging Int @default(0)
 
+  name String @default("Default schedule name")
   startAt Int
   endAt   Int
 
