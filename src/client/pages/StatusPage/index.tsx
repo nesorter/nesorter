@@ -185,15 +185,21 @@ const StatusPage = ({ radioStatus, chain }: WithDefaultPageProps) => {
     },
   ];
 
-  const queue = (
-    <Table
-      style={{ minWidth: '560px' }}
-      size='small'
-      dataSource={dataSource}
-      columns={columns}
-      pagination={false}
-    />
-  );
+  const queue =
+    dataSource.length > 0 ? (
+      <Table
+        bordered={false}
+        style={{ minWidth: '560px' }}
+        size='small'
+        dataSource={dataSource}
+        columns={columns}
+        pagination={false}
+      />
+    ) : (
+      <Card title='Current queue' style={{ width: '580px' }}>
+        <Typography.Text>Queue empty</Typography.Text>
+      </Card>
+    );
 
   return (
     <Space align='start' size='middle'>

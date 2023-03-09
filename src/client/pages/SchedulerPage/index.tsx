@@ -129,7 +129,6 @@ const SchedulerPage = ({
         dataSource={query.data?.sort((a, b) =>
           sortMode === 'id' ? a.id - b.id : a.startAt - b.startAt,
         )}
-        bordered
         itemLayout='vertical'
         rowKey='id'
         renderItem={(item) => (
