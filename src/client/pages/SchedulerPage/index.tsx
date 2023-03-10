@@ -5,7 +5,7 @@ import {
   ZoomInOutlined,
   ZoomOutOutlined,
 } from '@ant-design/icons';
-import { Button, Card, Checkbox, Form, Input, List, Select, Slider, Space, Typography } from 'antd';
+import { Button, Card, Form, Input, List, Select, Slider, Space, Switch, Typography } from 'antd';
 import { secondsInDay } from 'date-fns';
 import { useState } from 'react';
 
@@ -85,6 +85,8 @@ const SchedulerPage = ({
   };
 
   const handleSave = (data: { name: string; merging: boolean; playlists: number[] }) => {
+    console.table(data);
+
     api.scheduler
       .updateItem(editingId, {
         startAt: nextTimeData[0],
@@ -212,7 +214,7 @@ const SchedulerPage = ({
                     name='merging'
                     tooltip='Allows the scheduler to virtually merge all selected playlists into one'
                   >
-                    <Checkbox />
+                    <Switch defaultChecked={item.withMerging > 0} />
                   </Form.Item>
 
                   <Form.Item wrapperCol={{ offset: 5, span: 19 }}>
