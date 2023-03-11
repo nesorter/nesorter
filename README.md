@@ -4,6 +4,9 @@
 ## Structure
 ![Class diagram](https://github.com/nesorter/nesorter/blob/main/readmeAssets/classDiagram_v2.png?raw=true)
 
+## Playback mechanism
+![Scheme](https://github.com/nesorter/nesorter/blob/main/readmeAssets/play_mode_scheme.png?raw=true)
+
 ## a. Running in Docker: Easy
 0. Look at https://github.com/nesorter/nesorter-docker
 
@@ -47,7 +50,7 @@ You can start `srv` and `ui` via a script:
 yarn start
 ```
 
-## Description of .env [to run in Docker and if not planned to run in Docker]
+## Description of .env
 ```
 PLAYING_MODE                  - socket or hardware; playback mode - virtual or on a sound card; more stable operation when playing on a sound card
 HARDWARE_PLAYER_FFMPEG_DRIVER - how to access the device (alsa/pulse/dshow) https://ffmpeg.org/ffmpeg-devices.html
@@ -71,6 +74,9 @@ SHOUT_PASSWORD    - password from the user, when running in Docker, leave the va
 SHOUT_MOUNT       - mount name, when running in Docker, leave the value as in .env.example
 SHOUT_URL         - stream url, this info is sent to icecast
 SHOUT_DESCRIPTION - stream description, this info is sent to icecast
+
+SHOUT_ADMIN_USER     - username of admin user
+SHOUT_ADMIN_PASSWORD - password of admin user
 
 FFMPEG_BITRATE - stream bitrate
 FFMPEG_FORMAT  - format (mp3/ogg) [doesn't seem to work with ogg]
