@@ -5,6 +5,8 @@ import { CSSProperties } from 'react';
 
 import { Layout as LayoutType } from '@/client/types/Layout';
 
+import styles from './PublicLayout.module.css';
+
 const rootLayoutStyles: CSSProperties = {
   minHeight: '100%',
 };
@@ -26,7 +28,7 @@ export const PublicLayout: LayoutType = ({ children, version }) => {
 
       <Layout>
         <Layout.Content>
-          <Space style={{ padding: '64px 50px' }}>{children}</Space>
+          <Space className={styles.root}>{children}</Space>
         </Layout.Content>
       </Layout>
 

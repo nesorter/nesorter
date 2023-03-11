@@ -1,0 +1,15 @@
+.root {
+    padding: 64px 50px;
+}
+
+@media (max-width: 768px) {
+    .root {
+        padding: 0;
+        width: 100%;
+    }
+
+    .root > div {
+        width: 100%;
+        flex-grow: 1;
+    }
+}

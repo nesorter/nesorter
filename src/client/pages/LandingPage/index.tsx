@@ -18,6 +18,8 @@ import { formatTime } from '@/client/utils/formatTime';
 import { withDefaultPageProps } from '@/client/utils/withDefaultPageProps';
 import type { ServiceStatus } from '@/radio-service/types/ServiceStatus';
 
+import styles from './styles.module.css';
+
 const currentSecondsFromDayStart = () => {
   return secondsInDay - differenceInSeconds(endOfDay(new Date()), new Date());
 };
@@ -112,16 +114,7 @@ const LandingPage = ({
 
   if (chainQuery.isFetching) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100vw',
-          maxWidth: 'calc(100vw - 125px)',
-          height: '100%',
-        }}
-      >
+      <div className={styles.root}>
         <Spin tip='Loading' size='large'>
           <div
             className='content'
@@ -137,20 +130,11 @@ const LandingPage = ({
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100vw',
-        maxWidth: 'calc(100vw - 125px)',
-        height: '100%',
-      }}
-    >
+    <div className={styles.root}>
       <Space direction='vertical' size='small'>
         {Boolean(currentChainItem?.fsItem?.metadata?.artist) && (
-          <Card title='Now playling' style={{ width: '798px' }} size='small'>
-            <Space direction='vertical'>
+          <Card title='Now playling' className={styles.nowPlaying} size='small'>
+            <Space direction='vertical' wrap>
               <Typography.Text>
                 <Typography.Text strong>{'Playlist: '}</Typography.Text>
 
@@ -166,9 +150,9 @@ const LandingPage = ({
           </Card>
         )}
 
-        <Space align='start' size='small' wrap>
+        <Space className={styles.content} align='start' size='small' wrap>
           <Space direction='vertical'>
-            <Card title='Player' style={{ width: '284px' }} size='small'>
+            <Card title='Player' className={styles.player} size='small'>
               {statusQuery.data?.playing ? (
                 <Space direction='vertical' align='center' style={{ width: '256px' }}>
                   <Avatar
@@ -214,7 +198,7 @@ const LandingPage = ({
               )}
             </Card>
 
-            <Card style={{ width: '284px' }}>
+            <Card className={styles.player}>
               <Space size='large' wrap>
                 <Switch disabled checked={isSimulating} onChange={(e) => setIsSimulating(e)} />
 
@@ -235,7 +219,7 @@ const LandingPage = ({
                 dataSource={statusQuery?.data?.queue?.items}
                 rowKey='order'
                 size='small'
-                style={{ width: '480px', maxHeight: '428px', overflowY: 'auto' }}
+                className={styles.list}
                 renderItem={(item) => {
                   const chainItem = chainQuery.data?.find(
                     (_) => _.fsItem?.filehash === item.fileHash,
