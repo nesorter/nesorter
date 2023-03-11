@@ -148,21 +148,23 @@ const LandingPage = ({
       }}
     >
       <Space direction='vertical' size='small'>
-        <Card title='Now playling' style={{ width: '798px' }} size='small'>
-          <Space direction='vertical'>
-            <Typography.Text>
-              <Typography.Text strong>{'Playlist: '}</Typography.Text>
+        {Boolean(currentChainItem?.fsItem?.metadata?.artist) && (
+          <Card title='Now playling' style={{ width: '798px' }} size='small'>
+            <Space direction='vertical'>
+              <Typography.Text>
+                <Typography.Text strong>{'Playlist: '}</Typography.Text>
 
-              {statusQuery.data?.playlistData?.name}
-            </Typography.Text>
+                {statusQuery.data?.playlistData?.name}
+              </Typography.Text>
 
-            <Typography.Text>
-              <Typography.Text strong>{'Track: '}</Typography.Text>
+              <Typography.Text>
+                <Typography.Text strong>{'Track: '}</Typography.Text>
 
-              {`${currentChainItem?.fsItem?.metadata?.artist} - ${currentChainItem?.fsItem?.metadata?.title}`}
-            </Typography.Text>
-          </Space>
-        </Card>
+                {`${currentChainItem?.fsItem?.metadata?.artist} - ${currentChainItem?.fsItem?.metadata?.title}`}
+              </Typography.Text>
+            </Space>
+          </Card>
+        )}
 
         <Space align='start' size='small' wrap>
           <Space direction='vertical'>

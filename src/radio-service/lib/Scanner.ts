@@ -158,7 +158,7 @@ export class Scanner {
 
           scannedItem.duration = parsedData.format.duration;
           scannedItem.id3 = {
-            artist: parsedData.common.artist || 'unnamed',
+            artist: parsedData.common.artist || scannedItem.name,
             title: parsedData.common.title || 'unnamed',
           };
 
@@ -190,7 +190,7 @@ export class Scanner {
         const metadata = {
           connectOrCreate: {
             create: {
-              artist: scannedItem.id3?.artist || 'unnamed',
+              artist: scannedItem.id3?.artist || scannedItem.name,
               title: scannedItem.id3?.title || 'unnamed',
             },
             where: {
