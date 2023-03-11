@@ -34,7 +34,13 @@ const LandingPage = ({
 
   const currentChainItem = useMemo(
     () => chainQuery.data?.find((_) => _.fsItem?.filehash === statusQuery?.data?.currentFile),
-    [statusQuery?.data?.currentFile],
+    [chainQuery.data, statusQuery?.data?.currentFile],
+  );
+
+  const currentQueueItem = useMemo(
+    () =>
+      statusQuery.data?.queue?.items?.find((_) => _.fileHash === statusQuery?.data?.currentFile),
+    [statusQuery.data?.queue?.items, statusQuery?.data?.currentFile],
   );
 
   const [audio, setAudio] = useState<HTMLAudioElement | undefined>(undefined);
@@ -64,14 +70,12 @@ const LandingPage = ({
   };
 
   useEffect(() => {
-    if (audio && isPlaying) {
+    if (audio && isPlaying && isSimulating) {
       if (!statusQuery.data?.streaming && statusQuery.data?.playing) {
         audio.pause();
         audio.src = api.scanner.getFileAsPath(currentChainItem?.fsItem?.filehash || '');
-        const seekTo = currentSeconds - (statusQuery.data?.queue?.items || [])[0]?.startAt;
-        audio.fastSeek(
-          seekTo > 0 ? (seekTo < (statusQuery.data?.queue?.items || [])[0]?.endAt ? seekTo : 0) : 0,
-        );
+        const seekTo = currentSeconds - Number(currentQueueItem?.startAt);
+        audio.fastSeek(seekTo > 0 ? (seekTo < Number(currentQueueItem?.endAt) ? seekTo : 0) : 0);
         audio.play().catch(console.log);
       }
     }
@@ -79,19 +83,13 @@ const LandingPage = ({
 
   useEffect(() => {
     if (audio) {
-      if (isPlaying) {
+      if (isPlaying && isSimulating) {
         audio.src = api.scanner.getFileAsPath(currentChainItem?.fsItem?.filehash || '');
         audio.play().catch(console.error);
 
         if (!statusQuery.data?.streaming && statusQuery.data?.playing) {
-          const seekTo = currentSeconds - (statusQuery.data?.queue?.items || [])[0]?.startAt;
-          audio.fastSeek(
-            seekTo > 0
-              ? seekTo < (statusQuery.data?.queue?.items || [])[0]?.endAt
-                ? seekTo
-                : 0
-              : 0,
-          );
+          const seekTo = currentSeconds - Number(currentQueueItem?.startAt);
+          audio.fastSeek(seekTo > 0 ? (seekTo < Number(currentQueueItem?.endAt) ? seekTo : 0) : 0);
         }
       } else {
         audio.pause();
@@ -162,7 +160,7 @@ const LandingPage = ({
           </Space>
         </Card>
 
-        <Space align='start' size='small'>
+        <Space align='start' size='small' wrap>
           <Space direction='vertical'>
             <Card title='Player' style={{ width: '284px' }} size='small'>
               {statusQuery.data?.playing ? (
@@ -176,8 +174,8 @@ const LandingPage = ({
                   <Space>
                     <Slider
                       style={{ width: '256px' }}
-                      min={(statusQuery?.data?.queue?.items || [])[0]?.startAt}
-                      max={(statusQuery?.data?.queue?.items || [])[0]?.endAt}
+                      min={currentQueueItem?.startAt}
+                      max={currentQueueItem?.endAt}
                       value={currentSeconds}
                       disabled
                     />
@@ -211,7 +209,7 @@ const LandingPage = ({
             </Card>
 
             <Card style={{ width: '284px' }}>
-              <Space size='large'>
+              <Space size='large' wrap>
                 <Switch disabled checked={isSimulating} onChange={(e) => setIsSimulating(e)} />
 
                 <Typography.Text>
