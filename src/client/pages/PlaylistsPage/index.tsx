@@ -20,6 +20,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { api } from '@/client/api';
 import { usePlaylistItems, usePlaylists } from '@/client/hooks/queries/usePlaylists';
+import { useFirstChildnessChainItemKey } from '@/client/hooks/useFirstChildnessChainItemKey';
 import { AdminLayout } from '@/client/layouts/AdminLayout';
 import { TreeTransfer } from '@/client/pages/PlaylistsPage/components/TreeTransfer';
 import { WithDefaultPageProps } from '@/client/types/DefaultPageProps';
@@ -59,37 +60,7 @@ const PlaylistsPage = ({
     );
   }, [queryItems.data]);
 
-  const directoriesTree = useMemo(
-    () =>
-      getDirTreeRecursively(
-        chain.filter((_) => _.type === 'dir'),
-        0,
-      ),
-    [chain],
-  );
-
-  const firstChildnessChainItemKey = useMemo(() => {
-    let step = 0;
-    let key = '';
-    let extracted = getDirTreeRecursively(
-      chain.filter((_) => _.fsItem?.type !== 'dir'),
-      0,
-    );
-
-    while (key === '' && step < chain.length) {
-      for (const item of extracted) {
-        if (item.children.length > 1) {
-          key = item.key;
-        } else {
-          extracted = item.children;
-        }
-      }
-
-      step += 1;
-    }
-
-    return key;
-  }, [chain]);
+  const firstChildnessChainItemKey = useFirstChildnessChainItemKey(chain);
 
   const transferTree = useMemo(
     () =>
@@ -97,6 +68,15 @@ const PlaylistsPage = ({
         chain.filter((_) => _.fsItem?.type !== 'dir'),
         1,
         firstChildnessChainItemKey,
+      ),
+    [chain],
+  );
+
+  const directoriesTree = useMemo(
+    () =>
+      getDirTreeRecursively(
+        chain.filter((_) => _.type === 'dir'),
+        0,
       ),
     [chain],
   );

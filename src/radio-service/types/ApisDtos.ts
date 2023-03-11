@@ -4,6 +4,11 @@ export type DtoUpsertCategory = {
   values: { id?: number; value: string }[];
 };
 
+export type DtoCreateCategory = {
+  name: string;
+  values: string[];
+};
+
 export type DtoUpsertFileItem = {
   filehash: string;
   classItemsIds: number[];

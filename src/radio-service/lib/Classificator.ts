@@ -1,4 +1,8 @@
-import { DtoUpsertCategory, DtoUpsertFileItem } from '@/radio-service/types/ApisDtos';
+import {
+  DtoCreateCategory,
+  DtoUpsertCategory,
+  DtoUpsertFileItem,
+} from '@/radio-service/types/ApisDtos';
 
 import { AggregatedClassedItem, AggregatedFileItem } from '../types/Scanner';
 import { StorageType } from './Storage';
@@ -10,22 +14,50 @@ export class Classificator {
     return this.db.classCategory.findMany({ include: { items: true } });
   }
 
-  async upsertCategory({ id, name, values }: DtoUpsertCategory) {
-    await this.db.classCategory.update({
-      where: {
-        id,
-      },
+  async createCategory({ name, values }: DtoCreateCategory) {
+    await this.db.classCategory.create({
       data: {
         name,
         items: {
-          upsert: values.map((value) => ({
-            where: { id: value.id },
-            update: { value: value.value },
-            create: { value: value.value },
-          })),
+          create: values.map((_) => ({ value: _ })),
         },
       },
     });
+  }
+
+  async upsertCategory({ id, name, values }: DtoUpsertCategory) {
+    await this.db.$transaction([
+      this.db.classItem.deleteMany({
+        where: {
+          categoryId: id,
+          id: {
+            notIn: values.filter((_) => _.id !== undefined).map((value) => value.id) as number[],
+          },
+        },
+      }),
+      this.db.classCategory.update({
+        where: {
+          id,
+        },
+        data: {
+          name,
+          items: {
+            upsert: values
+              .filter((_) => _.id !== undefined)
+              .map((value) => ({
+                where: { id: value.id },
+                update: { value: value.value },
+                create: { value: value.value },
+              })),
+            create: values
+              .filter((_) => _.id === undefined)
+              .map((value) => ({
+                value: value.value,
+              })),
+          },
+        },
+      }),
+    ]);
   }
 
   async upsertFileItem({ filehash, classItemsIds }: DtoUpsertFileItem) {

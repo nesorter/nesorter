@@ -1,7 +1,8 @@
 import type { PlaylistItem } from '@prisma/client';
 import axios from 'axios';
 
-import type { DtoUpsertCategory } from '@/radio-service/types/ApisDtos';
+import type { DtoCreateCategory, DtoUpsertCategory } from '@/radio-service/types/ApisDtos';
+import type { DtoUpsertFileItem } from '@/radio-service/types/ApisDtos';
 import type { AggregatedClassCategory } from '@/radio-service/types/Classificator';
 import type { AggregatedPlaylistItem } from '@/radio-service/types/Playlist';
 import type { DtoUpdatePlaylist } from '@/radio-service/types/Playlist';
@@ -21,10 +22,16 @@ export const request = axios.create({
 
 export const api = {
   logger: {
+    /**
+     * Gives status
+     */
     getStatus() {
       return request.get<ServiceStatus>('/api/status');
     },
 
+    /**
+     * Restarts service
+     */
     restart() {
       return request.post('/api/restart', {});
     },
@@ -32,35 +39,35 @@ export const api = {
 
   scheduler: {
     /**
-     * Запускает шедулер
+     * Startups scheduler
      */
     start() {
       return request.get('/api/scheduler/start');
     },
 
     /**
-     * Останавливает шедулер
+     * Stops scheduler
      */
     stop() {
       return request.get('/api/scheduler/stop');
     },
 
     /**
-     * Отдает расписание
+     * Gives schedules
      */
     getItems() {
       return request.get<AggregatedScheduleItem[]>('/api/scheduler/items');
     },
 
     /**
-     * Создает айтем в расписании
+     * Creates schedule
      */
     createItem(name: string, start: number, end: number, playlistIds: string) {
       return request.post('/api/scheduler', { name, start, end, playlistIds });
     },
 
     /**
-     * Обновляет айтем расписания
+     * Updates schedule
      */
     updateItem(
       itemId: number | string,
@@ -76,7 +83,7 @@ export const api = {
     },
 
     /**
-     * Удаляет айтем в расписании
+     * Delete schedule
      */
     deleteItem(itemId: number | string) {
       return request.delete(`/api/scheduler/${itemId}`);
@@ -85,72 +92,89 @@ export const api = {
 
   categories: {
     /**
-     * Возвращает категории
+     * Returns category
      */
     get() {
       return request.get<AggregatedClassCategory[]>('/api/classificator/categories');
     },
 
     /**
-     * Создает категорию
+     * Create category
      */
-    create(data: DtoUpsertCategory) {
+    create(data: DtoCreateCategory) {
       return request.post('/api/classificator/categories', data);
     },
 
     /**
-     * Обновляет категорию
+     * Updates category
      */
     update(data: DtoUpsertCategory) {
-      return request.put('/api/classificator/categories', data);
+      return request.post(`/api/classificator/category/${data.id}`, data);
+    },
+
+    /**
+     * Gives FileItem with classification
+     * @param filehash
+     */
+    getTrackData(filehash: string) {
+      return request.get<AggregatedFileItem>(`/api/classificator/item/${filehash}`);
+    },
+
+    /**
+     * Updates FileItem classification
+     * @param filehash
+     * @param data
+     */
+    updateTrackData(filehash: string, data: DtoUpsertFileItem) {
+      return request.post(`/api/classificator/item/${filehash}`, data);
     },
   },
 
   scanner: {
     /**
-     * Запускает синхронизацию файликов в БД
+     * Starts FS sync
      */
     startSync() {
       return request.get<string>('/api/scanner/sync');
     },
 
     /**
-     * Возвращает связный список файлов и директорий
+     * Returns Chain
      */
     getChain() {
       return request.get<Chain>('/api/scanner/chain');
     },
 
     /**
-     * Возвращает данные трека
+     * Returns FileItem
      */
     getFsItem(filehash: string) {
       return request.get<AggregatedFileItem>(`/api/scanner/fsitem/${filehash}`);
     },
 
     /**
-     * Задает тримминг трека (срезка начальных и конечных моментов трека)
+     * Updates track trim
      */
     setTrim(filehash: string, start: number, end: number) {
       return request.post(`/api/scanner/fsitem/trim/${filehash}`, { start, end });
     },
 
     /**
-     * Возвращает waveform трека
+     * Returns track waveform
      */
     getWaveform(filehash: string) {
       return request.get<number[]>(`/api/scanner/waveform/${filehash}`);
     },
 
     /**
-     * Возвращает строку-путь до файла (это чтобы прям файл GET-методом получить)
+     * Returns URI to track
      */
     getFileAsPath(filehash: string) {
       return `/api/scanner/plainfile/${filehash}`;
     },
 
     /**
-     * Возвращает строку-путь до файла-картинки
+     * Returns URI to album
      */
     getFileImageAsPath(filehash: string) {
       return `/api/scanner/image/${filehash}`;
@@ -159,35 +183,35 @@ export const api = {
 
   playlistsManager: {
     /**
-     * Возвращает список плейлистов
+     * Gives playlists list
      */
     getPlaylists() {
       return request.get<AggregatedPlaylistItem[]>('/api/playlistsManager/queues');
     },
 
     /**
-     * Создаёт плейлист
+     * Creates playlist
      */
     createPlaylist(name: string, type: 'manual' | 'fs', filehash?: string) {
       return request.post('/api/playlistsManager/queues', { name, type, filehash });
     },
 
     /**
-     * Возвращает плейлист
+     * Gives playlist
      */
     getPlaylist(id: string | number) {
       return request.get<PlaylistItem[]>(`/api/playlistsManager/queue/${id}`);
     },
 
     /**
-     * Обновляет плейлист
+     * Updates playlist
      */
     updatePlaylist(id: string | number, dto: DtoUpdatePlaylist) {
       return request.post(`/api/playlistsManager/queue/${id}`, dto);
     },
 
     /**
-     * Удаляет плейлист
+     * Deletes playlist
      */
     deletePlaylist(id: string | number) {
       return request.delete(`/api/playlistsManager/queue/${id}`);
@@ -196,14 +220,14 @@ export const api = {
 
   streamer: {
     /**
-     * Останавливает ffmpeg-стрим на icecast
+     * Stops ffmpeg-stream to icecast
      */
     stopStream() {
       return request.post('/api/playlistsManager/streamStop', {});
     },
 
     /**
-     * Запускает ffmpeg-стрим на icecast
+     * Runs ffmpeg-stream to icecast
      */
     startStream() {
       return request.post('/api/playlistsManager/streamStart', {});
@@ -212,35 +236,35 @@ export const api = {
 
   player: {
     /**
-     * Запускает queue
+     * Starts queue
      */
     play() {
       return request.post('/api/player/play', {});
     },
 
     /**
-     * Стопит queue
+     * Stops queue
      */
     stop() {
       return request.post('/api/player/stop', {});
     },
 
     /**
-     * Очищает queue
+     * Clears queue
      */
     clear() {
       return request.post('/api/player/clear', {});
     },
 
     /**
-     * Включает режим рандомных плейлистов в queue
+     * Queues all playlists in random
      */
     playRandom() {
       return request.post('/api/player/helper/random', {});
     },
 
     /**
-     * Включает плейлист в queue
+     * Adds playlist into queue
      */
     playPlaylist(id: number) {
       return request.post(`/api/player/helper/playlist/${id}`, {});
