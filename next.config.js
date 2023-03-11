@@ -4,10 +4,6 @@ const nextConfig = {
     appDir: false
   },
 
-  compiler: {
-    styledComponents: true,
-  },
-
   async rewrites() {
     return [{
       source: '/api/:path*',
@@ -17,7 +13,6 @@ const nextConfig = {
 }
 
 var firstRun = false;
-
 module.exports = async (phase) => {
   console.log('phase: ', phase);
 
