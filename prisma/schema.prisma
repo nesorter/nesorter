@@ -1,0 +1,142 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource storage {
+  provider = "sqlite"
+  url      = "file:./db/storage.db"
+}
+
+
+
+model FileItem {
+  filehash String @id
+  path     String
+  name     String
+  type     String
+
+  metadata FileItemMetadata?
+  timings  FileItemTimings?
+
+  playlistItems      PlaylistItem[]
+  playlistFsMeta     PlaylistFsMeta[]
+
+  classedItems ClassedItem[]
+}
+
+model FileItemMetadata {
+  id Int @id @default(autoincrement())
+
+  artist String @default("unknown")
+  title  String @default("unknown")
+
+  fileItem     FileItem @relation(fields: [fileItemHash], references: [filehash])
+  fileItemHash String   @unique
+}
+
+model FileItemTimings {
+  id Int @id @default(autoincrement())
+
+  duration  Float @default(0)
+  trimStart Float @default(0)
+  trimEnd   Float @default(0)
+
+  fileItem     FileItem @relation(fields: [fileItemHash], references: [filehash])
+  fileItemHash String   @unique
+}
+
+
+
+model ScheduleItem {
+  id          Int @id @default(autoincrement())
+  withMerging Int @default(0)
+
+  name String @default("Default schedule name")
+  startAt Int
+  endAt   Int
+
+  playlists PlaylistsOnScheduleItem[]
+}
+
+model PlaylistsOnScheduleItem {
+  scheduleItem   ScheduleItem @relation(fields: [scheduleItemId], references: [id])
+  scheduleItemId Int
+
+  playlist   Playlist @relation(fields: [playlistId], references: [id])
+  playlistId Int
+
+  @@id([scheduleItemId, playlistId])
+}
+
+
+
+model Playlist {
+  id Int @id @default(autoincrement())
+
+  name String
+  type String
+
+  fsMeta     PlaylistFsMeta[]
+  manualMeta PlaylistManualMeta?
+
+  scheduleItems PlaylistsOnScheduleItem[]
+}
+
+model PlaylistFsMeta {
+  id Int @id @default(autoincrement())
+
+  fileItem     FileItem? @relation(fields: [fileItemHash], references: [filehash])
+  fileItemHash String?
+
+  playlist   Playlist? @relation(fields: [playlistId], references: [id])
+  playlistId Int?
+}
+
+model PlaylistManualMeta {
+  id Int @id @default(autoincrement())
+
+  playlist   Playlist? @relation(fields: [playlistId], references: [id])
+  playlistId Int?      @unique
+
+  playlistItems PlaylistItem[]
+}
+
+model PlaylistItem {
+  id    Int @id @default(autoincrement())
+  order Int
+
+  fileItem     FileItem? @relation(fields: [fileItemHash], references: [filehash])
+  fileItemHash String?
+
+  playlistManualMeta   PlaylistManualMeta? @relation(fields: [playlistManualMetaId], references: [id])
+  playlistManualMetaId Int?
+}
+
+
+
+model ClassCategory {
+  id    Int @id @default(autoincrement())
+  name  String
+  items ClassItem[]
+}
+
+model ClassItem {
+  id    Int @id @default(autoincrement())
+  value String
+
+  category ClassCategory @relation(fields: [categoryId], references: [id])
+  categoryId Int
+
+  classedItems ClassedItem[]
+}
+
+model ClassedItem {
+  id    Int @id @default(autoincrement())
+
+  classItem ClassItem @relation(fields: [classItemId], references: [id])
+  classItemId Int
+
+  file FileItem @relation(fields: [fileHash], references: [filehash])
+  fileHash String
+}

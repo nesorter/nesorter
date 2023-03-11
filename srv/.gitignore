@@ -1,5 +1,0 @@
-node_modules
-.env
-prisma/db/storage.db
-prisma/db/storage.db-journal
-dist
