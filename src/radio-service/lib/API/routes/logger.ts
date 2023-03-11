@@ -66,6 +66,7 @@ export const gen = (
       playing: queue.state === 'playing',
       syncing: scanner.scanInProgress,
       streaming: streamer.streaming,
+      steamUrl: config.SHOUT_URL,
       currentFile: queue.currentFileHash,
       queue: {
         items: queue.items,

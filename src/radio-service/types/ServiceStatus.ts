@@ -9,6 +9,7 @@ export type ServiceStatus = {
   playing?: boolean;
   syncing?: boolean;
   streaming?: boolean;
+  steamUrl?: string;
 
   fileData?: AggregatedFileItem;
   currentFile?: string;
