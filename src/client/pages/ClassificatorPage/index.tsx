@@ -1,5 +1,6 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Form, Input, List, Select, Space, Tree, Typography } from 'antd';
+import { Button, Card, Form, Input, List, Space, Tree, Typography } from 'antd';
+import Image from 'next/image';
 import React, { useMemo, useState } from 'react';
 
 import { api } from '@/client/api';
@@ -37,6 +38,25 @@ const ClassificatorPage = ({
   const [editCategoryForm] = Form.useForm();
   const [currentCategoryId, setCurrentCategoryId] = useState(-1);
 
+  const [isListening, setIsListening] = useState(false);
+  const [audio, setAudio] = useState(typeof window === 'undefined' ? undefined : new Audio());
+
+  const handleListen = () => {
+    if (isListening) {
+      if (audio) {
+        audio.pause();
+        audio.src = '';
+      }
+    } else {
+      if (audio) {
+        audio.src = api.scanner.getFileAsPath(trackQuery.data?.filehash || '');
+        audio.play().catch(console.error);
+      }
+    }
+
+    setIsListening(!isListening);
+  };
+
   const handleCategoryEdit = (categoryId: number) => {
     setCurrentCategoryId(categoryId);
     const category = categoriesQuery.data?.find((_) => _.id === categoryId);
@@ -70,6 +90,20 @@ const ClassificatorPage = ({
         values: ['First value', 'Second value'],
       })
       .finally(() => categoriesQuery.refetch());
+  };
+
+  const handleCheckClassItem = (classItemId: number, isChecked: boolean) => {
+    api.categories
+      .updateTrackData(trackQuery?.data?.filehash || '', {
+        filehash: trackQuery?.data?.filehash || '',
+        classItemsIds: isChecked
+          ? [...(trackQuery?.data?.classedItems || []).map((_) => _.classItemId), classItemId]
+          : (trackQuery?.data?.classedItems || [])
+              .map((_) => _.classItemId)
+              .filter((_) => _ !== classItemId),
+      })
+      .catch(console.error)
+      .finally(() => trackQuery.refetch());
   };
 
   const formItemLayout = {
@@ -142,7 +176,57 @@ const ClassificatorPage = ({
         )}
 
         {Boolean(selectedTrack) && !classEditMode && (
-          <pre>{JSON.stringify(selectedTrack, null, 2)}</pre>
+          <Card size='small'>
+            <Space direction='vertical' size='large'>
+              <Space align='start'>
+                <Image
+                  src={api.scanner.getFileImageAsPath(trackQuery.data?.filehash || '')}
+                  alt='track album'
+                  width={128}
+                  height={128}
+                  style={{ borderRadius: 8 }}
+                />
+
+                <Button onClick={() => handleListen()}>{isListening ? 'Stop' : 'Listen'}</Button>
+              </Space>
+
+              <Space direction='vertical' size='small'>
+                <Typography.Text>Artist: {trackQuery.data?.metadata?.artist}</Typography.Text>
+
+                <Typography.Text>Title: {trackQuery.data?.metadata?.title}</Typography.Text>
+              </Space>
+
+              <Space direction='vertical' size='small'>
+                {categoriesQuery.data?.map((category) => (
+                  <Space key={category.id} align='baseline' wrap>
+                    <Typography.Text style={{ display: 'inline-block', minWidth: '80px' }}>
+                      {category.name}
+                    </Typography.Text>
+
+                    {category.items?.map((item) => {
+                      const isChecked =
+                        (trackQuery.data?.classedItems || []).find(
+                          (aggregatedItem) => aggregatedItem.classItemId === item.id,
+                        ) !== undefined;
+
+                      console.log({ item });
+
+                      return (
+                        <Button
+                          size='small'
+                          key={item.id}
+                          onClick={() => handleCheckClassItem(item.id, !isChecked)}
+                          type={isChecked ? 'primary' : 'dashed'}
+                        >
+                          {item.value}
+                        </Button>
+                      );
+                    })}
+                  </Space>
+                ))}
+              </Space>
+            </Space>
+          </Card>
         )}
 
         {Boolean(classEditMode) && (
