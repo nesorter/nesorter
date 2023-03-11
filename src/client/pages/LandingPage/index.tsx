@@ -92,7 +92,11 @@ const LandingPage = ({
           audio.fastSeek(seekTo > 0 ? (seekTo < Number(currentQueueItem?.endAt) ? seekTo : 0) : 0);
         }
       } else {
-        audio.pause();
+        if (isPlaying) {
+          audio.play().catch(console.log);
+        } else {
+          audio.pause();
+        }
       }
     }
   }, [isPlaying]);
@@ -226,7 +230,7 @@ const LandingPage = ({
           <Space direction='vertical'>
             <Card title='Queue' size='small'>
               <List
-                dataSource={status.queue?.items}
+                dataSource={statusQuery?.data?.queue?.items}
                 rowKey='order'
                 size='small'
                 style={{ width: '480px', maxHeight: '428px', overflowY: 'auto' }}
