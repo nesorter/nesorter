@@ -1,0 +1,21 @@
+{
+    "name": "nesorter radio player",
+    "short_name": "nesorter",
+    "description": "App that allows listen radio",
+    "icons": [
+        {
+            "src": "splash.png",
+            "sizes": "32x32",
+            "type": "image/png"
+        },
+        {
+            "src": "splash.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "start_url": "/",
+    "display": "fullscreen",
+    "theme_color": "#000000",
+    "background_color": "#000000"
+}

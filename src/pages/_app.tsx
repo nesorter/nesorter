@@ -5,7 +5,7 @@ import type { AppProps as NextAppProps } from 'next/app';
 import { JetBrains_Mono } from 'next/font/google';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { ComponentType, useState } from 'react';
+import { ComponentType, useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { PublicLayout } from '@/client/layouts/PublicLayout';
@@ -37,6 +37,32 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         },
       }),
   );
+  useEffect(() => {
+    const run = async () => {
+      if ('serviceWorker' in navigator) {
+        try {
+          const registration = await navigator.serviceWorker.register(
+            'serviceworker.js',
+            {
+              scope: './',
+            }
+          );
+          if (registration.installing) {
+            console.log('Service worker installing');
+          } else if (registration.waiting) {
+            console.log('Service worker installed');
+          } else if (registration.active) {
+            console.log('Service worker active');
+          }
+        } catch (error) {
+          console.error(`Registration failed with ${error}`);
+        }
+      }
+    };
+
+    run().catch(console.error)
+  
+  }, []);
 
   if (pageProps.adminSide) {
     if (!handleAdminTokenInput(pageProps.clientAdminToken)) {
@@ -61,6 +87,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       >
         <Head>
           <title>nesorter</title>
+          <link rel="manifest" href="nesorter.webmanifest" />
         </Head>
 
         <Layout {...pageProps}>
