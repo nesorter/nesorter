@@ -244,7 +244,7 @@ export class Scanner {
     }
 
     this.scanInProgress = false;
-    this._getChain()
+    await this._getChain()
       .then((_) => {
         this.chain = _;
         this.onScanned(this.chain);

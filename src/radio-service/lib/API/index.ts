@@ -56,7 +56,7 @@ export class API {
       this.streamer,
       this.db,
     );
-    genScannerRoutes(this.logger, this.router, this.scanner);
+    genScannerRoutes(this.logger, this.router, this.scanner, this.playlistsManager);
     genSchedulerRoutes(this.logger, this.router, this.scheduler);
     getPlayerRoutes(this.logger, this.router, this.queue, this.playHelper);
 

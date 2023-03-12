@@ -10,6 +10,7 @@ import config from '../../config';
 import { Logger } from '../../Logger';
 import { Scanner } from '../../Scanner';
 import { getWaveformInfo, withAdminToken, withLogger } from '../../utils';
+import { PlaylistsManager } from './../../PlaylistsManager';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,7 +26,12 @@ type MulterFile = {
   size: number; //7677220
 };
 
-export const gen = (logger: Logger, api: Express.Application, scanner: Scanner) => {
+export const gen = (
+  logger: Logger,
+  api: Express.Application,
+  scanner: Scanner,
+  playlistsManager: PlaylistsManager,
+) => {
   const upload = multer({ dest: '/tmp' });
 
   api.post(
@@ -34,7 +40,11 @@ export const gen = (logger: Logger, api: Express.Application, scanner: Scanner) 
     withAdminToken(
       withLogger(logger, async (req, res) => {
         try {
-          const { path, newDir } = req.body as { path: string; newDir: string };
+          const {
+            path,
+            newDir,
+            shouldCreatePlaylist = '0',
+          } = req.body as { path: string; newDir: string; shouldCreatePlaylist?: string };
 
           if (!path || !newDir) {
             res.status(500).json({ error: 'some fields missed' });
@@ -49,6 +59,29 @@ export const gen = (logger: Logger, api: Express.Application, scanner: Scanner) 
           for (const file of req.files as MulterFile[]) {
             await copyFile(file.path, `${path}${newDir}/${file.originalname}`);
             await rm(file.path);
+          }
+
+          if (shouldCreatePlaylist === '1') {
+            await scanner.syncStorage(
+              config.CONTENT_ROOT_DIR_PATH,
+              ({ name }) => /.*\.mp3/.test(name) || /.*\.ogg/.test(name),
+            );
+            const chainItems = Object.values(scanner.getChain());
+            const chainItem = chainItems.find((_) => _.fsItem?.path === `${path}${newDir}`);
+
+            console.dir({
+              path: `${path}${newDir}`,
+              items: chainItems.filter((_) => _.fsItem?.type === 'dir').map((_) => _.fsItem),
+              chainItem,
+            });
+
+            try {
+              if (chainItem) {
+                await playlistsManager.createQueue(newDir, 'fs', chainItem?.fsItem?.filehash || '');
+              }
+            } catch (e) {
+              console.log(e);
+            }
           }
 
           res.json({ status: 'done' });

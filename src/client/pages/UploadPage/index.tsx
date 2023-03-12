@@ -1,5 +1,16 @@
 import { InfoCircleOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Card, Form, Input, Space, TreeSelect, Typography, Upload, UploadFile } from 'antd';
+import {
+  Button,
+  Card,
+  Form,
+  Input,
+  Space,
+  Switch,
+  TreeSelect,
+  Typography,
+  Upload,
+  UploadFile,
+} from 'antd';
 import { useMemo, useState } from 'react';
 
 import { AdminLayout } from '@/client/layouts/AdminLayout';
@@ -28,6 +39,7 @@ const UploadPage = ({ chain }: WithDefaultPageProps) => {
   const handleUpload = (data: {
     baseDirKey: string;
     newDirName: string;
+    shouldCreatePlaylist: boolean;
     files: { fileList: UploadFile[] };
   }) => {
     if (!/^([a-zA-Z]|\d|_)*$/.test(data.newDirName)) {
@@ -39,8 +51,9 @@ const UploadPage = ({ chain }: WithDefaultPageProps) => {
 
     const path = chain.find((_) => _.key === data.baseDirKey)?.path || '';
     const formData = new FormData();
-    formData.append('path', `/${path}`);
+    formData.append('path', `/${path}/`);
     formData.append('newDir', data.newDirName);
+    formData.append('shouldCreatePlaylist', data.shouldCreatePlaylist ? '1' : '0');
 
     data.files.fileList.forEach((file, index) => {
       if (file.originFileObj) {
@@ -121,6 +134,14 @@ const UploadPage = ({ chain }: WithDefaultPageProps) => {
               >
                 <Button icon={<UploadOutlined />}>Click to select</Button>
               </Upload>
+            </Form.Item>
+
+            <Form.Item
+              label='Create playlist?'
+              name='shouldCreatePlaylist'
+              tooltip='This option enables automatical playlist creation with uploaded files after uploading process'
+            >
+              <Switch />
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 7, span: 15 }}>
