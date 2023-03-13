@@ -1,6 +1,7 @@
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
+  DeleteOutlined,
   EditOutlined,
   ZoomInOutlined,
   ZoomOutOutlined,
@@ -64,6 +65,12 @@ const SchedulerPage = ({
 
   const handleCreate = () => {
     api.scheduler.createItem('New playlist', 1, 3600, '1').finally(() => query.refetch());
+  };
+
+  const handleDelete = (id: number) => {
+    if (confirm('You really want DELETE record?')) {
+      api.scheduler.deleteItem(id).finally(() => query.refetch());
+    }
   };
 
   const handleEdit = (id: number) => {
@@ -148,6 +155,8 @@ const SchedulerPage = ({
                 ) : (
                   <EditOutlined key='edit-changes' onClick={() => handleEdit(item.id)} />
                 )}
+
+                <DeleteOutlined onClick={() => handleDelete(item.id)} />
 
                 <Typography.Text>
                   <Typography.Text>#{item.id}, </Typography.Text>

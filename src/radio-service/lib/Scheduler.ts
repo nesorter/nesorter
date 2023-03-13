@@ -1,6 +1,8 @@
 import { PlaylistItem, ScheduleItem } from '@prisma/client';
 import { secondsInDay } from 'date-fns';
 
+import playlists from '@/pages/admin/playlists';
+
 import { Logger } from './Logger';
 import { LogLevel, LogTags } from './Logger.types';
 import { PlaylistsManager } from './PlaylistsManager';
@@ -90,6 +92,7 @@ export class Scheduler {
   }
 
   async deleteItem(id: number) {
+    await this.db.playlistsOnScheduleItem.deleteMany({ where: { scheduleItemId: id } });
     return this.db.scheduleItem.delete({ where: { id } });
   }
 
@@ -103,6 +106,13 @@ export class Scheduler {
       playlistIds: string;
     },
   ) {
+    await this.db.playlistsOnScheduleItem.deleteMany({
+      where: {
+        scheduleItemId: id,
+        playlistId: { notIn: data.playlistIds.split(',').map((_) => Number(_)) },
+      },
+    });
+
     return this.db.scheduleItem.update({
       data: {
         startAt: data.startAt,
