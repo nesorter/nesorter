@@ -1,4 +1,5 @@
 import { Button, Card, Form, Input } from 'antd';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { LoginLayout } from '@/client/layouts/LoginLayout';
@@ -21,6 +22,10 @@ const LoginPage = () => {
 
   return (
     <Card title='Login' style={{ width: 480 }}>
+      <Head>
+        <title>nesorter :: login</title>
+      </Head>
+
       <Form
         name='login-form'
         labelCol={{ span: 8 }}

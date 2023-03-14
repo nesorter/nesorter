@@ -1,5 +1,6 @@
 import { Button, Card, Space, Switch, Table, Typography } from 'antd';
 import { addSeconds, format, startOfDay } from 'date-fns';
+import Head from 'next/head';
 import { useMemo } from 'react';
 
 import { api } from '@/client/api';
@@ -203,6 +204,10 @@ const StatusPage = ({ radioStatus, chain }: WithDefaultPageProps) => {
 
   return (
     <Space align='start' size='middle'>
+      <Head>
+        <title>nesorter :: status</title>
+      </Head>
+
       <Space direction='vertical' size='middle'>
         {systemStatus}
 

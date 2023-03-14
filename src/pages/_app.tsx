@@ -41,12 +41,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     const run = async () => {
       if ('serviceWorker' in navigator) {
         try {
-          const registration = await navigator.serviceWorker.register(
-            'serviceworker.js',
-            {
-              scope: './',
-            }
-          );
+          const registration = await navigator.serviceWorker.register('serviceworker.js', {
+            scope: './',
+          });
           if (registration.installing) {
             console.log('Service worker installing');
           } else if (registration.waiting) {
@@ -60,8 +57,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       }
     };
 
-    run().catch(console.error)
-  
+    run().catch(console.error);
   }, []);
 
   if (pageProps.adminSide) {
@@ -87,7 +83,10 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       >
         <Head>
           <title>nesorter</title>
-          <link rel="manifest" href="nesorter.webmanifest" />
+
+          <link rel='manifest' href='/nesorter.webmanifest' />
+
+          <link rel='icon' href='/favicon.svg' />
         </Head>
 
         <Layout {...pageProps}>

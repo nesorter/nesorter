@@ -1,5 +1,6 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Form, Input, List, Space, Tree, Typography } from 'antd';
+import Head from 'next/head';
 import Image from 'next/image';
 import React, { useMemo, useState } from 'react';
 
@@ -39,7 +40,7 @@ const ClassificatorPage = ({
   const [currentCategoryId, setCurrentCategoryId] = useState(-1);
 
   const [isListening, setIsListening] = useState(false);
-  const [audio, setAudio] = useState(typeof window === 'undefined' ? undefined : new Audio());
+  const [audio] = useState(typeof window === 'undefined' ? undefined : new Audio());
 
   const handleListen = () => {
     if (isListening) {
@@ -126,6 +127,10 @@ const ClassificatorPage = ({
 
   return (
     <Space size='large' align='start'>
+      <Head>
+        <title>nesorter :: classificator</title>
+      </Head>
+
       <Space size='large' direction='vertical'>
         <Card
           title='Classes'

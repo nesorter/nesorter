@@ -48,17 +48,26 @@ export const gen = (
     }
 
     let icecastData = {};
-    try {
-      const xml = await axios.get(`http://${config.SHOUT_HOST}:${config.SHOUT_PORT}/admin/stats`, {
-        auth: {
-          username: config.SHOUT_ADMIN_USER,
-          password: config.SHOUT_ADMIN_PASSWORD,
-        },
-      });
-      const parser = new XMLParser();
-      icecastData = parser.parse(xml.data as string) as IcecastStatus;
-    } catch (e) {
-      logger.log({ message: e?.toString() || '', tags: [LogTags.STREAMER], level: LogLevel.ERROR });
+    if (streamer.streaming) {
+      try {
+        const xml = await axios.get(
+          `http://${config.SHOUT_HOST}:${config.SHOUT_PORT}/admin/stats`,
+          {
+            auth: {
+              username: config.SHOUT_ADMIN_USER,
+              password: config.SHOUT_ADMIN_PASSWORD,
+            },
+          },
+        );
+        const parser = new XMLParser();
+        icecastData = parser.parse(xml.data as string) as IcecastStatus;
+      } catch (e) {
+        logger.log({
+          message: e?.toString() || '',
+          tags: [LogTags.STREAMER],
+          level: LogLevel.ERROR,
+        });
+      }
     }
 
     const status: ServiceStatus = {

@@ -16,6 +16,7 @@ import {
   Typography,
 } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
+import Head from 'next/head';
 import { useEffect, useMemo, useState } from 'react';
 
 import { api } from '@/client/api';
@@ -453,6 +454,10 @@ const PlaylistsPage = ({
 
   return (
     <>
+      <Head>
+        <title>nesorter :: playlists</title>
+      </Head>
+
       {createModal}
 
       {editModal}

@@ -11,6 +11,7 @@ import {
   Upload,
   UploadFile,
 } from 'antd';
+import Head from 'next/head';
 import { useMemo, useState } from 'react';
 
 import { AdminLayout } from '@/client/layouts/AdminLayout';
@@ -78,6 +79,10 @@ const UploadPage = ({ chain }: WithDefaultPageProps) => {
 
   return (
     <Card title='Upload music into library'>
+      <Head>
+        <title>nesorter :: upload</title>
+      </Head>
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <Card
           style={{ width: 'calc(100% - 344px)' }}
