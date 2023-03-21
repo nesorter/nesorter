@@ -46,4 +46,9 @@
     .root :global(.ant-space-item), .root :global(.ant-space) {
         width: 100%;
     }
+
+    .player > :global(.ant-card-body) {
+        display: flex;
+        justify-content: center;
+    }
 }

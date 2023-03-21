@@ -15,7 +15,7 @@ import { useChain } from '@/client/hooks/queries/useChain';
 import { useStatus } from '@/client/hooks/queries/useStatus';
 import { PublicLayout } from '@/client/layouts/PublicLayout';
 import type { WithDefaultPageProps } from '@/client/types/DefaultPageProps';
-import { formatTime } from '@/client/utils/formatTime';
+import { formatTime, formatTimeWithSeconds } from '@/client/utils/formatTime';
 import { withDefaultPageProps } from '@/client/utils/withDefaultPageProps';
 import type { ServiceStatus } from '@/radio-service/types/ServiceStatus';
 
@@ -169,9 +169,12 @@ const LandingPage = ({
                   <Space>
                     <Slider
                       style={{ width: '256px' }}
-                      min={currentQueueItem?.startAt}
-                      max={currentQueueItem?.endAt}
-                      value={currentSeconds}
+                      min={0}
+                      max={Number(currentQueueItem?.endAt) - Number(currentQueueItem?.startAt)}
+                      value={currentSeconds - Number(currentQueueItem?.startAt)}
+                      tooltip={{
+                        formatter: formatTimeWithSeconds,
+                      }}
                       disabled
                     />
                   </Space>

@@ -176,8 +176,8 @@ const SchedulerPage = ({
 
               <Slider
                 range={{ draggableTrack: true }}
-                min={0}
-                max={secondsInDay - 1}
+                min={60}
+                max={secondsInDay - 60}
                 marks={marks}
                 step={60 * 5}
                 defaultValue={
