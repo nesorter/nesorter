@@ -8,7 +8,6 @@ import {
 } from '@ant-design/icons';
 import { Button, Card, Form, Input, List, Select, Slider, Space, Switch, Typography } from 'antd';
 import { secondsInDay } from 'date-fns';
-import Head from 'next/head';
 import { useState } from 'react';
 
 import { api } from '@/client/api';
@@ -135,10 +134,6 @@ const SchedulerPage = ({
         </Space>
       }
     >
-      <Head>
-        <title>nesorter :: scheduler</title>
-      </Head>
-
       <List
         dataSource={query.data?.sort((a, b) =>
           sortMode === 'id' ? a.id - b.id : a.startAt - b.startAt,
@@ -269,6 +264,7 @@ const SchedulerPage = ({
 };
 
 SchedulerPage.Layout = AdminLayout;
+SchedulerPage.Title = 'nesorter :: scheduler';
 export default SchedulerPage;
 export const getServerSideProps = withDefaultPageProps(async () => {
   const scheduleItems = await api.scheduler.getItems().then((_) => _.data);

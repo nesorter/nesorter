@@ -1,5 +1,4 @@
 import { Button, Card, Space, Switch, Table, Typography } from 'antd';
-import Head from 'next/head';
 import { useMemo } from 'react';
 
 import { api } from '@/client/api';
@@ -201,10 +200,6 @@ const StatusPage = ({ radioStatus, chain }: WithDefaultPageProps) => {
 
   return (
     <Space align='start' size='middle'>
-      <Head>
-        <title>nesorter :: status</title>
-      </Head>
-
       <Space direction='vertical' size='middle'>
         {systemStatus}
 
@@ -217,5 +212,6 @@ const StatusPage = ({ radioStatus, chain }: WithDefaultPageProps) => {
 };
 
 StatusPage.Layout = AdminLayout;
+StatusPage.Title = 'nesorter :: status';
 export default StatusPage;
 export const getServerSideProps = withDefaultPageProps(() => Promise.resolve({ props: {} }));

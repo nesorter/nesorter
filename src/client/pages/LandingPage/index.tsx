@@ -7,7 +7,6 @@ import {
 } from '@ant-design/icons';
 import { Avatar, Button, Card, List, Slider, Space, Spin, Switch, Tooltip, Typography } from 'antd';
 import { differenceInSeconds, endOfDay, secondsInDay } from 'date-fns';
-import Head from 'next/head';
 import { useEffect, useMemo, useState } from 'react';
 
 import { api } from '@/client/api';
@@ -152,10 +151,6 @@ const LandingPage = ({
 
   return (
     <div className={styles.root}>
-      <Head>
-        <title>nesorter :: player</title>
-      </Head>
-
       <Space direction='vertical' size='small'>
         {Boolean(currentChainItem?.fsItem?.metadata?.artist) && (
           <Card title='Now playling' className={styles.nowPlaying} size='small'>
@@ -275,6 +270,7 @@ const LandingPage = ({
 };
 
 LandingPage.Layout = PublicLayout;
+LandingPage.Title = 'nesorter :: player';
 export default LandingPage;
 export const getServerSideProps = withDefaultPageProps(async () => {
   const status = await api.logger.getStatus().then((_) => _.data);

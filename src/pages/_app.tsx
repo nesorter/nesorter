@@ -27,6 +27,7 @@ const font = JetBrains_Mono({
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
+
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -37,6 +38,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         },
       }),
   );
+
   useEffect(() => {
     const run = async () => {
       if ('serviceWorker' in navigator) {
@@ -71,6 +73,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   }
 
   const Layout = Component.Layout || PublicLayout;
+  const Title = Component.Title || 'nesorter';
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -82,7 +85,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         }}
       >
         <Head>
-          <title>nesorter</title>
+          <title>{Title}</title>
 
           <link rel='manifest' href='/nesorter.webmanifest' />
 

@@ -22,10 +22,6 @@ const LoginPage = () => {
 
   return (
     <Card title='Login' style={{ width: 480 }}>
-      <Head>
-        <title>nesorter :: login</title>
-      </Head>
-
       <Form
         name='login-form'
         labelCol={{ span: 8 }}
@@ -55,6 +51,7 @@ const LoginPage = () => {
 };
 
 LoginPage.Layout = LoginLayout;
+LoginPage.Title = 'nesorter :: login';
 export default LoginPage;
 export const getServerSideProps = withDefaultPageProps(() =>
   Promise.resolve({ props: { adminSide: false } }),

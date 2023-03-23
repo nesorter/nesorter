@@ -1,6 +1,5 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Form, Input, List, Space, Tree, Typography } from 'antd';
-import Head from 'next/head';
 import Image from 'next/image';
 import React, { useMemo, useState } from 'react';
 
@@ -127,10 +126,6 @@ const ClassificatorPage = ({
 
   return (
     <Space size='large' align='start'>
-      <Head>
-        <title>nesorter :: classificator</title>
-      </Head>
-
       <Space size='large' direction='vertical'>
         <Card
           title='Classes'
@@ -346,6 +341,7 @@ const ClassificatorPage = ({
 };
 
 ClassificatorPage.Layout = AdminLayout;
+ClassificatorPage.Title = 'nesorter :: classificator';
 export default ClassificatorPage;
 export const getServerSideProps = withDefaultPageProps(async () => {
   const catalogs = await api.categories.get().then((_) => _.data);

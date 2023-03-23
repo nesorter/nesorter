@@ -16,7 +16,6 @@ import {
   Typography,
 } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import Head from 'next/head';
 import { useEffect, useMemo, useState } from 'react';
 
 import { api } from '@/client/api';
@@ -450,10 +449,6 @@ const PlaylistsPage = ({
 
   return (
     <>
-      <Head>
-        <title>nesorter :: playlists</title>
-      </Head>
-
       {createModal}
 
       {editModal}
@@ -480,6 +475,7 @@ const PlaylistsPage = ({
 };
 
 PlaylistsPage.Layout = AdminLayout;
+PlaylistsPage.Title = 'nesorter :: playlists';
 export default PlaylistsPage;
 export const getServerSideProps = withDefaultPageProps(async () => {
   const playlists = await api.playlistsManager.getPlaylists().then((items) => items.data);
