@@ -1,6 +1,6 @@
 import { PlaylistItem } from '@prisma/client';
 
-import { DtoUpdatePlaylist } from '@/radio-service/types/Playlist';
+import { DtoUpdatePlaylist } from '@/radio-service/types';
 
 export type AbstractPlaylistUpdateItem = {
   order: number;

@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-import { AggregatedFileItem } from '../types/Scanner';
-import config from './config';
-import { Logger } from './Logger';
-import { LogLevel, LogTags } from './Logger.types';
+import { Logger } from '@/radio-service/lib/Logger';
+import { AggregatedFileItem, LogLevel, LogTags } from '@/radio-service/types';
+import { config } from '@/radio-service/utils';
 
 export class Publisher {
   constructor(private logger: Logger) {}

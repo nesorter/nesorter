@@ -6,11 +6,10 @@ import NodeID3 from 'node-id3';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import config from '../../config';
-import { Logger } from '../../Logger';
-import { Scanner } from '../../Scanner';
-import { withAdminToken, withLogger } from '../../utils';
-import { PlaylistsManager } from './../../PlaylistsManager';
+import { Logger } from '@/radio-service/lib/Logger';
+import { PlaylistsManager } from '@/radio-service/lib/PlaylistsManager';
+import { Scanner } from '@/radio-service/lib/Scanner';
+import { config, withAdminToken, withLogger } from '@/radio-service/utils';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

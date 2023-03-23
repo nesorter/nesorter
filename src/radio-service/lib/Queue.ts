@@ -1,12 +1,9 @@
 import * as Sentry from '@sentry/node';
 
-import { QueueItem, QueueState } from '@/radio-service/types/Queue';
-
-import config from './config';
-import { Player } from './Player';
-import { Publisher } from './Publisher';
-import { StorageType } from './Storage';
-import { currentSecondsFromDayStart, sleep } from './utils';
+import { Player } from '@/radio-service/lib/Player';
+import { Publisher } from '@/radio-service/lib/Publisher';
+import { QueueItem, QueueState, StorageType } from '@/radio-service/types';
+import { config, getCurrentSeconds, sleep } from '@/radio-service/utils';
 
 export class Queue {
   public items: QueueItem[] = [];
@@ -20,7 +17,7 @@ export class Queue {
   }
 
   private runCleanupLoop() {
-    const currentSeconds = currentSecondsFromDayStart();
+    const currentSeconds = getCurrentSeconds();
     this.items = this.items.filter((_) => _.endAt + config.MPV_FADE_TIME + 1 > currentSeconds);
 
     setTimeout(() => this.runCleanupLoop(), 1000);
@@ -31,7 +28,7 @@ export class Queue {
       return;
     }
 
-    const currentSeconds = currentSecondsFromDayStart();
+    const currentSeconds = getCurrentSeconds();
     const item = this.items.find((_) => _.startAt <= currentSeconds && _.endAt >= currentSeconds);
 
     if (item && item?.order !== this.currentOrder) {
@@ -99,7 +96,7 @@ export class Queue {
 
     const lastItem = this.items.at(-1);
     let stopAddSignal = false;
-    let startAt = currentSecondsFromDayStart();
+    let startAt = getCurrentSeconds();
     let endAt = startAt + Number(file.timings?.duration);
 
     if (lastItem) {

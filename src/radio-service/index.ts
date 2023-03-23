@@ -1,4 +1,4 @@
-import { createRadioServiceModule } from '@/radio-service/main';
+import { createRadioServiceModule } from '@/radio-service/utils/createRadioServiceModule';
 
 export const getInstance = () => {
   if (typeof window !== 'undefined') {

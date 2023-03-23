@@ -2,8 +2,8 @@ import * as Sentry from '@sentry/node';
 import { createLogger, format, Logger as WinstonLogger, transports } from 'winston';
 import LokiTransport from 'winston-loki';
 
-import config from './config';
-import { LogLevel, LogTags } from './Logger.types';
+import { LogLevel, LogTags } from '@/radio-service/types';
+import { config } from '@/radio-service/utils';
 
 type logParams = {
   message: string;

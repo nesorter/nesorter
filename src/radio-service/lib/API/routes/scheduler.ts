@@ -1,8 +1,8 @@
 import Express from 'express';
 
-import { Logger } from '../../Logger';
-import { Scheduler } from '../../Scheduler';
-import { withAdminToken, withLogger } from '../../utils';
+import { Logger } from '@/radio-service/lib/Logger';
+import { Scheduler } from '@/radio-service/lib/Scheduler';
+import { withAdminToken, withLogger } from '@/radio-service/utils';
 
 export const gen = (logger: Logger, api: Express.Application, scheduler: Scheduler) => {
   api.get(

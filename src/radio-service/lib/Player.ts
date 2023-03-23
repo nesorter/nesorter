@@ -3,11 +3,9 @@ import { spawn } from 'child_process';
 import { createServer, Server, Socket } from 'net';
 import kill from 'tree-kill';
 
-import { AggregatedFileItem } from '../types/Scanner';
-import config from './config';
-import { Logger } from './Logger';
-import { LogLevel, LogTags } from './Logger.types';
-import { asyncSpawn, makeSafePath, range } from './utils';
+import { Logger } from '@/radio-service/lib/Logger';
+import { AggregatedFileItem, LogLevel, LogTags } from '@/radio-service/types';
+import { asyncSpawn, config, makeArrayRange, makeSafePath } from '@/radio-service/utils';
 
 export class Player {
   socket: { id: number; instance: Server; isBind: boolean }[] = [];
@@ -38,7 +36,7 @@ export class Player {
       this.logger.log({ message: `Socket created at /tmp/output_socket.mp3` });
     });
 
-    this.socket = range(2).map((id) => ({
+    this.socket = makeArrayRange(2).map((id) => ({
       id,
       isBind: false,
       instance: (() => {

@@ -3,11 +3,9 @@ import { createHash } from 'crypto';
 import { readdir, readFile, stat } from 'fs/promises';
 import { parseBuffer } from 'music-metadata';
 
-import { Chain, ScannedItem } from '../types/Scanner';
-import { Logger } from './Logger';
-import { LogLevel, LogTags } from './Logger.types';
-import { StorageType } from './Storage';
-import { sleep } from './utils';
+import { Logger } from '@/radio-service/lib/Logger';
+import { Chain, LogLevel, LogTags, ScannedItem, StorageType } from '@/radio-service/types';
+import { sleep } from '@/radio-service/utils';
 
 export class Scanner {
   SLEEP_AFTER_SCAN = true;

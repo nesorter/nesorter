@@ -1,22 +1,21 @@
 import Express from 'express';
 
-import { Classificator } from '../Classificator';
-import config from '../config';
-import { Logger } from '../Logger';
-import { LogLevel, LogTags } from '../Logger.types';
-import { PlaylistsManager } from '../PlaylistsManager';
-import { PlaylistsPlayHelper } from '../PlaylistsPlayHelper';
-import { Queue } from '../Queue';
-import { Scanner } from '../Scanner';
-import { Scheduler } from '../Scheduler';
-import { StorageType } from '../Storage';
-import { Streamer } from '../Streamer';
-import { gen as genClassificatorRoutes } from './routes/classificator';
-import { gen as genLoggerRoutes } from './routes/logger';
-import { gen as getPlayerRoutes } from './routes/player';
-import { gen as genPlaylistsManagerRoutes } from './routes/playlistsManager';
-import { gen as genScannerRoutes } from './routes/scanner';
-import { gen as genSchedulerRoutes } from './routes/scheduler';
+import { gen as genClassificatorRoutes } from '@/radio-service/lib/API/routes/classificator';
+import { gen as genLoggerRoutes } from '@/radio-service/lib/API/routes/logger';
+import { gen as getPlayerRoutes } from '@/radio-service/lib/API/routes/player';
+import { gen as genPlaylistsManagerRoutes } from '@/radio-service/lib/API/routes/playlistsManager';
+import { gen as genScannerRoutes } from '@/radio-service/lib/API/routes/scanner';
+import { gen as genSchedulerRoutes } from '@/radio-service/lib/API/routes/scheduler';
+import { Classificator } from '@/radio-service/lib/Classificator';
+import { Logger } from '@/radio-service/lib/Logger';
+import { PlaylistsManager } from '@/radio-service/lib/PlaylistsManager';
+import { PlaylistsPlayHelper } from '@/radio-service/lib/PlaylistsPlayHelper';
+import { Queue } from '@/radio-service/lib/Queue';
+import { Scanner } from '@/radio-service/lib/Scanner';
+import { Scheduler } from '@/radio-service/lib/Scheduler';
+import { Streamer } from '@/radio-service/lib/Streamer';
+import { LogLevel, LogTags, StorageType } from '@/radio-service/types';
+import { config } from '@/radio-service/utils';
 
 /**
  * Класс гигачад

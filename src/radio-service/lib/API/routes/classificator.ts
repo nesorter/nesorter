@@ -1,14 +1,9 @@
 import Express from 'express';
 
-import {
-  DtoCreateCategory,
-  DtoUpsertCategory,
-  DtoUpsertFileItem,
-} from '@/radio-service/types/ApisDtos';
-
-import { Classificator } from '../../Classificator';
-import { Logger } from '../../Logger';
-import { withAdminToken, withLogger } from '../../utils';
+import { Classificator } from '@/radio-service/lib/Classificator';
+import { Logger } from '@/radio-service/lib/Logger';
+import { DtoCreateCategory, DtoUpsertCategory, DtoUpsertFileItem } from '@/radio-service/types';
+import { withAdminToken, withLogger } from '@/radio-service/utils';
 
 export const gen = (logger: Logger, api: Express.Application, classificator: Classificator) => {
   api

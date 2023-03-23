@@ -1,6 +1,6 @@
 import type { Playlist, PlaylistFsMeta, PlaylistManualMeta } from '@prisma/client';
 
-import type { AbstractPlaylistUpdateItem } from '@/radio-service/lib/PlaylistManager.AbstractPlaylist';
+import type { AbstractPlaylistUpdateItem } from '@/radio-service/lib/PlaylistsManager.AbstractPlaylist';
 
 export type AggregatedPlaylistItem = Playlist & {
   fsMeta: PlaylistFsMeta[] | null;

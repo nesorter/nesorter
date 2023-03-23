@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default {
+export const config = {
   API_LISTEN_PORT: Number(process.env.API_LISTEN_PORT) || 3001,
 
   CONTENT_ROOT_DIR_PATH: process.env.CONTENT_ROOT_DIR_PATH || '/app/lib',

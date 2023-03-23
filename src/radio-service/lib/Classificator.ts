@@ -1,11 +1,11 @@
 import {
+  AggregatedClassedItem,
+  AggregatedFileItem,
   DtoCreateCategory,
   DtoUpsertCategory,
   DtoUpsertFileItem,
-} from '@/radio-service/types/ApisDtos';
-
-import { AggregatedClassedItem, AggregatedFileItem } from '../types/Scanner';
-import { StorageType } from './Storage';
+  StorageType,
+} from '@/radio-service/types';
 
 export class Classificator {
   constructor(private db: StorageType) {}

@@ -1,19 +1,19 @@
 import * as Sentry from '@sentry/node';
 
-import { API } from './lib/API';
-import { Classificator } from './lib/Classificator';
-import config from './lib/config';
-import { Logger } from './lib/Logger';
-import { LogLevel, LogTags } from './lib/Logger.types';
-import { Player } from './lib/Player';
-import { PlaylistsManager } from './lib/PlaylistsManager';
-import { PlaylistsPlayHelper } from './lib/PlaylistsPlayHelper';
-import { Publisher } from './lib/Publisher';
-import { Queue } from './lib/Queue';
-import { Scanner } from './lib/Scanner';
-import { Scheduler } from './lib/Scheduler';
-import { Storage } from './lib/Storage';
-import { Streamer } from './lib/Streamer';
+import { API } from '@/radio-service/lib/API';
+import { Classificator } from '@/radio-service/lib/Classificator';
+import { Logger } from '@/radio-service/lib/Logger';
+import { Player } from '@/radio-service/lib/Player';
+import { PlaylistsManager } from '@/radio-service/lib/PlaylistsManager';
+import { PlaylistsPlayHelper } from '@/radio-service/lib/PlaylistsPlayHelper';
+import { Publisher } from '@/radio-service/lib/Publisher';
+import { Queue } from '@/radio-service/lib/Queue';
+import { Scanner } from '@/radio-service/lib/Scanner';
+import { Scheduler } from '@/radio-service/lib/Scheduler';
+import { Storage } from '@/radio-service/lib/Storage';
+import { Streamer } from '@/radio-service/lib/Streamer';
+import { LogLevel, LogTags } from '@/radio-service/types/Logger';
+import { config } from '@/radio-service/utils';
 
 export type RadioServiceModule = ReturnType<typeof createRadioServiceModule>;
 export const createRadioServiceModule = () => {

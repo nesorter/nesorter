@@ -1,10 +1,9 @@
 import * as Sentry from '@sentry/node';
 
-import config from './config';
-import { PlaylistsManager } from './PlaylistsManager';
-import { Queue } from './Queue';
-import { StorageType } from './Storage';
-import { shuffle } from './utils';
+import { PlaylistsManager } from '@/radio-service/lib/PlaylistsManager';
+import { Queue } from '@/radio-service/lib/Queue';
+import { StorageType } from '@/radio-service/types';
+import { config, makeArrayShuffled } from '@/radio-service/utils';
 
 export class PlaylistsPlayHelper {
   constructor(
@@ -24,14 +23,14 @@ export class PlaylistsPlayHelper {
 
   public async queueAllPlaylistsRandomly() {
     let playlistDuration = 0;
-    const playlistId = shuffle(await this.db.playlist.findMany())[0]?.id;
+    const playlistId = makeArrayShuffled(await this.db.playlist.findMany())[0]?.id;
 
     if (!playlistId) {
       return;
     }
 
     const playlist = await this.playlistsManager.getQueueInstance(playlistId);
-    const items = shuffle(await playlist.getContent());
+    const items = makeArrayShuffled(await playlist.getContent());
 
     for (const item of items) {
       if (item.fileItemHash === null) {

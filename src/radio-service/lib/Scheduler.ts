@@ -1,12 +1,11 @@
 import { PlaylistItem, ScheduleItem } from '@prisma/client';
 import { secondsInDay } from 'date-fns';
 
-import { Logger } from './Logger';
-import { LogLevel, LogTags } from './Logger.types';
-import { PlaylistsManager } from './PlaylistsManager';
-import { Queue } from './Queue';
-import { StorageType } from './Storage';
-import { currentSecondsFromDayStart, getRandomArbitrary, shuffle } from './utils';
+import { Logger } from '@/radio-service/lib/Logger';
+import { PlaylistsManager } from '@/radio-service/lib/PlaylistsManager';
+import { Queue } from '@/radio-service/lib/Queue';
+import { LogLevel, LogTags, StorageType } from '@/radio-service/types';
+import { getCurrentSeconds, getRandomArbitrary, makeArrayShuffled } from '@/radio-service/utils';
 
 export class Scheduler {
   intervals: NodeJS.Timer[] = [];
@@ -29,13 +28,13 @@ export class Scheduler {
   }
 
   shouldEnd(item: ScheduleItem): boolean {
-    return currentSecondsFromDayStart() >= item.endAt && this.currentItem === item.id;
+    return getCurrentSeconds() >= item.endAt && this.currentItem === item.id;
   }
 
   shouldStart(item: ScheduleItem): boolean {
     return (
-      currentSecondsFromDayStart() >= item.startAt &&
-      currentSecondsFromDayStart() < item.endAt &&
+      getCurrentSeconds() >= item.startAt &&
+      getCurrentSeconds() < item.endAt &&
       this.currentItem !== item.id
     );
   }
@@ -184,7 +183,7 @@ export class Scheduler {
 
             tracks.push({
               playlistId: playlistInstance.playlistId,
-              content: shuffle(await playlist.getContent()),
+              content: makeArrayShuffled(await playlist.getContent()),
               index: 0,
             });
           }
@@ -207,7 +206,7 @@ export class Scheduler {
             }
 
             if (content.content.length - 1 === content.index) {
-              content.content = shuffle(content.content);
+              content.content = makeArrayShuffled(content.content);
               content.index = 0;
             }
 

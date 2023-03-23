@@ -1,9 +1,9 @@
 import ffmpeg, { FfmpegCommand } from 'fluent-ffmpeg';
 
-import config from './config';
-import { Logger } from './Logger';
-import { LogLevel, LogTags } from './Logger.types';
-import { Scanner } from './Scanner';
+import { Logger } from '@/radio-service/lib/Logger';
+import { Scanner } from '@/radio-service/lib/Scanner';
+import { LogLevel, LogTags } from '@/radio-service/types';
+import { config } from '@/radio-service/utils';
 
 export class Streamer {
   currentPlaylistId?: string;
