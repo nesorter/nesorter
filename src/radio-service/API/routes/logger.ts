@@ -2,15 +2,13 @@ import axios from 'axios';
 import Express from 'express';
 import { XMLParser } from 'fast-xml-parser';
 
-import { Logger } from '@/radio-service/lib/Logger';
-import { Queue } from '@/radio-service/lib/Queue';
-import { Scanner } from '@/radio-service/lib/Scanner';
-import { Scheduler } from '@/radio-service/lib/Scheduler';
-import { Streamer } from '@/radio-service/lib/Streamer';
+import { Queue, Scheduler } from '@/radio-service/Scheduler';
+import { Logger } from '@/radio-service/Storage';
+import { Scanner, Streamer } from '@/radio-service/Streamer';
 import { IcecastStatus, LogLevel, LogTags, ServiceStatus } from '@/radio-service/types';
 import { config, withAdminToken, withLogger } from '@/radio-service/utils';
 
-export const gen = (
+export const genLoggerRoutes = (
   api: Express.Application,
   logger: Logger,
   streamer: Streamer,

@@ -1,7 +1,7 @@
 import { PlaylistItem } from '@prisma/client';
 
-import { AbstractPlaylist } from '@/radio-service/lib/PlaylistsManager.AbstractPlaylist';
-import { DtoUpdatePlaylist, StorageType } from '@/radio-service/types';
+import { AbstractPlaylist } from '@/radio-service/PlaylistsManager';
+import type { DtoUpdatePlaylist, StorageType } from '@/radio-service/types';
 
 export class ManualPlaylist implements AbstractPlaylist {
   constructor(private db: StorageType, private playlistId: number) {}

@@ -3,7 +3,7 @@ import { createHash } from 'crypto';
 import { readdir, readFile, stat } from 'fs/promises';
 import { parseBuffer } from 'music-metadata';
 
-import { Logger } from '@/radio-service/lib/Logger';
+import { Logger } from '@/radio-service/Storage';
 import { Chain, LogLevel, LogTags, ScannedItem, StorageType } from '@/radio-service/types';
 import { sleep } from '@/radio-service/utils';
 

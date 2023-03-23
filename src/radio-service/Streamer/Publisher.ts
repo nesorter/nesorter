@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { Logger } from '@/radio-service/lib/Logger';
+import { Logger } from '@/radio-service/Storage';
 import { AggregatedFileItem, LogLevel, LogTags } from '@/radio-service/types';
 import { config } from '@/radio-service/utils';
 

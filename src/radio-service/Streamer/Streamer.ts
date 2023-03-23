@@ -1,7 +1,7 @@
 import ffmpeg, { FfmpegCommand } from 'fluent-ffmpeg';
 
-import { Logger } from '@/radio-service/lib/Logger';
-import { Scanner } from '@/radio-service/lib/Scanner';
+import { Logger } from '@/radio-service/Storage';
+import { Scanner } from '@/radio-service/Streamer';
 import { LogLevel, LogTags } from '@/radio-service/types';
 import { config } from '@/radio-service/utils';
 

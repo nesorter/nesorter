@@ -1,11 +1,15 @@
 import Express from 'express';
 
-import { Classificator } from '@/radio-service/lib/Classificator';
-import { Logger } from '@/radio-service/lib/Logger';
+import { Classificator } from '@/radio-service/Classificator';
+import { Logger } from '@/radio-service/Storage';
 import { DtoCreateCategory, DtoUpsertCategory, DtoUpsertFileItem } from '@/radio-service/types';
 import { withAdminToken, withLogger } from '@/radio-service/utils';
 
-export const gen = (logger: Logger, api: Express.Application, classificator: Classificator) => {
+export const genClassificatorRoutes = (
+  logger: Logger,
+  api: Express.Application,
+  classificator: Classificator,
+) => {
   api
     .route('/api/classificator/categories')
     .get(

@@ -1,9 +1,9 @@
 import { PlaylistItem, ScheduleItem } from '@prisma/client';
 import { secondsInDay } from 'date-fns';
 
-import { Logger } from '@/radio-service/lib/Logger';
-import { PlaylistsManager } from '@/radio-service/lib/PlaylistsManager';
-import { Queue } from '@/radio-service/lib/Queue';
+import { PlaylistsManager } from '@/radio-service/PlaylistsManager';
+import { Queue } from '@/radio-service/Scheduler';
+import { Logger } from '@/radio-service/Storage';
 import { LogLevel, LogTags, StorageType } from '@/radio-service/types';
 import { getCurrentSeconds, getRandomArbitrary, makeArrayShuffled } from '@/radio-service/utils';
 

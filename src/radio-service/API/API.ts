@@ -1,19 +1,18 @@
 import Express from 'express';
 
-import { gen as genClassificatorRoutes } from '@/radio-service/lib/API/routes/classificator';
-import { gen as genLoggerRoutes } from '@/radio-service/lib/API/routes/logger';
-import { gen as getPlayerRoutes } from '@/radio-service/lib/API/routes/player';
-import { gen as genPlaylistsManagerRoutes } from '@/radio-service/lib/API/routes/playlistsManager';
-import { gen as genScannerRoutes } from '@/radio-service/lib/API/routes/scanner';
-import { gen as genSchedulerRoutes } from '@/radio-service/lib/API/routes/scheduler';
-import { Classificator } from '@/radio-service/lib/Classificator';
-import { Logger } from '@/radio-service/lib/Logger';
-import { PlaylistsManager } from '@/radio-service/lib/PlaylistsManager';
-import { PlaylistsPlayHelper } from '@/radio-service/lib/PlaylistsPlayHelper';
-import { Queue } from '@/radio-service/lib/Queue';
-import { Scanner } from '@/radio-service/lib/Scanner';
-import { Scheduler } from '@/radio-service/lib/Scheduler';
-import { Streamer } from '@/radio-service/lib/Streamer';
+import {
+  genClassificatorRoutes,
+  genLoggerRoutes,
+  genPlaylistsManagerRoutes,
+  genScannerRoutes,
+  genSchedulerRoutes,
+  getPlayerRoutes,
+} from '@/radio-service/API/routes';
+import { Classificator } from '@/radio-service/Classificator';
+import { PlaylistsManager, PlaylistsPlayHelper } from '@/radio-service/PlaylistsManager';
+import { Queue, Scheduler } from '@/radio-service/Scheduler';
+import { Logger } from '@/radio-service/Storage';
+import { Scanner, Streamer } from '@/radio-service/Streamer';
 import { LogLevel, LogTags, StorageType } from '@/radio-service/types';
 import { config } from '@/radio-service/utils';
 

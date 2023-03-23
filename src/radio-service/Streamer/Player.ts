@@ -3,7 +3,7 @@ import { spawn } from 'child_process';
 import { createServer, Server, Socket } from 'net';
 import kill from 'tree-kill';
 
-import { Logger } from '@/radio-service/lib/Logger';
+import { Logger } from '@/radio-service/Storage';
 import { AggregatedFileItem, LogLevel, LogTags } from '@/radio-service/types';
 import { asyncSpawn, config, makeArrayRange, makeSafePath } from '@/radio-service/utils';
 

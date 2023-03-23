@@ -3,16 +3,11 @@ import Express from 'express';
 import { copyFile, mkdir, rm, writeFile } from 'fs/promises';
 import multer from 'multer';
 import NodeID3 from 'node-id3';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
-import { Logger } from '@/radio-service/lib/Logger';
-import { PlaylistsManager } from '@/radio-service/lib/PlaylistsManager';
-import { Scanner } from '@/radio-service/lib/Scanner';
+import { PlaylistsManager } from '@/radio-service/PlaylistsManager';
+import { Logger } from '@/radio-service/Storage';
+import { Scanner } from '@/radio-service/Streamer';
 import { config, withAdminToken, withLogger } from '@/radio-service/utils';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 type MulterFile = {
   fieldname: string; //'file_6',
@@ -25,7 +20,7 @@ type MulterFile = {
   size: number; //7677220
 };
 
-export const gen = (
+export const genScannerRoutes = (
   logger: Logger,
   api: Express.Application,
   scanner: Scanner,
@@ -158,14 +153,11 @@ export const gen = (
           NodeID3.Promise.read(item?.path || '')
             .then((data) => {
               if (typeof data.image !== 'string' && typeof data.image !== 'undefined') {
-                writeFile(
-                  `${__dirname}/assets/covers/${item?.filehash}.jpg`,
-                  data.image?.imageBuffer || '',
-                )
-                  .then(() => res.sendFile(`${__dirname}/assets/covers/${item?.filehash}.jpg`))
+                writeFile(`covers/${item?.filehash}.jpg`, data.image?.imageBuffer || '')
+                  .then(() => res.sendFile(`covers/${item?.filehash}.jpg`))
                   .catch(console.log);
               } else {
-                res.sendFile(`${__dirname}/assets/covers/nocoverart.jpeg`);
+                res.sendFile(`covers/nocoverart.jpeg`);
               }
             })
             .catch(Sentry.captureException);

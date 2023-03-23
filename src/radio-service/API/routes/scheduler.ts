@@ -1,10 +1,14 @@
 import Express from 'express';
 
-import { Logger } from '@/radio-service/lib/Logger';
-import { Scheduler } from '@/radio-service/lib/Scheduler';
+import { Scheduler } from '@/radio-service/Scheduler';
+import { Logger } from '@/radio-service/Storage';
 import { withAdminToken, withLogger } from '@/radio-service/utils';
 
-export const gen = (logger: Logger, api: Express.Application, scheduler: Scheduler) => {
+export const genSchedulerRoutes = (
+  logger: Logger,
+  api: Express.Application,
+  scheduler: Scheduler,
+) => {
   api.get(
     '/api/scheduler/start',
     withAdminToken(

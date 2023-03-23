@@ -1,12 +1,12 @@
 import * as Sentry from '@sentry/node';
 import Express from 'express';
 
-import { Logger } from '@/radio-service/lib/Logger';
-import { PlaylistsPlayHelper } from '@/radio-service/lib/PlaylistsPlayHelper';
-import { Queue } from '@/radio-service/lib/Queue';
+import { PlaylistsPlayHelper } from '@/radio-service/PlaylistsManager';
+import { Queue } from '@/radio-service/Scheduler';
+import { Logger } from '@/radio-service/Storage';
 import { withAdminToken, withLogger } from '@/radio-service/utils';
 
-export const gen = (
+export const getPlayerRoutes = (
   logger: Logger,
   api: Express.Application,
   queue: Queue,

@@ -1,6 +1,6 @@
-import { PlaylistsOnScheduleItem, ScheduleItem } from '@prisma/client';
+import type { PlaylistsOnScheduleItem, ScheduleItem } from '@prisma/client';
 
-import { AggregatedPlaylistItem } from '@/radio-service/types/Playlist';
+import type { AggregatedPlaylistItem } from '@/radio-service/types';
 
 export type AggregatedSchedulePlaylistItem = PlaylistsOnScheduleItem & {
   playlist: AggregatedPlaylistItem;

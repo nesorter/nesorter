@@ -1,7 +1,6 @@
 import * as Sentry from '@sentry/node';
 
-import { Player } from '@/radio-service/lib/Player';
-import { Publisher } from '@/radio-service/lib/Publisher';
+import { Player, Publisher } from '@/radio-service/Streamer';
 import { QueueItem, QueueState, StorageType } from '@/radio-service/types';
 import { config, getCurrentSeconds, sleep } from '@/radio-service/utils';
 

@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/node';
 
-import { PlaylistsManager } from '@/radio-service/lib/PlaylistsManager';
-import { Queue } from '@/radio-service/lib/Queue';
-import { StorageType } from '@/radio-service/types';
+import { PlaylistsManager } from '@/radio-service/PlaylistsManager';
+import { Queue } from '@/radio-service/Scheduler';
+import type { StorageType } from '@/radio-service/types';
 import { config, makeArrayShuffled } from '@/radio-service/utils';
 
 export class PlaylistsPlayHelper {

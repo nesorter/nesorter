@@ -1,18 +1,12 @@
 import * as Sentry from '@sentry/node';
 
-import { API } from '@/radio-service/lib/API';
-import { Classificator } from '@/radio-service/lib/Classificator';
-import { Logger } from '@/radio-service/lib/Logger';
-import { Player } from '@/radio-service/lib/Player';
-import { PlaylistsManager } from '@/radio-service/lib/PlaylistsManager';
-import { PlaylistsPlayHelper } from '@/radio-service/lib/PlaylistsPlayHelper';
-import { Publisher } from '@/radio-service/lib/Publisher';
-import { Queue } from '@/radio-service/lib/Queue';
-import { Scanner } from '@/radio-service/lib/Scanner';
-import { Scheduler } from '@/radio-service/lib/Scheduler';
-import { Storage } from '@/radio-service/lib/Storage';
-import { Streamer } from '@/radio-service/lib/Streamer';
-import { LogLevel, LogTags } from '@/radio-service/types/Logger';
+import { API } from '@/radio-service/API';
+import { Classificator } from '@/radio-service/Classificator';
+import { PlaylistsManager, PlaylistsPlayHelper } from '@/radio-service/PlaylistsManager';
+import { Queue, Scheduler } from '@/radio-service/Scheduler';
+import { Logger, Storage } from '@/radio-service/Storage';
+import { Player, Publisher, Scanner, Streamer } from '@/radio-service/Streamer';
+import { LogLevel, LogTags } from '@/radio-service/types';
 import { config } from '@/radio-service/utils';
 
 export type RadioServiceModule = ReturnType<typeof createRadioServiceModule>;

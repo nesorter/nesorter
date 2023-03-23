@@ -1,8 +1,10 @@
-import { IcecastStatus } from '@/radio-service/types/Icecast';
-import { AggregatedPlaylistItem } from '@/radio-service/types/Playlist';
-import { QueueInstanceState } from '@/radio-service/types/Queue';
-import { AggregatedFileItem } from '@/radio-service/types/Scanner';
-import { AggregatedScheduleItem } from '@/radio-service/types/Scheduler';
+import type {
+  AggregatedFileItem,
+  AggregatedPlaylistItem,
+  AggregatedScheduleItem,
+  IcecastStatus,
+  QueueInstanceState,
+} from '@/radio-service/types';
 
 export type ServiceStatus = {
   scheduling?: boolean;

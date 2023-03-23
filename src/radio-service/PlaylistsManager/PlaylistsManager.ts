@@ -1,9 +1,7 @@
-import { Logger } from '@/radio-service/lib/Logger';
-import { AbstractPlaylist } from '@/radio-service/lib/PlaylistsManager.AbstractPlaylist';
-import { FSPlaylist } from '@/radio-service/lib/PlaylistsManager.FSPlaylist';
-import { ManualPlaylist } from '@/radio-service/lib/PlaylistsManager.ManualPlaylist';
-import { Scanner } from '@/radio-service/lib/Scanner';
-import { StorageType } from '@/radio-service/types';
+import { AbstractPlaylist, FSPlaylist, ManualPlaylist } from '@/radio-service/PlaylistsManager';
+import { Logger } from '@/radio-service/Storage';
+import { Scanner } from '@/radio-service/Streamer';
+import type { StorageType } from '@/radio-service/types';
 
 export class PlaylistsManager {
   constructor(private db: StorageType, private logger: Logger, private scanner: Scanner) {}

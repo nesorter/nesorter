@@ -1,13 +1,12 @@
 import Express from 'express';
 
-import { Logger } from '@/radio-service/lib/Logger';
-import { PlaylistsManager } from '@/radio-service/lib/PlaylistsManager';
-import { ManualPlaylist } from '@/radio-service/lib/PlaylistsManager.ManualPlaylist';
-import { Streamer } from '@/radio-service/lib/Streamer';
+import { ManualPlaylist, PlaylistsManager } from '@/radio-service/PlaylistsManager';
+import { Logger } from '@/radio-service/Storage';
+import { Streamer } from '@/radio-service/Streamer';
 import { DtoUpdatePlaylist, LogLevel, LogTags, StorageType } from '@/radio-service/types';
 import { withAdminToken, withLogger } from '@/radio-service/utils';
 
-export const gen = (
+export const genPlaylistsManagerRoutes = (
   logger: Logger,
   api: Express.Application,
   playlistsManager: PlaylistsManager,

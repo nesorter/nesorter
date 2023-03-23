@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 
-import { Logger } from '@/radio-service/lib/Logger';
-import { LogLevel, LogTags } from '@/radio-service/types/Logger';
+import { Logger } from '@/radio-service/Storage';
+import { LogLevel, LogTags } from '@/radio-service/types';
 
 export function withLogger(logger: Logger, rq: RequestHandler): RequestHandler {
   return (req, res, next) => {

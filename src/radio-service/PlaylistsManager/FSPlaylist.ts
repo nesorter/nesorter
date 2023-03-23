@@ -1,8 +1,8 @@
 import { PlaylistItem } from '@prisma/client';
 
-import { AbstractPlaylist } from '@/radio-service/lib/PlaylistsManager.AbstractPlaylist';
-import { Scanner } from '@/radio-service/lib/Scanner';
-import { DtoUpdatePlaylist, StorageType } from '@/radio-service/types';
+import { AbstractPlaylist } from '@/radio-service/PlaylistsManager';
+import { Scanner } from '@/radio-service/Streamer';
+import type { DtoUpdatePlaylist, StorageType } from '@/radio-service/types';
 
 export class FSPlaylist implements AbstractPlaylist {
   cache: PlaylistItem[] = [];

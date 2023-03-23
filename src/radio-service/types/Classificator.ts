@@ -1,3 +1,3 @@
-import { ClassCategory, ClassItem } from '@prisma/client';
+import type { ClassCategory, ClassItem } from '@prisma/client';
 
 export type AggregatedClassCategory = ClassCategory & { items: ClassItem[] };
