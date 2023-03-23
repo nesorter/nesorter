@@ -8,8 +8,6 @@ datasource storage {
   url      = "file:./db/storage.db"
 }
 
-
-
 model FileItem {
   filehash String @id
   path     String
@@ -19,8 +17,8 @@ model FileItem {
   metadata FileItemMetadata?
   timings  FileItemTimings?
 
-  playlistItems      PlaylistItem[]
-  playlistFsMeta     PlaylistFsMeta[]
+  playlistItems  PlaylistItem[]
+  playlistFsMeta PlaylistFsMeta[]
 
   classedItems ClassedItem[]
 }
@@ -46,17 +44,78 @@ model FileItemTimings {
   fileItemHash String   @unique
 }
 
+model Stage {
+  id Int @id @default(autoincrement())
 
+  rules              StageRule[]
+  targetSequenceUp   TargetSequence? @relation(name: "stageUp")
+  targetSequenceDown TargetSequence? @relation(name: "stageDown")
+}
+
+model StageRule {
+  id Int @id @default(autoincrement())
+
+  stage   Stage? @relation(fields: [stageId], references: [id])
+  stageId Int?
+
+  type String @default("MAINLINE")
+
+  timeFrom Int?
+  timeTo   Int?
+
+  targetType String @default("TAGS")
+
+  targetSequence   TargetSequence? @relation(fields: [targetSequenceId], references: [id])
+  targetSequenceId Int?
+
+  targetTags   TargetTags? @relation(fields: [targetTagsId], references: [id])
+  targetTagsId Int
+
+  targetPlaylists   TargetPlaylists? @relation(fields: [targetPlaylistsId], references: [id])
+  targetPlaylistsId Int?
+}
+
+model TargetSequence {
+  id            Int    @id @default(autoincrement())
+  subWaveLength Int
+  name          String
+
+  stageUp   Stage @relation(fields: [stageUpId], references: [id], name: "stageUp")
+  stageUpId Int   @unique
+
+  stageDown   Stage @relation(fields: [stageDownId], references: [id], name: "stageDown")
+  stageDownId Int   @unique
+
+  stageSubRules StageRule[]
+  scheduleItems  ScheduleItem[]
+}
+
+model TargetTags {
+  id         Int         @id @default(autoincrement())
+  classItem  ClassItem[]
+  stageRules StageRule[]
+}
+
+model TargetPlaylists {
+  id         Int         @id @default(autoincrement())
+  playlists  Playlist[]
+  stageRules StageRule[]
+}
 
 model ScheduleItem {
   id          Int @id @default(autoincrement())
   withMerging Int @default(0)
 
-  name String @default("Default schedule name")
+  name    String @default("Default schedule name")
   startAt Int
   endAt   Int
 
   playlists PlaylistsOnScheduleItem[]
+
+  type             String          @default("Playlists")
+
+  sequence         TargetSequence? @relation(fields: [targetSequenceId], references: [id])
+  targetSequenceId Int?
 }
 
 model PlaylistsOnScheduleItem {
@@ -69,8 +128,6 @@ model PlaylistsOnScheduleItem {
   @@id([scheduleItemId, playlistId])
 }
 
-
-
 model Playlist {
   id Int @id @default(autoincrement())
 
@@ -81,6 +138,9 @@ model Playlist {
   manualMeta PlaylistManualMeta?
 
   scheduleItems PlaylistsOnScheduleItem[]
+
+  targetPlaylists   TargetPlaylists? @relation(fields: [targetPlaylistsId], references: [id])
+  targetPlaylistsId Int?
 }
 
 model PlaylistFsMeta {
@@ -113,30 +173,31 @@ model PlaylistItem {
   playlistManualMetaId Int?
 }
 
-
-
 model ClassCategory {
-  id    Int @id @default(autoincrement())
+  id    Int         @id @default(autoincrement())
   name  String
   items ClassItem[]
 }
 
 model ClassItem {
-  id    Int @id @default(autoincrement())
+  id    Int    @id @default(autoincrement())
   value String
 
-  category ClassCategory @relation(fields: [categoryId], references: [id])
+  category   ClassCategory @relation(fields: [categoryId], references: [id])
   categoryId Int
 
   classedItems ClassedItem[]
+
+  targetTags   TargetTags? @relation(fields: [targetTagsId], references: [id])
+  targetTagsId Int?
 }
 
 model ClassedItem {
-  id    Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  classItem ClassItem @relation(fields: [classItemId], references: [id])
+  classItem   ClassItem @relation(fields: [classItemId], references: [id])
   classItemId Int
 
-  file FileItem @relation(fields: [fileHash], references: [filehash])
+  file     FileItem @relation(fields: [fileHash], references: [filehash])
   fileHash String
 }
