@@ -59,7 +59,7 @@ const PlaylistsPage = ({
         return fromChain?.key || '';
       }) || [],
     );
-  }, [queryItems.data]);
+  }, [chain, queryItems.data]);
 
   const firstChildnessChainItemKey = useFirstChildnessChainItemKey(chain);
 
@@ -70,7 +70,7 @@ const PlaylistsPage = ({
         1,
         firstChildnessChainItemKey,
       ),
-    [chain],
+    [chain, firstChildnessChainItemKey],
   );
 
   const directoriesTree = useMemo(
@@ -173,38 +173,34 @@ const PlaylistsPage = ({
       });
   };
 
-  const dataSource = useMemo(
-    () =>
-      (query.data || []).map((item) => {
-        let locatedAt = '';
-        if (item.fsMeta) {
-          const fileItem = chain.find(
-            (_) => _?.fsItem?.filehash === (item.fsMeta || [])[0]?.fileItemHash,
-          );
-          locatedAt = fileItem?.fsItem?.path || '';
-        }
+  const dataSource = (query.data || []).map((item) => {
+    let locatedAt = '';
+    if (item.fsMeta) {
+      const fileItem = chain.find(
+        (_) => _?.fsItem?.filehash === (item.fsMeta || [])[0]?.fileItemHash,
+      );
+      locatedAt = fileItem?.fsItem?.path || '';
+    }
 
-        return {
-          id: `#${item.id}`,
-          name: item.name,
-          type: item.type === 'fs' ? 'Directory' : 'Manual',
-          locatedAt,
-          actions: (
-            <Space>
-              <Button onClick={() => handleEditPlaylist(item.id)} icon={<EditOutlined />} />
+    return {
+      id: `#${item.id}`,
+      name: item.name,
+      type: item.type === 'fs' ? 'Directory' : 'Manual',
+      locatedAt,
+      actions: (
+        <Space>
+          <Button onClick={() => handleEditPlaylist(item.id)} icon={<EditOutlined />} />
 
-              <Button
-                icon={<DeleteOutlined />}
-                onClick={() =>
-                  api.playlistsManager.deletePlaylist(item.id).finally(() => query.refetch())
-                }
-              />
-            </Space>
-          ),
-        };
-      }),
-    [query.data],
-  );
+          <Button
+            icon={<DeleteOutlined />}
+            onClick={() =>
+              api.playlistsManager.deletePlaylist(item.id).finally(() => query.refetch())
+            }
+          />
+        </Space>
+      ),
+    };
+  });
 
   const columns: ColumnsType<{
     id: string;

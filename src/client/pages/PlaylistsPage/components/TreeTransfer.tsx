@@ -38,6 +38,7 @@ export const TreeTransfer = ({ dataSource, targetKeys, ...restProps }: TreeTrans
       targetKeys={targetKeys}
       dataSource={transferDataSource}
       className='tree-transfer'
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       render={(item) => item.title!}
       showSelectAll={false}
     >

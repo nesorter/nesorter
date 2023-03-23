@@ -40,8 +40,6 @@ export function range(num: number): number[] {
     .map((_, i) => i);
 }
 
-const wavesCount = 1024 * 2;
-
 export function makeSafePath(path: string): string {
   return path
     .replaceAll(' ', '\\ ')
@@ -63,16 +61,6 @@ export function makeSafePath(path: string): string {
 
 export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-// eslint-disable-next-line @typescript-eslint/require-await
-export async function getWaveformInfo(logger: Logger, filepath: string) {
-  logger.log({
-    message: 'ERROR: unable to get waveform: ',
-    extraData: { err: JSON.stringify({}, null, 2) },
-  });
-
-  return [];
 }
 
 export function getRandomArbitrary(min: number, max: number) {

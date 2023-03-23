@@ -247,9 +247,7 @@ const SchedulerPage = ({
                     size='small'
                     dataSource={item.playlists}
                     renderItem={(item) => (
-                      <List.Item>
-                        #{item.playlist?.id} {item.playlist?.name}
-                      </List.Item>
+                      <List.Item>{`#${item.playlist?.id} ${item.playlist?.name}`}</List.Item>
                     )}
                     bordered
                     header={

@@ -26,7 +26,7 @@ const ClassificatorPage = ({
         1,
         firstChildnessChainItemKey,
       ),
-    [chain],
+    [chain, firstChildnessChainItemKey],
   );
 
   const [classEditMode, setClassEditMode] = useState(false);

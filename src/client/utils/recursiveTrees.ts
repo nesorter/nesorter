@@ -47,13 +47,15 @@ export const getDirChainItemByKey = (chain: ChainItem[], key: string) => {
   const path = `/${baseDir?.path}`;
   const chainItem = chain.find((_) => _.fsItem?.path.startsWith(path) && _.fsItem?.type === 'dir');
 
+  console.log(chainItem);
   return chainItem;
 };
 
 export const getDirKeyByFilehash = (chain: ChainItem[], filehash: string) => {
   const baseDir = chain.find((_) => _.fsItem?.filehash === filehash);
-  const [_, ...path] = (baseDir?.fsItem?.path || '').split('');
+  const [_first, ...path] = (baseDir?.fsItem?.path || '').split('');
   const chainItem = chain.find((_) => _.path?.endsWith(path.join('')) && _.type === 'dir');
 
+  console.log(_first);
   return chainItem;
 };

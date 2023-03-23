@@ -82,7 +82,17 @@ const LandingPage = ({
         audio.play().catch(console.log);
       }
     }
-  }, [currentChainItem?.fsItem?.filehash]);
+  }, [
+    audio,
+    currentChainItem?.fsItem?.filehash,
+    currentQueueItem?.endAt,
+    currentQueueItem?.startAt,
+    currentSeconds,
+    isPlaying,
+    isSimulating,
+    statusQuery.data?.playing,
+    statusQuery.data?.streaming,
+  ]);
 
   useEffect(() => {
     if (audio) {
@@ -102,7 +112,17 @@ const LandingPage = ({
         }
       }
     }
-  }, [isPlaying]);
+  }, [
+    audio,
+    currentChainItem?.fsItem?.filehash,
+    currentQueueItem?.endAt,
+    currentQueueItem?.startAt,
+    currentSeconds,
+    isPlaying,
+    isSimulating,
+    statusQuery.data?.playing,
+    statusQuery.data?.streaming,
+  ]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

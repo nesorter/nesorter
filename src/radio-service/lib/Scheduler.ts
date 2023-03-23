@@ -1,8 +1,6 @@
 import { PlaylistItem, ScheduleItem } from '@prisma/client';
 import { secondsInDay } from 'date-fns';
 
-import playlists from '@/pages/admin/playlists';
-
 import { Logger } from './Logger';
 import { LogLevel, LogTags } from './Logger.types';
 import { PlaylistsManager } from './PlaylistsManager';

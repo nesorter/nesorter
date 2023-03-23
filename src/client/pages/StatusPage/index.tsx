@@ -1,5 +1,4 @@
 import { Button, Card, Space, Switch, Table, Typography } from 'antd';
-import { addSeconds, format, startOfDay } from 'date-fns';
 import Head from 'next/head';
 import { useMemo } from 'react';
 
@@ -9,8 +8,6 @@ import { AdminLayout } from '@/client/layouts/AdminLayout';
 import { WithDefaultPageProps } from '@/client/types/DefaultPageProps';
 import { formatTime } from '@/client/utils/formatTime';
 import { withDefaultPageProps } from '@/client/utils/withDefaultPageProps';
-
-const day = startOfDay(new Date());
 
 const StatusPage = ({ radioStatus, chain }: WithDefaultPageProps) => {
   const { data, refetch } = useServiceStatus(radioStatus);
@@ -155,7 +152,7 @@ const StatusPage = ({ radioStatus, chain }: WithDefaultPageProps) => {
           end: formatTime(item.endAt),
         };
       }),
-    [data?.queue?.items || []],
+    [data?.queue?.items, chain, data?.currentFile],
   );
 
   const columns = [

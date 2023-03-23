@@ -2,7 +2,7 @@ import { PlaylistItem } from '@prisma/client';
 
 import { DtoUpdatePlaylist } from '@/radio-service/types/Playlist';
 
-import { AbstractPlaylist } from './API/PlaylistManager.AbstractPlaylist';
+import { AbstractPlaylist } from './PlaylistManager.AbstractPlaylist';
 import { StorageType } from './Storage';
 
 export class ManualPlaylist implements AbstractPlaylist {

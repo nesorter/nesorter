@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url';
 import config from '../../config';
 import { Logger } from '../../Logger';
 import { Scanner } from '../../Scanner';
-import { getWaveformInfo, withAdminToken, withLogger } from '../../utils';
+import { withAdminToken, withLogger } from '../../utils';
 import { PlaylistsManager } from './../../PlaylistsManager';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -114,17 +114,6 @@ export const gen = (
       } catch (e) {
         res.status(500).json(e);
       }
-    }),
-  );
-
-  api.get(
-    '/api/scanner/waveform/:filehash',
-    withLogger(logger, (req, res) => {
-      scanner
-        .getFsItem(req.params.filehash)
-        .then((item) => getWaveformInfo(logger, item?.path || ''))
-        .then((waveform) => res.json(waveform))
-        .catch((e) => res.status(500).json(e));
     }),
   );
 

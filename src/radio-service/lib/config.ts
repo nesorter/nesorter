@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   API_LISTEN_PORT: Number(process.env.API_LISTEN_PORT) || 3001,
 

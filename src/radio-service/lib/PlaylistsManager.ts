@@ -1,5 +1,5 @@
-import { AbstractPlaylist } from './API/PlaylistManager.AbstractPlaylist';
 import { Logger } from './Logger';
+import { AbstractPlaylist } from './PlaylistManager.AbstractPlaylist';
 import { FSPlaylist } from './PlaylistsManager.FSPlaylist';
 import { ManualPlaylist } from './PlaylistsManager.ManualPlaylist';
 import { Scanner } from './Scanner';
