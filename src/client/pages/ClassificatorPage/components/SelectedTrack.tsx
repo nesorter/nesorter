@@ -43,59 +43,61 @@ export const SelectedTrack = () => {
       .finally(() => trackQuery.refetch());
   };
 
+  if (!Boolean(selectedTrack) || classEditMode) {
+    return null;
+  }
+
+  const categoriesRendered = categories.map((category) => (
+    <Space key={category.id} align='baseline' wrap>
+      <Typography.Text style={{ display: 'inline-block', minWidth: '80px' }}>
+        {category.name}
+      </Typography.Text>
+
+      {category.items?.map((item) => {
+        const isChecked =
+          (trackQuery.data?.classedItems || []).find(
+            (aggregatedItem) => aggregatedItem.classItemId === item.id,
+          ) !== undefined;
+
+        return (
+          <Button
+            size='small'
+            key={item.id}
+            onClick={() => handleCheckClassItem(item.id, !isChecked)}
+            type={isChecked ? 'primary' : 'dashed'}
+          >
+            {item.value}
+          </Button>
+        );
+      })}
+    </Space>
+  ));
+
   return (
-    <>
-      {Boolean(selectedTrack) && !classEditMode && (
-        <Card size='small'>
-          <Space direction='vertical' size='large'>
-            <Space align='start'>
-              <Image
-                src={api.scanner.getFileImageAsPath(trackQuery.data?.filehash || '')}
-                alt='track album'
-                width={128}
-                height={128}
-                style={{ borderRadius: 8 }}
-              />
+    <Card size='small'>
+      <Space direction='vertical' size='large'>
+        <Space align='start'>
+          <Image
+            src={api.scanner.getFileImageAsPath(trackQuery.data?.filehash || '')}
+            alt='track album'
+            width={128}
+            height={128}
+            style={{ borderRadius: 8 }}
+          />
 
-              <Button onClick={() => handleListen()}>{isListening ? 'Stop' : 'Listen'}</Button>
-            </Space>
+          <Button onClick={() => handleListen()}>{isListening ? 'Stop' : 'Listen'}</Button>
+        </Space>
 
-            <Space direction='vertical' size='small'>
-              <Typography.Text>Artist: {trackQuery.data?.metadata?.artist}</Typography.Text>
+        <Space direction='vertical' size='small'>
+          <Typography.Text>Artist: {trackQuery.data?.metadata?.artist}</Typography.Text>
 
-              <Typography.Text>Title: {trackQuery.data?.metadata?.title}</Typography.Text>
-            </Space>
+          <Typography.Text>Title: {trackQuery.data?.metadata?.title}</Typography.Text>
+        </Space>
 
-            <Space direction='vertical' size='small'>
-              {categories.map((category) => (
-                <Space key={category.id} align='baseline' wrap>
-                  <Typography.Text style={{ display: 'inline-block', minWidth: '80px' }}>
-                    {category.name}
-                  </Typography.Text>
-
-                  {category.items?.map((item) => {
-                    const isChecked =
-                      (trackQuery.data?.classedItems || []).find(
-                        (aggregatedItem) => aggregatedItem.classItemId === item.id,
-                      ) !== undefined;
-
-                    return (
-                      <Button
-                        size='small'
-                        key={item.id}
-                        onClick={() => handleCheckClassItem(item.id, !isChecked)}
-                        type={isChecked ? 'primary' : 'dashed'}
-                      >
-                        {item.value}
-                      </Button>
-                    );
-                  })}
-                </Space>
-              ))}
-            </Space>
-          </Space>
-        </Card>
-      )}
-    </>
+        <Space direction='vertical' size='small'>
+          {categoriesRendered}
+        </Space>
+      </Space>
+    </Card>
   );
 };
