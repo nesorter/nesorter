@@ -7,6 +7,29 @@ export type DirTree = {
   children: DirTree[];
 };
 
+export const findFirstChildnessKey = (chain: ChainItem[]) => {
+  let step = 0;
+  let key = '';
+  let extracted = getDirTreeRecursively(
+    chain.filter((_) => _.fsItem?.type !== 'dir'),
+    0,
+  );
+
+  while (key === '' && step < chain.length) {
+    for (const item of extracted) {
+      if (item.children.length > 1) {
+        key = item.key;
+      } else {
+        extracted = item.children;
+      }
+    }
+
+    step += 1;
+  }
+
+  return key;
+};
+
 export const getDirTreeRecursively = (
   chain: ChainItem[],
   level: number,
