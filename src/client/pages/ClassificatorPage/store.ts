@@ -74,11 +74,11 @@ async function initStore() {
   const chainRaw = await api.scanner.getChain().then((_) => _.data);
   const chain = Object.values(chainRaw);
 
-  const firstChildnessKey = findFirstChildnessKey(chain);
+  const firstChildrenNessKey = findFirstChildnessKey(chain);
   const tree = getDirTreeRecursively(
     chain.filter((_) => _.fsItem?.type !== 'dir'),
     1,
-    firstChildnessKey,
+    firstChildrenNessKey,
   );
 
   StoreClassifyPage.setKey('chain', chain);
