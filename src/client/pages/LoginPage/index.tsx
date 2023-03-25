@@ -1,5 +1,4 @@
 import { Button, Card, Form, Input } from 'antd';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { LoginLayout } from '@/client/layouts/LoginLayout';
