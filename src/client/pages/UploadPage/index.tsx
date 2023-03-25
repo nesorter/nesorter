@@ -183,4 +183,4 @@ const UploadPage = ({ chain }: WithDefaultPageProps) => {
 UploadPage.Layout = AdminLayout;
 UploadPage.Title = 'nesorter :: upload';
 export default UploadPage;
-export const getServerSideProps = withDefaultPageProps(() => Promise.resolve({ props: {} }));
+export const getServerSideProps = withDefaultPageProps();

@@ -55,10 +55,6 @@ const LandingPage = () => {
 LandingPage.Layout = PublicLayout;
 LandingPage.Title = 'nesorter :: player';
 export default LandingPage;
-export const getServerSideProps = withDefaultPageProps(() => {
-  return Promise.resolve({
-    props: {
-      adminSide: false,
-    },
-  });
-});
+export const getServerSideProps = withDefaultPageProps(() =>
+  Promise.resolve({ props: { adminSide: false } }),
+);

@@ -46,12 +46,4 @@ const ClassificatorPage = () => {
 ClassificatorPage.Layout = AdminLayout;
 ClassificatorPage.Title = 'nesorter :: classificator';
 export default ClassificatorPage;
-export const getServerSideProps = withDefaultPageProps(async () => {
-  const catalogs = await api.categories.get().then((_) => _.data);
-
-  return {
-    props: {
-      catalogs,
-    },
-  };
-});
+export const getServerSideProps = withDefaultPageProps();

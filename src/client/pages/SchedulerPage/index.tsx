@@ -28,9 +28,4 @@ const SchedulerPage = () => {
 SchedulerPage.Layout = AdminLayout;
 SchedulerPage.Title = 'nesorter :: scheduler';
 export default SchedulerPage;
-export const getServerSideProps = withDefaultPageProps(async () => {
-  const scheduleItems = await api.scheduler.getItems().then((_) => _.data);
-  const playlists = await api.playlistsManager.getPlaylists().then((items) => items.data);
-
-  return { props: { scheduleItems, playlists } };
-});
+export const getServerSideProps = withDefaultPageProps();

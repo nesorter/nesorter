@@ -214,4 +214,4 @@ const StatusPage = ({ radioStatus, chain }: WithDefaultPageProps) => {
 StatusPage.Layout = AdminLayout;
 StatusPage.Title = 'nesorter :: status';
 export default StatusPage;
-export const getServerSideProps = withDefaultPageProps(() => Promise.resolve({ props: {} }));
+export const getServerSideProps = withDefaultPageProps();
