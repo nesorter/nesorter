@@ -2,7 +2,6 @@ import { useStore } from '@nanostores/react';
 import { Space } from 'antd';
 import React from 'react';
 
-import { api } from '@/client/api';
 import { AdminLayout } from '@/client/layouts/AdminLayout';
 import { StoreClassifyPage } from '@/client/pages/ClassificatorPage/store';
 import { withDefaultPageProps } from '@/client/utils/withDefaultPageProps';

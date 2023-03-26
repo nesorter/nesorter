@@ -1,7 +1,6 @@
 import { useStore } from '@nanostores/react';
 import { Card, List } from 'antd';
 
-import { api } from '@/client/api';
 import { AdminLayout } from '@/client/layouts/AdminLayout';
 import { Extra } from '@/client/pages/SchedulerPage/components/Extra';
 import { ScheduleItem } from '@/client/pages/SchedulerPage/components/ScheduleItem';
