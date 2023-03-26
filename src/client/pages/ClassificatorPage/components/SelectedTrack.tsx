@@ -4,14 +4,15 @@ import Image from 'next/image';
 import React from 'react';
 
 import { api } from '@/client/api';
-import { useSelectedFileItem } from '@/client/hooks/queries/useSelectedFileItem';
-import { setIsListening, StoreClassifyPage } from '@/client/pages/ClassificatorPage/store';
+import {
+  reInitSelectedTrackFileItem,
+  setIsListening,
+  StoreClassifyPage,
+} from '@/client/pages/ClassificatorPage/store';
 
 export const SelectedTrack = () => {
-  const { isListening, selectedTrack, classEditMode, audio, categories } =
+  const { isListening, selectedTrack, classEditMode, audio, categories, selectedTrackFileItem } =
     useStore(StoreClassifyPage);
-
-  const trackQuery = useSelectedFileItem(selectedTrack?.fsItem?.filehash);
 
   const handleListen = () => {
     if (isListening) {
@@ -21,7 +22,7 @@ export const SelectedTrack = () => {
       }
     } else {
       if (audio) {
-        audio.src = api.scanner.getFileAsPath(trackQuery.data?.filehash || '');
+        audio.src = api.scanner.getFileAsPath(selectedTrackFileItem?.filehash || '');
         audio.play().catch(console.error);
       }
     }
@@ -31,16 +32,16 @@ export const SelectedTrack = () => {
 
   const handleCheckClassItem = (classItemId: number, isChecked: boolean) => {
     api.categories
-      .updateTrackData(trackQuery?.data?.filehash || '', {
-        filehash: trackQuery?.data?.filehash || '',
+      .updateTrackData(selectedTrackFileItem?.filehash || '', {
+        filehash: selectedTrackFileItem?.filehash || '',
         classItemsIds: isChecked
-          ? [...(trackQuery?.data?.classedItems || []).map((_) => _.classItemId), classItemId]
-          : (trackQuery?.data?.classedItems || [])
+          ? [...(selectedTrackFileItem?.classedItems || []).map((_) => _.classItemId), classItemId]
+          : (selectedTrackFileItem?.classedItems || [])
               .map((_) => _.classItemId)
               .filter((_) => _ !== classItemId),
       })
       .catch(console.error)
-      .finally(() => trackQuery.refetch());
+      .finally(() => reInitSelectedTrackFileItem(selectedTrackFileItem?.filehash || ''));
   };
 
   if (!Boolean(selectedTrack) || classEditMode) {
@@ -55,7 +56,7 @@ export const SelectedTrack = () => {
 
       {category.items?.map((item) => {
         const isChecked =
-          (trackQuery.data?.classedItems || []).find(
+          (selectedTrackFileItem?.classedItems || []).find(
             (aggregatedItem) => aggregatedItem.classItemId === item.id,
           ) !== undefined;
 
@@ -78,7 +79,7 @@ export const SelectedTrack = () => {
       <Space direction='vertical' size='large'>
         <Space align='start'>
           <Image
-            src={api.scanner.getFileImageAsPath(trackQuery.data?.filehash || '')}
+            src={api.scanner.getFileImageAsPath(selectedTrackFileItem?.filehash || '')}
             alt='track album'
             width={128}
             height={128}
@@ -89,9 +90,9 @@ export const SelectedTrack = () => {
         </Space>
 
         <Space direction='vertical' size='small'>
-          <Typography.Text>Artist: {trackQuery.data?.metadata?.artist}</Typography.Text>
+          <Typography.Text>Artist: {selectedTrackFileItem?.metadata?.artist}</Typography.Text>
 
-          <Typography.Text>Title: {trackQuery.data?.metadata?.title}</Typography.Text>
+          <Typography.Text>Title: {selectedTrackFileItem?.metadata?.title}</Typography.Text>
         </Space>
 
         <Space direction='vertical' size='small'>

@@ -6,7 +6,7 @@ import {
   findFirstChildnessKey,
   getDirTreeRecursively,
 } from '@/client/utils/recursiveTrees';
-import type { AggregatedClassCategory, ChainItem } from '@/radio-service/types';
+import type { AggregatedClassCategory, AggregatedFileItem, ChainItem } from '@/radio-service/types';
 
 export type TStoreClassifyPage = {
   categories: AggregatedClassCategory[];
@@ -18,6 +18,7 @@ export type TStoreClassifyPage = {
 
   selectedTrackKey?: string;
   selectedTrack?: ChainItem;
+  selectedTrackFileItem?: AggregatedFileItem;
 
   currentCategoryId: number;
 
@@ -34,6 +35,7 @@ export const StoreClassifyPage = map<TStoreClassifyPage>({
 
   selectedTrackKey: undefined,
   selectedTrack: undefined,
+  selectedTrackFileItem: undefined,
 
   currentCategoryId: -1,
 
@@ -51,6 +53,15 @@ export const setSelectedTrackKey = (selectedKey: string) => {
 
   StoreClassifyPage.setKey('selectedTrack', track);
   StoreClassifyPage.setKey('selectedTrackKey', selectedKey);
+
+  reInitSelectedTrackFileItem(track?.fsItem?.filehash || '').catch(console.error);
+};
+
+export const reInitSelectedTrackFileItem = async (filehash: string) => {
+  await api.categories
+    .getTrackData(filehash || '')
+    .then((_) => StoreClassifyPage.setKey('selectedTrackFileItem', _.data))
+    .catch(console.error);
 };
 
 export const setCurrentCategoryId = (id: number) => {
