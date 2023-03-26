@@ -1,14 +1,8 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { useStore } from '@nanostores/react';
 import { Button, Form, FormInstance, Input, Space } from 'antd';
 import React from 'react';
 
-import { api } from '@/client/api';
-import {
-  initCategories,
-  setCurrentCategoryId,
-  StoreClassifyPage,
-} from '@/client/pages/ClassificatorPage/store';
+import { handleSaveCategoryEdit } from '@/client/pages/ClassificatorPage/store';
 
 const formItemLayout = {
   labelCol: {
@@ -29,26 +23,6 @@ const formItemLayoutWithOutLabel = {
 };
 
 export const ClassEditItemForm = ({ editCategoryForm }: { editCategoryForm: FormInstance }) => {
-  const { currentCategoryId } = useStore(StoreClassifyPage);
-
-  const handleSaveCategoryEdit = (data: {
-    name: string;
-    values: { id?: number; value: string }[];
-  }) => {
-    api.categories
-      .update({
-        id: currentCategoryId,
-        values: data.values,
-        name: data.name,
-      })
-      .catch(console.error)
-      .finally(() => {
-        setCurrentCategoryId(-1);
-        editCategoryForm.resetFields();
-        return initCategories();
-      });
-  };
-
   return (
     <Form
       form={editCategoryForm}
@@ -57,7 +31,8 @@ export const ClassEditItemForm = ({ editCategoryForm }: { editCategoryForm: Form
       wrapperCol={{ span: 16 }}
       style={{ width: 480 }}
       initialValues={{}}
-      onFinish={handleSaveCategoryEdit}
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      onFinish={(data) => handleSaveCategoryEdit(data, editCategoryForm)}
       onFinishFailed={console.error}
       autoComplete='off'
     >

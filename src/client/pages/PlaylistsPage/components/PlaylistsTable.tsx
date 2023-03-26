@@ -95,6 +95,7 @@ export const PlaylistsTable = ({ editForm }: { editForm: FormInstance }) => {
       <Table
         style={{ minWidth: '560px' }}
         size='small'
+        rowKey={(_) => _.id}
         dataSource={dataSource}
         columns={columns}
         pagination={false}

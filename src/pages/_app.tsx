@@ -47,7 +47,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       }
     };
 
-    run().catch(console.error);
+    if (location.href === '/') {
+      run().catch(console.error);
+    }
   }, []);
 
   if (pageProps.adminSide) {

@@ -1,5 +1,5 @@
 import { useStore } from '@nanostores/react';
-import { Space } from 'antd';
+import { Form, Space } from 'antd';
 import React from 'react';
 
 import { AdminLayout } from '@/client/layouts/AdminLayout';
@@ -15,7 +15,12 @@ import { SelectedTrackWrapper } from './components/SelectedTrackWrapper';
 import { SelectTrackMessage } from './components/SelectTrackMessage';
 
 const ClassificatorPage = () => {
-  const { classEditMode } = useStore(StoreClassifyPage);
+  const [editCategoryForm] = Form.useForm();
+  const { classEditMode, categoriesFetch } = useStore(StoreClassifyPage);
+
+  if (categoriesFetch) {
+    return null;
+  }
 
   return (
     <Space size='large' align='start'>
@@ -27,7 +32,7 @@ const ClassificatorPage = () => {
 
       {classEditMode && (
         <ClassEditorWrapper>
-          <ClassEditor />
+          <ClassEditor editCategoryForm={editCategoryForm} />
         </ClassEditorWrapper>
       )}
 

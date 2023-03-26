@@ -1,13 +1,19 @@
 import { useStore } from '@nanostores/react';
-import { Button, Form, List, Space, Typography } from 'antd';
+import { Button, List, Space, Typography } from 'antd';
+import { FormInstance } from 'antd';
 import React from 'react';
 
 import { ClassEditItemForm } from '@/client/pages/ClassificatorPage/components/ClassEditItemForm';
 import { setCurrentCategoryId, StoreClassifyPage } from '@/client/pages/ClassificatorPage/store';
 import type { AggregatedClassCategory } from '@/radio-service/types';
 
-export const ClassEditItem = (item: AggregatedClassCategory) => {
-  const [editCategoryForm] = Form.useForm();
+export const ClassEditItem = ({
+  editCategoryForm,
+  item,
+}: {
+  editCategoryForm: FormInstance;
+  item: AggregatedClassCategory;
+}) => {
   const { currentCategoryId, categories } = useStore(StoreClassifyPage);
 
   const handleCategoryEdit = (categoryId: number) => {

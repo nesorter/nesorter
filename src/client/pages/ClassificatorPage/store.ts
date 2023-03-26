@@ -1,3 +1,4 @@
+import { FormInstance } from 'antd';
 import { map, onMount } from 'nanostores';
 
 import { api } from '@/client/api';
@@ -23,6 +24,8 @@ export type TStoreClassifyPage = {
   currentCategoryId: number;
 
   audio?: HTMLAudioElement;
+
+  categoriesFetch: boolean;
 };
 
 export const StoreClassifyPage = map<TStoreClassifyPage>({
@@ -40,6 +43,8 @@ export const StoreClassifyPage = map<TStoreClassifyPage>({
   currentCategoryId: -1,
 
   audio: typeof window === 'undefined' ? undefined : new Audio(),
+
+  categoriesFetch: true,
 });
 
 onMount(StoreClassifyPage, () => {
@@ -76,9 +81,43 @@ export const setIsListening = (flag: boolean) => {
   StoreClassifyPage.setKey('isListening', flag);
 };
 
+export const handleCreateNewGroup = () => {
+  api.categories
+    .create({
+      name: 'New unnamed category',
+      values: ['First value', 'Second value'],
+    })
+    .finally(() => initCategories());
+};
+
+export const handleSaveCategoryEdit = (
+  data: {
+    name: string;
+    values: { id?: number; value: string }[];
+  },
+  editCategoryForm: FormInstance,
+) => {
+  const { currentCategoryId } = StoreClassifyPage.get();
+
+  api.categories
+    .update({
+      id: currentCategoryId,
+      values: data.values,
+      name: data.name,
+    })
+    .catch(console.error)
+    .finally(() => {
+      setCurrentCategoryId(-1);
+      editCategoryForm.resetFields();
+      return initCategories();
+    });
+};
+
 export const initCategories = async () => {
+  StoreClassifyPage.setKey('categoriesFetch', true);
   const categories = await api.categories.get().then((_) => _.data);
   StoreClassifyPage.setKey('categories', categories);
+  StoreClassifyPage.setKey('categoriesFetch', false);
 };
 
 async function initStore() {

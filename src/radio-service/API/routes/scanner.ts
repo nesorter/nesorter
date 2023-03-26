@@ -1,8 +1,9 @@
 import * as Sentry from '@sentry/node';
 import Express from 'express';
-import { copyFile, mkdir, rm, writeFile } from 'fs/promises';
+import { copyFile, mkdir, rm, stat, writeFile } from 'fs/promises';
 import multer from 'multer';
 import NodeID3 from 'node-id3';
+import path from 'path';
 
 import { PlaylistsManager } from '@/radio-service/PlaylistsManager';
 import { Logger } from '@/radio-service/Storage';
@@ -150,17 +151,32 @@ export const genScannerRoutes = (
       scanner
         .getFsItem(req.params.filehash)
         .then((item) => {
-          NodeID3.Promise.read(item?.path || '')
-            .then((data) => {
-              if (typeof data.image !== 'string' && typeof data.image !== 'undefined') {
-                writeFile(`covers/${item?.filehash}.jpg`, data.image?.imageBuffer || '')
-                  .then(() => res.sendFile(`covers/${item?.filehash}.jpg`))
-                  .catch(console.log);
-              } else {
-                res.sendFile(`covers/nocoverart.jpeg`);
-              }
+          stat(path.resolve(`covers/${item?.filehash}.jpg`))
+            .then(() => {
+              return res.sendFile(path.resolve(`covers/${item?.filehash}.jpg`));
             })
-            .catch(Sentry.captureException);
+            .catch(() => {
+              return NodeID3.Promise.read(item?.path || '').then((data) => {
+                if (typeof data.image !== 'string' && typeof data.image !== 'undefined') {
+                  writeFile(
+                    path.resolve(`covers/${item?.filehash}.jpg`),
+                    data.image?.imageBuffer || '',
+                  )
+                    .then(() => res.sendFile(path.resolve(`covers/${item?.filehash}.jpg`)))
+                    .catch((err) => {
+                      console.error(err);
+                      res.json(err);
+                    });
+                } else {
+                  res.sendFile(path.resolve(`covers/nocoverart.jpeg`));
+                }
+              });
+            })
+            .catch((err) => {
+              Sentry.captureException(err);
+              console.error(err);
+              res.sendFile(path.resolve(`covers/nocoverart.jpeg`));
+            });
         })
         .catch((e) => res.status(500).json(e));
     }),

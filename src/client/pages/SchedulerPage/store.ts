@@ -8,6 +8,7 @@ export type TStoreSchedulerPage = {
   scheduleItems: AggregatedScheduleItem[];
   playlists: AggregatedPlaylistItem[];
 
+  scheduleItemsFetching: boolean;
   isEditing: boolean;
   editingId: number;
   sortMode: string;
@@ -21,6 +22,7 @@ export const StoreSchedulerPage = map<TStoreSchedulerPage>({
   scheduleItems: [],
   playlists: [],
 
+  scheduleItemsFetching: true,
   isEditing: false,
   editingId: -1,
   sortMode: 'time',
@@ -57,8 +59,10 @@ export const StoreSchedulerPage = map<TStoreSchedulerPage>({
 });
 
 const initSchedules = async () => {
+  StoreSchedulerPage.setKey('scheduleItemsFetching', true);
   const scheduleItems = await api.scheduler.getItems().then((_) => _.data);
   StoreSchedulerPage.setKey('scheduleItems', scheduleItems);
+  StoreSchedulerPage.setKey('scheduleItemsFetching', false);
 };
 
 const initPlaylists = async () => {

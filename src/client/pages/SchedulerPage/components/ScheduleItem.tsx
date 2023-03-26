@@ -1,6 +1,6 @@
 import { DeleteOutlined, EditOutlined, ZoomInOutlined, ZoomOutOutlined } from '@ant-design/icons';
 import { useStore } from '@nanostores/react';
-import { Form, List, Slider, Space, Typography } from 'antd';
+import { Form, FormInstance, List, Slider, Space, Typography } from 'antd';
 import { secondsInDay } from 'date-fns';
 
 import { ScheduleItemForm } from '@/client/pages/SchedulerPage/components/ScheduleItemForm';
@@ -15,8 +15,13 @@ import {
 import { formatTime } from '@/client/utils/formatTime';
 import type { AggregatedScheduleItem } from '@/radio-service/types';
 
-export const ScheduleItem = (item: AggregatedScheduleItem) => {
-  const [form] = Form.useForm();
+export const ScheduleItem = ({
+  form,
+  item,
+}: {
+  form: FormInstance;
+  item: AggregatedScheduleItem;
+}) => {
   const { marks, editingId, isEditing, viewMoreIds, nextTimeData } = useStore(StoreSchedulerPage);
 
   return (
