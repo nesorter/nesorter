@@ -1,4 +1,5 @@
 import { InfoCircleOutlined, UploadOutlined } from '@ant-design/icons';
+import { useStore } from '@nanostores/react';
 import {
   Button,
   Card,
@@ -11,30 +12,21 @@ import {
   Upload,
   UploadFile,
 } from 'antd';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { AdminLayout } from '@/client/layouts/AdminLayout';
-import { WithDefaultPageProps } from '@/client/types/DefaultPageProps';
-import { getDirTreeRecursively } from '@/client/utils/recursiveTrees';
+import { StoreUploadPage } from '@/client/pages/UploadPage/store';
 import { withDefaultPageProps } from '@/client/utils/withDefaultPageProps';
 
 import sendMultipartFormData from '../../api/sendMultipartFormData';
 
-const UploadPage = ({ chain }: WithDefaultPageProps) => {
+const UploadPage = () => {
+  const { chain, directoriesTree } = useStore(StoreUploadPage);
   const [form] = Form.useForm();
 
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-
-  const directoriesTree = useMemo(
-    () =>
-      getDirTreeRecursively(
-        chain.filter((_) => _.type === 'dir'),
-        0,
-      ),
-    [chain],
-  );
 
   const handleUpload = (data: {
     baseDirKey: string;
