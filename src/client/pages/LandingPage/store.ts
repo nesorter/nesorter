@@ -72,6 +72,7 @@ export const handleStartPlay = () => {
   if (audio) {
     if (status?.streaming) {
       audio.src = `${status?.steamUrl || ''}?no-cache=${Date.now()}`;
+      audio.play().catch(console.log);
     } else if (isSimulating) {
       audio.src = api.scanner.getFileAsPath(currentChainItem?.fsItem?.filehash || '');
       const seekTo = currentSeconds - Number(currentQueueItem?.startAt);

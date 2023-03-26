@@ -1,6 +1,6 @@
 import { DeleteOutlined, EditOutlined, ZoomInOutlined, ZoomOutOutlined } from '@ant-design/icons';
 import { useStore } from '@nanostores/react';
-import { Form, FormInstance, List, Slider, Space, Typography } from 'antd';
+import { FormInstance, List, Slider, Space, Typography } from 'antd';
 import { secondsInDay } from 'date-fns';
 
 import { ScheduleItemForm } from '@/client/pages/SchedulerPage/components/ScheduleItemForm';
