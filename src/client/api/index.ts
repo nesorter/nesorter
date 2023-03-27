@@ -11,7 +11,7 @@ import type { AggregatedScheduleItem } from '@/radio-service/types/Scheduler';
 import type { ServiceStatus } from '@/radio-service/types/ServiceStatus';
 
 export const request = axios.create({
-  baseURL: typeof window === 'undefined' ? 'http://localhost:3001' : '/',
+  baseURL: typeof window === 'undefined' ? 'http://localhost:3000' : '/',
   headers: {
     token:
       typeof window === 'undefined'
