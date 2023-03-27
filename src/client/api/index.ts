@@ -42,14 +42,14 @@ export const api = {
      * Startups scheduler
      */
     start() {
-      return request.get('/api/scheduler/start');
+      return request.post('/api/scheduler/start');
     },
 
     /**
      * Stops scheduler
      */
     stop() {
-      return request.get('/api/scheduler/stop');
+      return request.post('/api/scheduler/stop');
     },
 
     /**
@@ -135,7 +135,7 @@ export const api = {
      * Starts FS sync
      */
     startSync() {
-      return request.get<string>('/api/scanner/sync');
+      return request.post<string>('/api/scanner/sync');
     },
 
     /**
