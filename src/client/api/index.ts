@@ -1,17 +1,21 @@
 import type { PlaylistItem } from '@prisma/client';
 import axios from 'axios';
 
-import type { DtoCreateCategory, DtoUpsertCategory } from '@/radio-service/types/ApisDtos';
-import type { DtoUpsertFileItem } from '@/radio-service/types/ApisDtos';
-import type { AggregatedClassCategory } from '@/radio-service/types/Classificator';
-import type { AggregatedPlaylistItem } from '@/radio-service/types/Playlist';
-import type { DtoUpdatePlaylist } from '@/radio-service/types/Playlist';
-import type { AggregatedFileItem, Chain } from '@/radio-service/types/Scanner';
-import type { AggregatedScheduleItem } from '@/radio-service/types/Scheduler';
-import type { ServiceStatus } from '@/radio-service/types/ServiceStatus';
+import type {
+  AggregatedClassCategory,
+  AggregatedFileItem,
+  AggregatedPlaylistItem,
+  AggregatedScheduleItem,
+  Chain,
+  DtoCreateCategory,
+  DtoUpdatePlaylist,
+  DtoUpsertCategory,
+  DtoUpsertFileItem,
+  ServiceStatus,
+} from '@/radio-service/types';
 
 export const request = axios.create({
-  baseURL: typeof window === 'undefined' ? 'http://localhost:3001' : '/',
+  baseURL: typeof window === 'undefined' ? 'http://localhost:3000' : '/',
   headers: {
     token:
       typeof window === 'undefined'
@@ -42,14 +46,14 @@ export const api = {
      * Startups scheduler
      */
     start() {
-      return request.get('/api/scheduler/start');
+      return request.post('/api/scheduler/start');
     },
 
     /**
      * Stops scheduler
      */
     stop() {
-      return request.get('/api/scheduler/stop');
+      return request.post('/api/scheduler/stop');
     },
 
     /**
@@ -135,7 +139,7 @@ export const api = {
      * Starts FS sync
      */
     startSync() {
-      return request.get<string>('/api/scanner/sync');
+      return request.post<string>('/api/scanner/sync');
     },
 
     /**

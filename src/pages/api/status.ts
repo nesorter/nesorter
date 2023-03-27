@@ -1,32 +1,18 @@
 import axios from 'axios';
-import Express from 'express';
 import { XMLParser } from 'fast-xml-parser';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { Queue, Scheduler } from '@/radio-service/Scheduler';
-import { Logger } from '@/radio-service/Storage';
-import { Scanner, Streamer } from '@/radio-service/Streamer';
-import { IcecastStatus, LogLevel, LogTags, ServiceStatus } from '@/radio-service/types';
-import { config, withAdminToken, withLogger } from '@/radio-service/utils';
+import { getInstance } from '@/radio-service';
+import { IcecastStatus, LogLevel, LogTags } from '@/radio-service/types';
+import { config } from '@/radio-service/utils';
 
-export const genLoggerRoutes = (
-  api: Express.Application,
-  logger: Logger,
-  streamer: Streamer,
-  scanner: Scanner,
-  scheduler: Scheduler,
-  queue: Queue,
-) => {
-  api.post(
-    '/api/restart',
-    withAdminToken(
-      withLogger(logger, (_req, res) => {
-        res.status(200).json({ message: 'restart' });
-        process.exit(0);
-      }),
-    ),
-  );
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  let status = 403;
+  let response: unknown = { message: 'Invalid request' };
 
-  api.get('/api/status', async (_req, res) => {
+  try {
+    const { scheduler, queue, scanner, streamer, logger } = getInstance();
+
     let fileData = null;
     let playlistData = null;
     let schedulingData = null;
@@ -64,7 +50,8 @@ export const genLoggerRoutes = (
       }
     }
 
-    const status: ServiceStatus = {
+    status = 200;
+    response = {
       scheduling: scheduler.processing,
       playing: queue.state === 'playing',
       syncing: scanner.scanInProgress,
@@ -83,7 +70,10 @@ export const genLoggerRoutes = (
       currentPlaylistId: queue.currentPlaylistId,
       icecastData,
     };
+  } catch (e) {
+    status = 500;
+    response = e;
+  }
 
-    res.json(status);
-  });
-};
+  res.status(status).json(response);
+}

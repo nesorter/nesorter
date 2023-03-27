@@ -6,7 +6,7 @@ let started = false;
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (!started) {
-    getInstance()?.init();
+    getInstance();
     started = true;
   }
 
