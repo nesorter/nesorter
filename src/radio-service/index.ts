@@ -1,12 +1,10 @@
 import { createRadioServiceModule } from '@/radio-service/utils/createRadioServiceModule';
 
 export const getInstance = () => {
-  if (typeof window !== 'undefined') {
-    return null;
-  }
-
   if (!global['radioService']) {
     global['radioService'] = createRadioServiceModule();
+    global['radioService'].init();
+
     return global['radioService'];
   }
 

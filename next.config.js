@@ -2,22 +2,18 @@
 const nextConfig = {
   experimental: {
     appDir: false
-  },
-
-  async rewrites() {
-    return [{
-      source: '/api/:path*',
-      destination: 'http://localhost:3001/api/:path*'
-    }];
   }
 }
 
-var firstRun = false;
+if (global.firstRun === undefined) {
+  global.firstRun = false;
+}
+
 module.exports = async (phase) => {
   console.log('phase: ', phase);
 
-  if (!firstRun && (phase === 'phase-production-server' || phase === 'phase-development-server')) {
-    const SLEEP_TIME = 10000;
+  if (!global.firstRun && (phase === 'phase-production-server' || phase === 'phase-development-server')) {
+    const SLEEP_TIME = 100;
 
     setTimeout(() => {
       console.log('Init: starting radio service');
@@ -27,7 +23,7 @@ module.exports = async (phase) => {
     }, SLEEP_TIME);
 
     console.log(`Init: wait for ${SLEEP_TIME}ms before starting radio service`);
-    firstRun = true;
+    global.firstRun = true;
   }
 
   return nextConfig;

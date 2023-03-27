@@ -1,6 +1,5 @@
 import * as Sentry from '@sentry/node';
 
-import { API } from '@/radio-service/API';
 import { Classificator } from '@/radio-service/Classificator';
 import { PlaylistsManager, PlaylistsPlayHelper } from '@/radio-service/PlaylistsManager';
 import { Queue, Scheduler } from '@/radio-service/Scheduler';
@@ -21,21 +20,8 @@ export const createRadioServiceModule = () => {
   const queue = new Queue(Storage, player, publisher);
   const scheduler = new Scheduler(Storage, logger, queue, playlistsManager);
   const playHelper = new PlaylistsPlayHelper(Storage, queue, playlistsManager);
-  const api = new API(
-    Storage,
-    logger,
-    scanner,
-    playlistsManager,
-    streamer,
-    scheduler,
-    queue,
-    playHelper,
-    classificator,
-  );
 
   const init = () => {
-    api.bindRoutes().start();
-
     if (config.SENTRY_DSN) {
       Sentry.init({ dsn: config.SENTRY_DSN });
       Sentry.captureMessage('Radio service started');
@@ -77,7 +63,7 @@ export const createRadioServiceModule = () => {
     queue,
     scheduler,
     playHelper,
-    api,
+    storage: Storage,
     init,
   };
 };
