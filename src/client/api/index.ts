@@ -1,14 +1,18 @@
 import type { PlaylistItem } from '@prisma/client';
 import axios from 'axios';
 
-import type { DtoCreateCategory, DtoUpsertCategory } from '@/radio-service/types/ApisDtos';
-import type { DtoUpsertFileItem } from '@/radio-service/types/ApisDtos';
-import type { AggregatedClassCategory } from '@/radio-service/types/Classificator';
-import type { AggregatedPlaylistItem } from '@/radio-service/types/Playlist';
-import type { DtoUpdatePlaylist } from '@/radio-service/types/Playlist';
-import type { AggregatedFileItem, Chain } from '@/radio-service/types/Scanner';
-import type { AggregatedScheduleItem } from '@/radio-service/types/Scheduler';
-import type { ServiceStatus } from '@/radio-service/types/ServiceStatus';
+import type {
+  AggregatedClassCategory,
+  AggregatedFileItem,
+  AggregatedPlaylistItem,
+  AggregatedScheduleItem,
+  Chain,
+  DtoCreateCategory,
+  DtoUpdatePlaylist,
+  DtoUpsertCategory,
+  DtoUpsertFileItem,
+  ServiceStatus,
+} from '@/radio-service/types';
 
 export const request = axios.create({
   baseURL: typeof window === 'undefined' ? 'http://localhost:3000' : '/',
