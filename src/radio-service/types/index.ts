@@ -6,5 +6,6 @@ export * from './Playlist';
 export * from './Queue';
 export * from './Scanner';
 export * from './Scheduler';
+export * from './Sequencer';
 export * from './ServiceStatus';
 export * from './StorageType';
