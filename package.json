@@ -11,9 +11,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "migrate": "prisma migrate dev",
-    "postinstall": "yarn migrate",
-    "update-deps": "npx npm-check-updates -u"
+    "postinstall": "yarn db:artifacts",
+    "update-deps": "npx npm-check-updates -u",
+    "db:artifacts": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:browse": "prisma studio",
+    "db:schema-format": "prisma format"
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",

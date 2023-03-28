@@ -10,7 +10,7 @@ USER node
 WORKDIR /home/node
 COPY --chown=node:node . /home/node/.
 
-RUN echo "#!/bin/bash \nls -lah\npwd\npactl list short sources; \nyarn migrate; \nyarn start;" > run.sh && \
+RUN echo "#!/bin/bash \nls -lah\npwd\npactl list short sources; \nyarn db:migrate; \nyarn start;" > run.sh && \
     chmod +x run.sh && \
     yarn install --no-progress --frozen-lockfile && \
     yarn build
