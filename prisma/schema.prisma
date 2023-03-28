@@ -46,8 +46,9 @@ model FileItemTimings {
 
 model Stage {
   id Int @id @default(autoincrement())
-
+  name          String
   rules              StageRule[]
+
   targetSequenceUp   TargetSequence? @relation(name: "stageUp")
   targetSequenceDown TargetSequence? @relation(name: "stageDown")
 }
@@ -78,7 +79,6 @@ model StageRule {
 model TargetSequence {
   id            Int    @id @default(autoincrement())
   subWaveLength Int
-  name          String
 
   stageUp   Stage @relation(fields: [stageUpId], references: [id], name: "stageUp")
   stageUpId Int   @unique
