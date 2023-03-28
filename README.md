@@ -32,11 +32,11 @@ yarn install
 cp .env.example .env
 ```
 
-2. Then you need to edit `srv/.env` by adding the necessary parameters. What each parameter is responsible for look at the end of the README.
+2. Then you need to edit `.env` by adding the necessary parameters. What each parameter is responsible for look at the end of the README.
 
-3. Important! Database initialization. The step is optional, since in the postinstall script it should already have been completely initialized.
+3. Important! Database initialization.
 ```shell
-yarn db:gen
+yarn db:migrate
 ```
 
 4. Build project:
@@ -45,7 +45,7 @@ yarn build
 ```
 
 ## b. Manual run: Start app
-You can start `srv` and `ui` via a script:
+You can start via a script:
 ```shell
 yarn start
 ```
@@ -75,8 +75,8 @@ SHOUT_MOUNT       - mount name, when running in Docker, leave the value as in .e
 SHOUT_URL         - stream url, this info is sent to icecast
 SHOUT_DESCRIPTION - stream description, this info is sent to icecast
 
-SHOUT_ADMIN_USER     - username of admin user
-SHOUT_ADMIN_PASSWORD - password of admin user
+SHOUT_ADMIN_USER     - username of icecast admin user
+SHOUT_ADMIN_PASSWORD - password of icecast admin user
 
 FFMPEG_BITRATE - stream bitrate
 FFMPEG_FORMAT  - format (mp3/ogg) [doesn't seem to work with ogg]
