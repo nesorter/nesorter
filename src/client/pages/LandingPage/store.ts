@@ -108,7 +108,7 @@ const loopStatus = async () => {
     }
   }
 
-  setTimeout(() => loopStatus(), 2000);
+  setTimeout(() => loopStatus(), 5000);
 };
 
 const initStore = async () => {

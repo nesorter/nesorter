@@ -6,6 +6,9 @@ import { getInstance } from '@/radio-service';
 import { IcecastStatus, LogLevel, LogTags } from '@/radio-service/types';
 import { config } from '@/radio-service/utils';
 
+let lastCheck = Date.now();
+let lastChunk = {};
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   let status = 403;
   let response: unknown = { message: 'Invalid request' };
@@ -27,9 +30,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
-    let icecastData = {};
-    if (streamer.streaming) {
+    let icecastData = lastChunk;
+    if (streamer.streaming && Date.now() - lastCheck > 30000) {
       try {
+        lastCheck = Date.now();
         const xml = await axios.get(
           `http://${config.SHOUT_HOST}:${config.SHOUT_PORT}/admin/stats`,
           {
@@ -41,6 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         );
         const parser = new XMLParser();
         icecastData = parser.parse(xml.data as string) as IcecastStatus;
+        lastChunk = icecastData;
       } catch (e) {
         logger.log({
           message: e?.toString() || '',
