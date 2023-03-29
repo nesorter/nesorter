@@ -3,6 +3,7 @@ import {
   ApartmentOutlined,
   CloudUploadOutlined,
   FieldTimeOutlined,
+  FundOutlined,
   InfoCircleOutlined,
   OrderedListOutlined,
 } from '@ant-design/icons';
@@ -33,6 +34,11 @@ const items: MenuProps['items'] = [
     label: 'Playlists',
     key: '/admin/playlists',
     icon: <OrderedListOutlined />,
+  },
+  {
+    label: 'Sequencer',
+    key: '/admin/sequencer',
+    icon: <FundOutlined />,
   },
   {
     label: 'Scheduler',

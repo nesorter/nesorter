@@ -19,7 +19,7 @@ export class Queue {
     const currentSeconds = getCurrentSeconds();
     this.items = this.items.filter((_) => _.endAt + config.MPV_FADE_TIME + 1 > currentSeconds);
 
-    setTimeout(() => this.runCleanupLoop(), 1000);
+    setTimeout(() => this.runCleanupLoop(), 250);
   }
 
   private async runLoop() {
