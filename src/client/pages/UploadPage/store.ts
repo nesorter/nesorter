@@ -27,5 +27,9 @@ const initStore = async () => {
 };
 
 onMount(StoreUploadPage, () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
   initStore().catch(console.error);
 });

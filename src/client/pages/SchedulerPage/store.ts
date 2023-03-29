@@ -152,6 +152,10 @@ export const handleSave = (
 };
 
 onMount(StoreSchedulerPage, () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
   initSchedules().catch(console.error);
   initPlaylists().catch(console.error);
 });

@@ -14,6 +14,10 @@ export const StoreStatusPage = map<TStoreStatusPage>({
 });
 
 onMount(StoreStatusPage, () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
   initStore().catch(console.error);
 });
 
