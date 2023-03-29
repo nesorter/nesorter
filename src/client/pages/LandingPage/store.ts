@@ -116,10 +116,16 @@ const initStore = async () => {
   const chain = Object.values(chainRaw);
   StoreLandingPage.setKey('chain', chain);
 
+  console.log('Init store');
+
   await loopStatus();
 };
 
 onMount(StoreLandingPage, () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
   initStore()
     .catch(console.error)
     .finally(() => {

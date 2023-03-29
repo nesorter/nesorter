@@ -205,5 +205,9 @@ const initStore = async () => {
 };
 
 onMount(StorePlaylistsPage, () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
   initStore().catch(console.error);
 });

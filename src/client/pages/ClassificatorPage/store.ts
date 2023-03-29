@@ -48,6 +48,10 @@ export const StoreClassifyPage = map<TStoreClassifyPage>({
 });
 
 onMount(StoreClassifyPage, () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
   initStore().catch(console.error);
 });
 
