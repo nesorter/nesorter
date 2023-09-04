@@ -26,16 +26,13 @@ export class BroadcastStream {
     this.readable.on('data', (chunk) => {
       count += 1;
       const chunkId = count;
-      // console.log(chunkId)
 
       setTimeout(() => {
-        try {
-          for (let sink of this.sinks) {
-            // console.log(`Send chunk #${chunkId} to sink #${sink.id}`);
-            sink.plug.write(chunk);
-          }
-        } catch { }
-      }, chunkId * 25);
+        for (let sink of this.sinks) {
+          process.env.LOG_DEBUG === "true" && console.log(`Send chunk #${chunkId} to sink #${sink.id}`);
+          sink.plug.write(chunk);
+        }
+      }, chunkId * 1000);
     });
   }
 }
