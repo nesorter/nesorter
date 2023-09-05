@@ -1,6 +1,6 @@
 import { createReadStream } from 'fs';
 import { readFile } from 'fs/promises';
-import { Streamer } from './Streamer';
+import { Streamer } from './Streamer.js';
 
 export class Queue {
   files: string[] = [];

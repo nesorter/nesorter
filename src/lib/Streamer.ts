@@ -1,4 +1,4 @@
-import { BroadcastStream } from './BroadcastStream';
+import { BroadcastStream } from './BroadcastStream.js';
 import { Express } from 'express';
 import { ReadStream } from 'fs';
 
@@ -6,6 +6,7 @@ export class Streamer {
   app: Express;
   broadcast: BroadcastStream;
   bitrate = 0;
+  sended = 0;
 
   constructor(app: Express) {
     this.broadcast = new BroadcastStream();
@@ -14,13 +15,12 @@ export class Streamer {
     this.app.disable('x-powered-by');
     this.setupRouting();
 
-    let sended = 0;
     const { plug } = this.broadcast.subscribe(128000);
     plug.on('data', (chunk) => {
-      sended += chunk.length;
+      this.sended += chunk.length;
     });
     setInterval(() => {
-      process.env.LOG_DEBUG === "true" && console.log(`Kbytes sended: ${sended / 1000}`)
+      process.env.LOG_DEBUG === "true" && console.log(`Kbytes sended: ${this.sended / 1000}`)
     }, 10000);
   }
 
