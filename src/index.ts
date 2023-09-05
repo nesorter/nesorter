@@ -1,14 +1,8 @@
-import express from 'express';
-import { Streamer } from './lib/Streamer.js';
-import { FileSystemScanner } from './lib/FileSystemScanner.js';
-import { Queue } from './lib/Queue.js';
+import { Streamer, FileSystemScanner, Queue } from '@nesorter/lib';
 import { shuffle } from './utils.js';
 import { ConsoleManager, PageBuilder } from 'console-gui-tools';
-import { config } from 'dotenv';
 
-config();
-
-const streamer = new Streamer(express(), Number(process.env.LISTEN_PORT));
+const streamer = new Streamer(Number(process.env.LISTEN_PORT));
 const scanner = new FileSystemScanner(process.env.LIBRARY_DIR);
 const queue = new Queue(streamer);
 
