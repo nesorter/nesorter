@@ -1,6 +1,7 @@
 {
   "name": "@nesorter/tui",
   "version": "1.0.0",
+  "description": "Terminal UI for nesorter",
   "repository": "git@github.com:nesorter/nesorter.git",
   "bugs": {
     "url": "https://github.com/nesorter/nesorter/issues"
