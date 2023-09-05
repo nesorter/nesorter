@@ -30,7 +30,7 @@
     "start:dev": "npx nodemon"
   },
   "dependencies": {
-    "@nesorter/lib": "^1.0.4",
+    "@nesorter/lib": "^1.0.5",
     "@types/node": "^20.5.8",
     "console-gui-tools": "^3.1.1",
     "nodemon": "^3.0.1",

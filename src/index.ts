@@ -98,7 +98,7 @@ const updateConsole = async () => {
   mainPage.addSpacer();
 
   mainPage.addRow({
-    text: `Clients count: ${streamer.broadcast.sinks.length - 1}`,
+    text: `Clients count: ${streamer.broadcast.sinks.length - 1} [${streamer.broadcast.sinksTotal - 1} total]`,
     color: 'white'
   });
   mainPage.addRow({
