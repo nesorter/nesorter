@@ -3,6 +3,7 @@ import stream from 'stream';
 export class BroadcastStream {
   readable?: stream.PassThrough | stream.Readable;
   sinks: { id: number, plug: stream.PassThrough }[] = [];
+  timeouts: Record<string, NodeJS.Timeout> = {};
 
   subscribe(bitrate: number) {
     const id = Date.now();
@@ -27,11 +28,13 @@ export class BroadcastStream {
       count += 1;
       const chunkId = count;
 
-      setTimeout(() => {
+      this.timeouts[chunkId] = setTimeout(() => {
         for (let sink of this.sinks) {
           process.env.LOG_DEBUG === "true" && console.log(`Send chunk #${chunkId} to sink #${sink.id}`);
           sink.plug.write(chunk);
         }
+
+        delete this.timeouts[chunkId];
       }, chunkId * 1000);
     });
   }

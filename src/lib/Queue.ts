@@ -5,8 +5,24 @@ import { Streamer } from './Streamer.js';
 export class Queue {
   files: string[] = [];
   currentFile = 0;
+  timeout?: NodeJS.Timeout;
+  readStreamDetacher?: () => void;
 
   constructor(private streamer: Streamer) { }
+
+  stopQueue() {
+    process.env.LOG_INFO === "true" && console.log('Called stop queue');
+
+    if (this.readStreamDetacher) {
+      this.readStreamDetacher();
+    }
+
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
+
+    this.currentFile = 0;
+  }
 
   async startQueue() {
     if (this.currentFile === this.files.length) {
@@ -25,15 +41,15 @@ export class Queue {
       });
 
       const readStream = createReadStream(currentPath, { highWaterMark: Number(parsedData.format.bitrate) / 8 });
-      this.streamer.attachReadStream(readStream, Number(parsedData.format.bitrate) / 8);
+      this.readStreamDetacher = this.streamer.attachReadStream(readStream, Number(parsedData.format.bitrate) / 8);
       process.env.LOG_INFO === "true" && console.log(`Play [${this.currentFile}/${this.files.length}] ${currentPath}`);
 
-      setTimeout(() => {
+      this.timeout = setTimeout(() => {
         this.currentFile += 1;
         this.startQueue();
       }, (Number(parsedData.format.duration) || 10) * 1000);
     } catch {
-      setTimeout(() => {
+      this.timeout = setTimeout(() => {
         this.currentFile += 1;
         this.startQueue();
       }, 10);

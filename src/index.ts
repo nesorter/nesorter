@@ -8,7 +8,7 @@ import { config } from 'dotenv';
 
 config();
 
-const streamer = new Streamer(express());
+const streamer = new Streamer(express(), Number(process.env.LISTEN_PORT));
 const scanner = new FileSystemScanner(process.env.LIBRARY_DIR);
 const queue = new Queue(streamer);
 
@@ -16,6 +16,11 @@ scanner.scan()
   .then((items) => shuffle(items))
   .then((items) => items.map((item) => queue.add(item.fullPath)))
   .then(() => queue.startQueue());
+
+let page = 'main';
+let setPage = (nextpage: string) => {
+  page = nextpage;
+}
 
 const GUI = new ConsoleManager({
   title: 'nesorter',
@@ -35,48 +40,81 @@ GUI.on("exit", () => {
 });
 
 const updateConsole = async () => {
-  const pb = new PageBuilder();
+  const mainPage = new PageBuilder();
 
-  pb.addSpacer();
-  pb.addSpacer();
-
-  pb.addRow({
-    text: `Server listens port ${process.env.LISTEN_PORT}`,
-    color: 'white'
-  });
-  pb.addRow({
-    text: `Mountpoint: ${process.env.MOUNTPOINT_PATH}`,
+  mainPage.addRow({
+    text: `port = ${process.env.LISTEN_PORT}; mountpoint = ${process.env.MOUNTPOINT_PATH}`,
     color: 'white'
   });
 
-  pb.addSpacer();
-  pb.addSpacer();
+  mainPage.addSpacer();
+  mainPage.addSpacer();
 
-  pb.addRow({
+  mainPage.addRow({
     text: `Queue, current index: ${queue.currentFile} of ${queue.files.length}`,
     color: 'white'
   });
-  pb.addRow({
+  mainPage.addRow({
     text: `Queue, current song: ${queue.files[queue.currentFile]}`,
     color: 'white'
   });
 
-  pb.addSpacer();
-  pb.addSpacer();
+  mainPage.addSpacer();
+  mainPage.addSpacer();
 
-  pb.addRow({
+  mainPage.addRow({
     text: `Clients count: ${streamer.broadcast.sinks.length - 1}`,
     color: 'white'
   });
-  pb.addRow({
+  mainPage.addRow({
     text: `Sended: ${streamer.sended / 1000}kb`,
     color: 'white'
   });
 
-  pb.addSpacer();
-  pb.addSpacer();
+  mainPage.addSpacer();
+  mainPage.addSpacer();
 
-  GUI.setPage(pb);
+  mainPage.addRow({
+    text: `Use h for help`,
+    color: 'red'
+  });
+
+  const helpPage = new PageBuilder();
+  helpPage.addRow({
+    text: `Navigation:`,
+    color: 'red'
+  });
+  helpPage.addRow({
+    text: `  - key '1': main page`,
+    color: 'white'
+  });
+  helpPage.addRow({
+    text: `  - key 'h': help page`,
+    color: 'white'
+  });
+
+  if (page === 'main') {
+    GUI.setPage(mainPage, 0, 'main');
+  }
+
+  if (page === 'help') {
+    GUI.setPage(helpPage, 0, 'help');
+  }
 }
+
+GUI.on('keypressed', (key) => {
+  switch (key.name) {
+    case '1':
+      setPage('main');
+      break;
+
+    case 'h':
+      setPage('help');
+      break;
+
+    default:
+      break;
+  }
+});
 
 setInterval(() => updateConsole(), 500);

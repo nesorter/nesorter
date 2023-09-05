@@ -8,10 +8,10 @@ export class Streamer {
   bitrate = 0;
   sended = 0;
 
-  constructor(app: Express) {
+  constructor(app: Express, port: number) {
     this.broadcast = new BroadcastStream();
     this.app = app;
-    this.app.listen(Number(process.env.LISTEN_PORT));
+    this.app.listen(port);
     this.app.disable('x-powered-by');
     this.setupRouting();
 
@@ -19,6 +19,7 @@ export class Streamer {
     plug.on('data', (chunk) => {
       this.sended += chunk.length;
     });
+
     setInterval(() => {
       process.env.LOG_DEBUG === "true" && console.log(`Kbytes sended: ${this.sended / 1000}`)
     }, 10000);
@@ -27,6 +28,18 @@ export class Streamer {
   attachReadStream(sink: ReadStream, bitrate: number) {
     this.bitrate = bitrate;
     this.broadcast.attachReadable(sink);
+
+    return () => {
+      if (this.broadcast.readable) {
+        this.broadcast.readable.emit('close');
+        delete this.broadcast.readable;
+      }
+
+      for (let key of Object.keys(this.broadcast.timeouts)) {
+        clearTimeout(this.broadcast.timeouts[key]);
+        delete this.broadcast.timeouts[key];
+      }
+    }
   }
 
   setupRouting() {
