@@ -1,11 +1,20 @@
 {
   "name": "@nesorter/tui",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Terminal UI for nesorter",
   "repository": "git@github.com:nesorter/nesorter.git",
   "bugs": {
     "url": "https://github.com/nesorter/nesorter/issues"
   },
+  "keywords": [
+    "streaming",
+    "icecast",
+    "server",
+    "audio",
+    "lame",
+    "webradio",
+    "nesorter"
+  ],
   "homepage": "https://github.com/nesorter/nesorter#readme",
   "author": "kugichka <kugi@kugi.club>",
   "license": "MIT",
@@ -21,7 +30,7 @@
     "start:dev": "npx nodemon"
   },
   "dependencies": {
-    "@nesorter/lib": "latest",
+    "@nesorter/lib": "^1.0.4",
     "@types/node": "^20.5.8",
     "console-gui-tools": "^3.1.1",
     "nodemon": "^3.0.1",

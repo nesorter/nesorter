@@ -1,15 +1,52 @@
+import { ConsoleManager, PageBuilder } from 'console-gui-tools';
 import { Streamer, FileSystemScanner, Queue } from '@nesorter/lib';
 import { shuffle } from './utils.js';
-import { ConsoleManager, PageBuilder } from 'console-gui-tools';
+import { config } from './config.js';
+import EventEmitter from 'events';
 
-const streamer = new Streamer(Number(process.env.LISTEN_PORT));
-const scanner = new FileSystemScanner(process.env.LIBRARY_DIR);
-const queue = new Queue(streamer);
+const streamer = new Streamer(config.server.port, config.server.mount);
+const playlists = [
+  ...shuffle(config.playlists),
+  ...shuffle(config.playlists),
+  ...shuffle(config.playlists),
+  ...shuffle(config.playlists),
+  ...shuffle(config.playlists),
+  ...shuffle(config.playlists),
+  ...shuffle(config.playlists),
+  ...shuffle(config.playlists),
+  ...shuffle(config.playlists),
+  ...shuffle(config.playlists),
+  ...shuffle(config.playlists),
+];
 
-scanner.scan()
-  .then((items) => shuffle(items))
-  .then((items) => items.map((item) => queue.add(item.fullPath)))
-  .then(() => queue.startQueue());
+let queue: Queue;
+let index = 0;
+const ev = new EventEmitter();
+const scheduleQueue = async () => {
+  const playlist = playlists[index];
+  const thisQueue = new Queue(streamer, () => ev.emit('end'));
+  const scanner = new FileSystemScanner(playlist.path);
+  const files = await scanner.scan();
+
+  ev.on('end', () => {
+    index += 1;
+    if (index === playlists.length) {
+      index = 0;
+    }
+
+    thisQueue.stopQueue();
+    setTimeout(() => scheduleQueue(), 100);
+  });
+
+  for (let file of files) {
+    await thisQueue.add(file.fullPath);
+  }
+
+  await thisQueue.startQueue();
+  queue = thisQueue;
+}
+
+scheduleQueue();
 
 let page = 'main';
 let setPage = (nextpage: string) => {
@@ -37,7 +74,7 @@ const updateConsole = async () => {
   const mainPage = new PageBuilder();
 
   mainPage.addRow({
-    text: `port = ${process.env.LISTEN_PORT}; mountpoint = ${process.env.MOUNTPOINT_PATH}`,
+    text: `port = ${config.server.port}; mountpoint = ${config.server.mount}`,
     color: 'white'
   });
 
@@ -45,11 +82,15 @@ const updateConsole = async () => {
   mainPage.addSpacer();
 
   mainPage.addRow({
-    text: `Queue, current index: ${queue.currentFile} of ${queue.files.length}`,
+    text: `Playlist: "${playlists[index].name}"`,
     color: 'white'
   });
   mainPage.addRow({
-    text: `Queue, current song: ${queue.files[queue.currentFile]}`,
+    text: `Queue, current index: ${queue?.currentFile} of ${queue?.files.length}`,
+    color: 'white'
+  });
+  mainPage.addRow({
+    text: `Queue, current song: ${queue?.files[queue?.currentFile]}`,
     color: 'white'
   });
 
