@@ -38,4 +38,4 @@ export const config = {
       'random #1', 'random #6', 'random #2', 'random #5', 'random #3', 'random #4'
     ],
   },
-}
+};

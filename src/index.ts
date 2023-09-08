@@ -1,6 +1,5 @@
 import { ConsoleManager, PageBuilder } from 'console-gui-tools';
-import { Streamer, FileSystemScanner, Queue } from '@nesorter/lib';
-import { shuffle } from './utils.js';
+import { Streamer, FileSystemScanner, Queue, shuffle } from './lib/index.js';
 import { config } from './config.js';
 import EventEmitter from 'events';
 
@@ -26,7 +25,7 @@ const scheduleQueue = async () => {
   const playlist = playlists[index];
   const thisQueue = new Queue(streamer, () => ev.emit('end'));
   const scanner = new FileSystemScanner(playlist.path);
-  const files = await scanner.scan();
+  const files = shuffle(await scanner.scan());
 
   ev.on('end', () => {
     index += 1;
