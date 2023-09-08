@@ -1,5 +1,5 @@
 import { ConsoleManager, PageBuilder } from 'console-gui-tools';
-import { Streamer, FileSystemScanner, Queue, shuffle } from './lib/index.js';
+import { Streamer, FileSystemScanner, Queue, shuffle } from '@nesorter/lib';
 import { config } from './config.js';
 import EventEmitter from 'events';
 
