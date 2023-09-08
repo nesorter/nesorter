@@ -47,7 +47,7 @@ export type InFilePosition = {
 
 export const sanitizeFsPath = (path: string) => {
   const escapeTargets = [
-    ` `, `'`, `>`, `<`, `"`
+    ` `, `'`, `>`, `<`, `"`, '(', ')', '&'
   ]
 
   return escapeTargets.reduce((acc, cur) => acc.replaceAll(cur, `\\${cur}`), path);
